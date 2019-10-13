@@ -7,8 +7,9 @@ import logging
 
 path = os.path.dirname(__file__)
 
+
 # construct dict which can also return the function
-class AttrDict(dict):
+class AttrDict(dict): # TODO: read parameters
 
     def __getattr__(self, name):
         if name in self.__dict__: # get all properties of AttrDict, no parent's properties
@@ -90,12 +91,16 @@ def setup(args, log):
     console.setFormatter(logging.Formatter("%(asctime)s %(massage)s"))
     logging.getLogger("").addHandler(console)
 
-class Parser(AttrDict):
+class ParserUse(AttrDict):
     def __init__(self, cfg_name="", log=""):
         self.add_cfg("PATH")
         if cfg_name:
             self.add_cfg(cfg_name)
             setup()
+
+    def add_args(self, args):
+        self.merge(vars(args))
+        return self
 
     def add_cfg(self, cfg, args=None, update=False):
         # set path
