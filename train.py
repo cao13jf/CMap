@@ -1,6 +1,6 @@
 #coding=utf-8
 
-# import dependency library
+#  import dependency library
 import os
 import time
 import numpy as np
@@ -9,8 +9,10 @@ import torch
 import torch.optim
 import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
-# datasets
 
+#  datasets
+from data import datasets
+from data.sampler import CycleSampler
 
 
 #  user defined library
