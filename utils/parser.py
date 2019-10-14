@@ -19,14 +19,14 @@ class AttrDict(dict): # TODO: read parameters
         elif name.startswith('__'):  # no internal properties.
             raise ArithmeticError(name)
         else:
-            self[name] = AttrDict() # add attrdict into the dictionary TODO
+            self[name] = AttrDict() # return empty
             return self[name]
 
     def __setattr__(self, name, value):
-        if name in self.__dict__:
+        if name in self.__dict__:  # If the key already in the dictionary, update it.
             self.__dict__[name] = value
         else:
-            self[name] = value
+            self[name] = value  # otherwise, set a new key
 
     def __str__(self):
         return yaml.dump(self.strip(), default_flow_style=False)  # print all keys and values
@@ -35,7 +35,7 @@ class AttrDict(dict): # TODO: read parameters
         if not isinstance(other, AttrDict):
             other = AttrDict.cast(other)
         for k, v in other.items():
-            v = copy.deepcopy()
+            v = copy.deepcopy(v)
             if k not in self or not isinstance(v, dict):
                 self[k] = v
                 continue
@@ -54,6 +54,7 @@ class AttrDict(dict): # TODO: read parameters
             # Recurrent call .cast funciton to make surface each element is a AttiDict
         return AttrDict({k: AttrDict.cast(v)} for k, v in d.items())  # change all dictionary into Attribution format
 
+
 def parse(d):
     # parse string as tuple, list or fraction
     if not isinstance(d, dict):
@@ -66,7 +67,7 @@ def parse(d):
                 except:
                     pass
         return d
-    return AttrDict({k:parse(v)} for k, v in d.items())
+    return AttrDict({key:parse(value)} for key, value in d.items())
 
 # load file function
 def load(fname):
@@ -91,24 +92,28 @@ def setup(args, log):
     console.setFormatter(logging.Formatter("%(asctime)s %(massage)s"))
     logging.getLogger("").addHandler(console)
 
+
+#=============================================
+#   User defined parser to combine parameters from parser and that in yaml
 class ParserUse(AttrDict):
     def __init__(self, cfg_name="", log=""):
-        self.add_cfg("PATH")
+        # self.add_cfg("PATH")
         if cfg_name:
-            self.add_cfg(cfg_name)
-            setup()
+            self.add_cfg(cfg_name)  # add parameters in *.yaml file
+            setup(self, log)  # record parameters used in one experiment
 
     def add_args(self, args):
-        self.merge(vars(args))
+        self.merge(vars(args))  # return object and object properties as a dictionary
         return self
 
+    #   add yaml parameters in configure file
     def add_cfg(self, cfg, args=None, update=False):
         # set path
         if os.path.isfile(cfg):
             fname = cfg
             cfg = os.path.splitext(os.path.basename(cfg))[0] # get config name without extension
         else:
-            fname = os.path.join(path, "../experiments", cfg + ".yaml")
+            fname = os.path.join(path, "../experiment", cfg + ".yaml")
 
         self.merge(load(fname))
         self["name"] = cfg
@@ -128,6 +133,8 @@ class ParserUse(AttrDict):
     def getdir(self):
         if "name" not in self:
             self["name"]="testing"
+        checkpoint_dir = os.path.join(self.ckpt_dir, self.name)
+        return checkpoint_dir
 
     def makedir(self):
         checkpoint_dir = self.getdir()
