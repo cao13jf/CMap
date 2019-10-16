@@ -25,7 +25,8 @@ class RandomCycleIter(object):
             self.i = 0  # when reach the largest, reset the number
             random.shuffle(self.data_list)
         return self.data_list[self.i]
-    next = __next__()  # TODO: why?
+
+    next = __next__ # TODO: why?
 
 
 #=============================================

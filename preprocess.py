@@ -5,13 +5,9 @@ Preprocess for fast data reading
 import os
 import glob
 from tqdm import tqdm
-import nibabel as nib
 
 #  import user defined library
 from utils.data_io import nib_load, normalize3d, pkl_save
-from utils import ParserUse
-
-args = ParserUse()
 
 # dataset folder
 train_folder = dict(root="dataset/train", has_label=True)
@@ -21,7 +17,7 @@ def nii_to_pkl(embryo_path, has_label=True):
     #  build pkl folder
     pkl_folder = os.path.join(embryo_path, "PklFile")
     if not os.path.isdir(pkl_folder):
-        os.mkdir(pkl_folder)
+        os.makedirs(pkl_folder)
     #  get data list
     raw_memb_list = glob.glob(os.path.join(embryo_path, "RawMemb", "*.gz"))
     raw_nuc_list = glob.glob(os.path.join(embryo_path, "RawNuc", "*.gz"))

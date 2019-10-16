@@ -29,16 +29,22 @@ cudnn.benchmark = True  # let auto-tuner find the most efficient network (used i
 
 # set parameters
 parser = argparse.ArgumentParser()
-parser.add_argument("-cfg", "--cfg", default="MEMBRANE3D_TRAIN", required=True, type=str, help="training setting files")
-parser.add_argument("-gpu", "--gpu", default="0", type=str, required=True, help="GPUs")
-parser.add_argument("-batch_size", "--batch_size", default=1, type=int, required=True, help="training batch size")
-parser.add_argument("-restore", "--restore", default="model_last.pth", type=str, help="set name of check point to restore")
-args = parser.parse_args()
-args = ParserUse(args.cfg, log="train").add_cfg(args)
+
+parser.add_argument('-cfg', '--cfg', default='1_EESPNet_16x_PRelu_GDL_all', required=True, type=str, help='Your detailed configuration of the network')
+parser.add_argument('-gpu', '--gpu', default='0', type=str, required=True, help='Supprot one GPU & multiple GPUs.')
+parser.add_argument('-batch_size', '--batch_size', default=1, type=int, help='Batch size')
+parser.add_argument('-restore', '--restore', default='', type=str)
+parser.add_argument('--show_image_freq', default=20, type=int, help="frequency of showing image")
+parser.add_argument('--show_loss_freq', default=5, type=int, help="frequency of showing loss")
+
 path = os.path.dirname(__file__)
 
+## parse arguments
+args = parser.parse_args()
+args = ParserUse(args.cfg, log='train').add_args(args)
+
 cpkts = args.makedir()
-args.resume = os.path.join(cpkts, args.args.restore)
+args.resume = os.path.join(cpkts, args.restore)
 
 if args.show_image_freq > 0 or args.show_loss_freq > 0:
     visualizer = Visualizer(1)
@@ -86,7 +92,7 @@ def main():
     #  set dataset loader
     #=====================================================
     Dataset = getattr(datasets, args.dataset)
-    train_set = Dataset(root=args.train_data_dir, for_train=True, transforms=args.train_transforms, return_targt=True)
+    train_set = Dataset(root=args.train_data_dir, for_train=True, transforms=args.train_transforms, return_target=True)
     num_iters = args.num_iters or (len(train_set) * args.num_epoches) // args.batch_size
     num_iters -= args.start_iter
     train_sampler = CycleSampler(len(train_set), num_iters*args.batch_size)

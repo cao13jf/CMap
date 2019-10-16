@@ -218,7 +218,7 @@ class MFNet(nn.Module):
 #   Define DMFNet based on MFNet
 class DMFNet(MFNet):
     def __init__(self, in_channels=1, n_first=32, conv_channels=32, groups=16, norm="bn", out_class=2):
-        super(DMFUnit, self).__init__(in_channels, n_first, conv_channels, groups, norm, out_class)
+        super(DMFNet, self).__init__(in_channels, n_first, conv_channels, groups, norm, out_class)
 
         #  overwrite the first two encoder blocks of MFNet with DMFNet units.
         self.encoder_block1 = nn.Sequential(

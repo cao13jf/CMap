@@ -1,14 +1,13 @@
-#  Parameters used for training.
-net: DMFNet
+net: DMFNet #  Parameters used for training.
 net_params:
-  c: 2
-  n: 32
-  channels: 128
+  in_channels: 2
+  n_first: 32
+  conv_channels: 128
   groups: 16
   norm: in #sync_bn
-  num_classes: 2
+  out_class: 2
 
-criterion: GeneralizedDiceLoss
+criterion: generalized_dice_loss
 
 weight_type: square
 eps: 1e-5
