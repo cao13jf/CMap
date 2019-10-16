@@ -57,3 +57,4 @@ def doit(target, embryo_names=None):
 if __name__ == "__main__":
     embryo_names = None
     doit(train_folder, embryo_names)
+    # doit(test_folder, embryo_names)
