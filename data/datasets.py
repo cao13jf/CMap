@@ -7,11 +7,13 @@ from torch.utils.data import Dataset
 
 # import user defined
 from .data_utils import get_all_stack, pkload
+from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation
 
 
 #=======================================
 #  Import membrane datasets
 #=======================================
+#   data format: dict([raw_memb, raw_nuc, seg_nuc, 'seg_memb, seg_cell'])
 class Memb3DDataset(Dataset):
     def __init__(self, root="dataset/train", membrane_names=None, for_train=True, return_target=True, transforms=None):
         if membrane_names is None:
@@ -24,13 +26,13 @@ class Memb3DDataset(Dataset):
 
     def __getitem__(self, item):
         stack_name = self.names[item]
-        raw, seg = pkload(self.paths[item])
+        load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         if self.return_target:
-            raw, seg = self.transforms([raw, seg])
+            raw, seg = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"]])
             seg = seg[np.newaxis, ...].transpose([0, 3, 1, 2])  #[Batchsize, Depth, Height, Width]
             seg = np.ascontiguousarray(seg)
         else:
-            raw = self.transforms(raw)
+            raw = self.transforms(load_dict["raw_memb"])
         raw = raw[np.newaxis, np.newaxis, :, :, :]  # [Batchsize, channels, Height, Width, Depth]
         raw = np.ascontiguousarray(raw.transpose([0, 1, 4, 2, 3]))  # [Batchsize, channels, Depth, Height, Width]
 

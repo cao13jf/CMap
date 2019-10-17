@@ -92,11 +92,11 @@ class MFUnit(nn.Module):
 
         shortcut = x
         if hasattr(self, "conv1x1x1_shortcut"):
-            h_shorcut = self.conv1x1x1_shortcut(shortcut)
+            shortcut = self.conv1x1x1_shortcut(shortcut)
         elif hasattr(self, "conv2x2x2_shortcut"):
-            h_shorcut = self.conv2x2x2_shortcut(shortcut)
+            shortcut = self.conv2x2x2_shortcut(shortcut)
 
-        return h + h_shorcut
+        return h + shortcut
 
 #  define DMFUnit module
 class DMFUnit(nn.Module):
@@ -123,7 +123,7 @@ class DMFUnit(nn.Module):
         if num_in != num_out or stride != 1:
             if stride == 1:
                 self.conv1x1x1_shortcut = Conv3dBlock(num_in, num_out, kernel_size=1, stride=1, padding=0, norm=norm)
-            elif stride == 1:
+            elif stride == 2:
                 self.conv2x2x2_shortcut = Conv3dBlock(num_in, num_out, kernel_size=2, stride=2, padding=0, norm=norm)
 
     def forward(self, x):
@@ -135,11 +135,11 @@ class DMFUnit(nn.Module):
         # add shortcut
         shortcut = x
         if hasattr(self, "conv1x1x1_shortcut"):
-            h_shortcut = self.conv1x1x1_shortcut(shortcut)
-        elif hasattr(self, "conv1x1x1_shortcut"):
-            h_shortcut = self.conv2x2x2_shortcut(shortcut)
+            shortcut = self.conv1x1x1_shortcut(shortcut)
+        elif hasattr(self, "conv2x2x2_shortcut"):
+            shortcut = self.conv2x2x2_shortcut(shortcut)
 
-        return h + h_shortcut
+        return h + shortcut
 
 
 #===================================================

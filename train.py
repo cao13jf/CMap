@@ -93,7 +93,7 @@ def main():
     #=====================================================
     Dataset = getattr(datasets, args.dataset)
     train_set = Dataset(root=args.train_data_dir, for_train=True, transforms=args.train_transforms, return_target=True)
-    num_iters = args.num_iters or (len(train_set) * args.num_epoches) // args.batch_size
+    num_iters = args.num_iters or (len(train_set) * args.num_epochs) // args.batch_size
     num_iters -= args.start_iter
     train_sampler = CycleSampler(len(train_set), num_iters*args.batch_size)
     train_loader = DataLoader(

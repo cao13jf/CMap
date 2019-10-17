@@ -36,7 +36,7 @@ def dice(output, target, eps=1e-5):
 #  generalized dice
 def generalized_dice_loss(output, target, eps=1e-5, weight_type="square"):
     if len(target.shape) == 4:  # multiple class are combined in on volume
-        n_class = target.shape[1]
+        n_class = output.shape[1]
         target = expand_target(target, n_class, "softmax")
 
     output = flatten(output)
@@ -51,7 +51,7 @@ def generalized_dice_loss(output, target, eps=1e-5, weight_type="square"):
     else:
         raise ValueError("Unsupport weight type '{}' for generalized loss".format(weight_type))
 
-    intersect = (output * target_sum).sum(-1)
+    intersect = (output * target).sum(-1)
     intersect_sum = (intersect * class_weights).sum()
     denominator = (output + target).sum(-1)
     denominator_sum = (denominator * class_weights).sum() + eps
@@ -94,7 +94,7 @@ def expand_target(condensed_data, n_class, mode="softmax"):
 
 def flatten(input):
     # has C channel
-    assert input.dim > 3, "Only support volume data flatten"
+    assert input.dim() > 3, "Only support volume data flatten"
     if input.dim() == 5:
         C = input.size(1)
         axis_order = (1, 0) + tuple(range(2, input.dim()))

@@ -101,7 +101,7 @@ class Flip(Base):
         return "Flip(axis={})".format(self.axis)
 
 class RandomFlip(Base):
-    def __init__(self):
+    def __init__(self, axis=0):
         self.axis = (0, 1, 2)
         self.x_buffer = None
         self.y_buffer = None
@@ -147,7 +147,7 @@ class Centercrop(Base):
 
 class RandCrop(Centercrop):
     def sample(self, *shape):
-        start = [random.random(0, rs - ts) for rs, ts in zip(shape, self.target_size)]
+        start = [random.randint(0, rs - ts) for rs, ts in zip(shape, self.target_size)]
         self.buffer = [slice(st, st + ts) for st, ts in zip(start, self.target_size)]
         return self.target_size
 
@@ -179,7 +179,8 @@ class Pad(Base):
 #   change intensity
 #===========================================
 class RandomIntensityChange(Base):
-    def __init__(self, shift, scale):
+    def __init__(self, factor):
+        shift, scale = factor
         assert (shift > 0) and (scale > 0), "shift {} and scale {} must > 0".format(shift, scale)
         self.shift = shift
         self.scale = scale
@@ -358,7 +359,7 @@ class TensorType(Base):
         return "TensorType(({}))".format(s_types)
 
 
-class Numpytype(Base):
+class NumpyType(Base):
     def __init__(self, types):
         self.types = types
 

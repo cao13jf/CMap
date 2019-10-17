@@ -1,6 +1,6 @@
 net: DMFNet #  Parameters used for training.
 net_params:
-  in_channels: 2
+  in_channels: 1
   n_first: 32
   conv_channels: 128
   groups: 16
@@ -31,8 +31,8 @@ train_list: all.txt
 valid_list: valid.txt
 train_transforms: # for training
   Compose([
-    RandCrop3D((128,128,128)),
-    RandomRotion(10),
+    RandCrop((128,128,128)),
+    RandomRotation(10),
     RandomFlip(0),
     NumpyType((np.float32, np.int64))
     ])
