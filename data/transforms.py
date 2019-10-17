@@ -2,7 +2,6 @@
 '''
 
 # import dependency library
-import cv2
 import random
 import collections
 import torch
@@ -247,17 +246,16 @@ class Normalize(Base):
 
 
 class Resize(Base):
-    def __init__(self, target_size=(205, 288)):
-        assert len(target_size) == 2, "Only support in-slice resize"  # TODO: support for 3D resize
+    def __init__(self, target_size=(205, 288, 144)):
+        assert len(target_size) == 3, "Only support in-slice resize"  # TODO: support for 3D resize
         self.target_size = target_size
 
     def tf(self, img, k=0):
-        n_slice = img.shape[-1]
         if k == 0:
-            resized_slices = [cv2.resize(img[:, :, i], self.target_size, interpolation=cv2.INTER_LINEAR) for i in range(img.shape[-1])]
+            resized_stack = resize(img, self.target_size, mode='constant', cval=0, order=1,anti_aliasing=True)
         else:
-            resized_slices = [cv2.resize(img[:, :, i], self.target_size, interpolation=cv2.INTER_NEAREST) for i in range(img.shape[-1])]
-        return np.stack(resized_slices, axis=-1)
+            resized_stack = resize(img, self.target_size, mode='constant', cval=0, order=0, anti_aliasing=True)
+        return resized_stack
 
 
 #=============================================

@@ -5,3 +5,5 @@ models/__pycache__/
 utils/__pycache__/
 models/sync_batchnorm/__pycache__/
 **.pyc
+**.pth
+**.nii.gz

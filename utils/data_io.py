@@ -2,6 +2,7 @@
 
 import os
 import pickle
+import imageio
 import numpy as np
 import nibabel as nib
 
@@ -24,6 +25,15 @@ def pkl_save(data, path):
     with open(path, "wb") as f:
         pickle.dump(data, f)
 
+#  write *.nii.gz files
+def nib_save(data, file_name):
+    check_folder(file_name)
+    return nib.save(nib.Nifti1Image(data, None), file_name)
+
+#  write image
+def img_save(image, file_name):
+    check_folder(file_name)
+    imageio.imwrite(file_name, image)
 
 #==============================================
 #  data process
@@ -38,3 +48,11 @@ def normalize3d(image, mask=None):
     image = image.astype(dtype=np.float32)
     image[mask] = (image[mask] - mean) / std
     return image
+
+
+#===============================================
+#  other utils
+def check_folder(file_name):
+    dir_name = os.path.dirname(file_name)
+    if not os.path.isdir(dir_name):
+        os.makedirs(dir_name)

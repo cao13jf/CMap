@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 
 # import user defined
 from .data_utils import get_all_stack, pkload
-from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation
+from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation, Pad, Resize
 
 
 #=======================================
@@ -15,10 +15,10 @@ from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation
 #=======================================
 #   data format: dict([raw_memb, raw_nuc, seg_nuc, 'seg_memb, seg_cell'])
 class Memb3DDataset(Dataset):
-    def __init__(self, root="dataset/train", membrane_names=None, for_train=True, return_target=True, transforms=None):
+    def __init__(self, root="dataset/train", membrane_names=None, for_train=True, return_target=True, transforms=None, suffix="*.pkl"):
         if membrane_names is None:
             membrane_names = [name for name in os.listdir(root) if os.path.isdir(os.path.join(root, name))]
-        self.paths = get_all_stack(root, membrane_names, suffix="*.pkl")
+        self.paths = get_all_stack(root, membrane_names, suffix=suffix)
         self.names = [os.path.basename(path).split(".")[0] for path in self.paths]
         self.for_train = for_train
         self.return_target = return_target
@@ -47,4 +47,7 @@ class Memb3DDataset(Dataset):
         return len(self.names)
 
     def collate(self, batch):
-        return [torch.cat(v) for v in zip(*batch)]
+        out_batch =  [torch.cat(v) for v in zip(*batch)]
+        if len(batch) == 1:
+            out_batch = [x.unsqueeze(0) for x in out_batch]
+        return out_batch

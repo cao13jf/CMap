@@ -30,7 +30,7 @@ cudnn.benchmark = True  # let auto-tuner find the most efficient network (used i
 # set parameters
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-cfg', '--cfg', default='1_EESPNet_16x_PRelu_GDL_all', required=True, type=str, help='Your detailed configuration of the network')
+parser.add_argument('-cfg', '--cfg', default='DMFNet_MEMB3D_TRAIN', required=True, type=str, help='Your detailed configuration of the network')
 parser.add_argument('-gpu', '--gpu', default='0', type=str, required=True, help='Supprot one GPU & multiple GPUs.')
 parser.add_argument('-batch_size', '--batch_size', default=1, type=int, help='Batch size')
 parser.add_argument('-restore', '--restore', default='', type=str)
@@ -92,7 +92,7 @@ def main():
     #  set dataset loader
     #=====================================================
     Dataset = getattr(datasets, args.dataset)
-    train_set = Dataset(root=args.train_data_dir, for_train=True, transforms=args.train_transforms, return_target=True)
+    train_set = Dataset(root=args.train_data_dir, membrane_names=args.train_embryos, for_train=True, transforms=args.train_transforms, return_target=True)
     num_iters = args.num_iters or (len(train_set) * args.num_epochs) // args.batch_size
     num_iters -= args.start_iter
     train_sampler = CycleSampler(len(train_set), num_iters*args.batch_size)
@@ -139,12 +139,14 @@ def main():
         loss.backward()
         optimizer.step()
 
-        #  show intermediate result
+        #=============================================================
+        #   Show mmiddle results
         if args.show_image_freq > 0 and (i % args.show_image_freq) == 0:
             image_dict = dict(Raw=raw[0, 0, :, :, 60], Target=target[0, :, :, 60].float(), Prediction=output[0, 1, :, :, 60])
             visualizer.show_current_images(image_dict)
         if args.show_loss_freq > 0 and (i % args.show_loss_freq) == 0:
             visualizer.plot_current_losses(progress_ratio=(i+1)/enum_batches, losses=dict(Diceloss=loss.item()))
+        # =============================================================
 
         #  save trained model
         if (i + 1) % int(enum_batches * args.save_freq) == 0:
@@ -162,7 +164,7 @@ def main():
     file_name = os.path.join(cpkts, "model_last.pth")
     torch.save(dict(
         iter=i,
-        save_dict=model.state_dict(),
+        state_dict=model.state_dict(),
         optim_dict=model.state_dict()
     ), file_name)
 
