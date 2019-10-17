@@ -42,7 +42,7 @@ args.resume = os.path.join(ckpts, args.trained_model)
 #  main program for prediction
 #=========================================================
 def main():
-    setproctitle.setproctitle(parser.cfg)
+    setproctitle.setproctitle(args.cfg)
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     assert torch.cuda.is_available(), "CPU is needed for prediction"
 
