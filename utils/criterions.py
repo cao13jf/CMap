@@ -58,6 +58,42 @@ def generalized_dice_loss(output, target, eps=1e-5, weight_type="square"):
 
     return 1 - 2 * intersect_sum / denominator_sum
 
+#  attention loss.
+def AttentionMSELoss(output, target, eps=1e-5):
+    target = target.float()
+    MSE_wise = (output - target)**2
+    attention_mask = (target >= 0).float()
+
+    return (attention_mask * MSE_wise).sum() / (attention_mask.sum() + eps)
+
+#   attention dice loss
+#  generalized dice
+def attention_dice_loss(output, target, mask, eps=1e-5, weight_type="square"):
+    target = target.float(); mask = mask.float()
+    if len(target.shape) == 4:  # multiple class are combined in on volume
+        n_class = output.shape[1]
+        target = expand_target(target, n_class, "softmax")
+        mask = mask.unsqueeze(1).repeat(1, n_class, 1, 1, 1)
+
+    output = flatten(output)
+    target = flatten(target)
+    mask = flatten(mask)
+    target_sum = target.sum(-1)
+    if weight_type == "square":
+        class_weights = 1. / (target_sum * target_sum + eps)
+    elif weight_type == "identity":
+        class_weights = 1. / (target_sum + eps)
+    elif weight_type == "sqrt":
+        class_weights = 1. / (torch.sqrt(target_sum) + eps)
+    else:
+        raise ValueError("Unsupport weight type '{}' for generalized loss".format(weight_type))
+
+    intersect = (output * target * mask).sum(-1)
+    intersect_sum = (intersect * class_weights).sum()
+    denominator = ((output + target)* mask).sum(-1)
+    denominator_sum = (denominator * class_weights).sum() + eps
+
+    return 1 - 2 * intersect_sum / denominator_sum
 
 #===================================================
 #  function used to calculate the prediction scaore

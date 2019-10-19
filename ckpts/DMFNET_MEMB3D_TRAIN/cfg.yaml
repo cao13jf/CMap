@@ -1,7 +1,7 @@
 batch_size: 1
 cfg: DMFNET_MEMB3D_TRAIN
 ckpt_dir: ./ckpts
-criterion: generalized_dice_loss
+criterion: attention_dice_loss
 dataset: Memb3DDataset
 eps: 1.0e-05
 gpu: '0'
@@ -13,7 +13,7 @@ net_params:
   in_channels: 1
   n_first: 32
   norm: in
-  out_class: 2
+  out_class: 10
 num_epochs: 50
 opt: Adam
 opt_params:
@@ -23,8 +23,8 @@ opt_params:
 restore: ''
 save_freq: 10
 seed: 1024
-show_image_freq: -1
-show_loss_freq: -1
+show_image_freq: 10
+show_loss_freq: 5
 start_iter: 0
 test_data_dir: dataset/test
 test_embryos: ('181210plc1p2',)
@@ -33,7 +33,7 @@ test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyT
 train_data_dir: dataset/train
 train_embryos: ('170614plc1p1', '170704plc1p1')
 train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
-  NumpyType((np.float32, np.int64)) ])
+  NumpyType((np.float32, np.int64, np.int64)) ])
 valid_data_dir: dataset/validation
 valid_freq: 10
 weight_type: square

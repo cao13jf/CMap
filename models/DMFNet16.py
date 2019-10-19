@@ -178,7 +178,7 @@ class MFNet(nn.Module):
         self.upsample3 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
         self.decoder_block3 = MFUnit(conv_channels+n_first, n_first, groups=groups, stride=1, norm=norm)
         self.upsample4 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.seg = nn.Conv3d(n_first, out_class, kernel_size=1, padding=0, stride=1, bias=False)
+        self.seg = nn.Conv3d(n_first, out_class, kernel_size=1, padding=0, stride=1, bias=True)
 
         self.softmax = nn.Softmax(dim=1)
 

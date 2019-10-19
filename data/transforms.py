@@ -185,7 +185,7 @@ class RandomIntensityChange(Base):
         self.scale = scale
 
     def tf(self, img, k=0):
-        if k==1:
+        if k > 1:
             return img
         shift_buffer = np.random.uniform(-self.shift, self.shift, size = list(img.shape))
         scale_factor = np.random.uniform(1.0 - self.scale, 1.0 + self.scale, size=list(img.shape))
@@ -201,7 +201,7 @@ class Noise(Base):
         self.sigma = sigma
 
     def tf(self, img, k=0):
-        if k == 1:
+        if k > 1:
             return img
         shape = img.shape
         return img * np.exp(self.sigma * torch.randn(shape, dtype=torch.float32).numpy())
@@ -217,7 +217,7 @@ class GaussianBlur(Base):
         self.eps = 0.001
 
     def tf(self, img, k=0):
-        if k == 1:
+        if k > 1:
             return img
         sig = self.sigma.sample()
         if sig > self.eps:
@@ -235,7 +235,7 @@ class Normalize(Base):
         self.std = std
 
     def tf(self, img, k=0):
-        if k==1:
+        if k > 0:
             return img
         img -= self.mean
         img = self.std
@@ -251,7 +251,7 @@ class Resize(Base):
         self.target_size = target_size
 
     def tf(self, img, k=0):
-        if k == 0:
+        if k > 0:
             resized_stack = resize(img, self.target_size, mode='constant', cval=0, order=1,anti_aliasing=True)
         else:
             resized_stack = resize(img, self.target_size, mode='constant', cval=0, order=0, anti_aliasing=True)

@@ -1,6 +1,7 @@
 '''data augmentation'''
 # import dependency library
 import random
+import math
 import numpy as np
 from scipy.ndimage.morphology import distance_transform_edt
 
@@ -52,8 +53,13 @@ def cell_sliced_distance(cell_label, seg_nuc, sampled=True, d_threshold=15):
         # combine different cells
         keep_mask = np.logical_or(keep_mask, np.logical_and(single_cell_mask, tem_mask))
 
-    vertical_slice_edt[~keep_mask] = 0
-    return vertical_slice_edt.astype(np.float32)
+    vertical_slice_edt[~keep_mask] = 0  # Output -1 for less attetion in loss
+    return vertical_slice_edt.astype(np.float), (~keep_mask).astype(np.float)
 
 
+#  change regression data to discrete class data
+def regression_to_class(res_data, n_class, uniform=True):
+    if not uniform:
+        res_data = np.exp(res_data) / math.e
 
+    return np.floor(res_data * n_class)

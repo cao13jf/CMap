@@ -123,14 +123,14 @@ def main():
 
         #  go through the network
         data = [t.cuda(non_blocking=True) for t in data]  # Set non_blocking for multiple GPUs
-        raw, target = data[:2]
+        raw, target, mask = data[:3]
         output = model(raw)
 
         #  get loss
         if not args.weight_type:
             args.weight_type = "square"
         if args.criterion_kwargs is not None:
-            loss = criterion(output, target, **args.criterion_kwargs)
+            loss = criterion(output, target, mask, **args.criterion_kwargs)
         else:
             loss = criterion(output, target)
 
@@ -142,7 +142,7 @@ def main():
         #=============================================================
         #   Show mmiddle results
         if args.show_image_freq > 0 and (i % args.show_image_freq) == 0:
-            image_dict = dict(Raw=raw[0, 0, :, :, 60], Target=target[0, :, :, 60].float(), Prediction=output[0, 1, :, :, 60])
+            image_dict = dict(Raw=raw[0, 0, :, :, 60], Target=target[0, :, :, 60].float(), Prediction=output[0, 5, :, :, 60])
             visualizer.show_current_images(image_dict)
         if args.show_loss_freq > 0 and (i % args.show_loss_freq) == 0:
             visualizer.plot_current_losses(progress_ratio=(i+1)/enum_batches, losses=dict(Diceloss=loss.item()))

@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 
 # import user defined
 from .data_utils import get_all_stack, pkload
-from .augmentations import cell_sliced_distance
+from .augmentations import cell_sliced_distance, regression_to_class
 from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation, Pad, Resize
 
 
@@ -29,18 +29,21 @@ class Memb3DDataset(Dataset):
         stack_name = self.names[item]
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         if self.return_target:
-            seg = cell_sliced_distance(load_dict["seg_cell"], load_dict["seg_nuc"], sampled=True, d_threshold=15)
-            raw, seg = self.transforms([load_dict["raw_memb"], seg])
+            seg, mask = cell_sliced_distance(load_dict["seg_cell"], load_dict["seg_nuc"], sampled=True, d_threshold=10)
+            seg = regression_to_class(seg, 10, uniform=False)
+            raw, seg, mask = self.transforms([load_dict["raw_memb"], seg, mask])
             seg = seg[np.newaxis, ...].transpose([0, 3, 1, 2])  #[Batchsize, Depth, Height, Width]
+            mask = mask[np.newaxis, ...].transpose([0, 3, 1, 2])  #[Batchsize, Depth, Height, Width]
             seg = np.ascontiguousarray(seg)
+            mask = np.ascontiguousarray(mask)
         else:
             raw = self.transforms(load_dict["raw_memb"])
         raw = raw[np.newaxis, np.newaxis, :, :, :]  # [Batchsize, channels, Height, Width, Depth]
         raw = np.ascontiguousarray(raw.transpose([0, 1, 4, 2, 3]))  # [Batchsize, channels, Depth, Height, Width]
 
         if self.return_target:
-            raw, seg = torch.from_numpy(raw), torch.from_numpy(seg)
-            return raw, seg
+            raw, seg, mask = torch.from_numpy(raw), torch.from_numpy(seg), torch.from_numpy(mask)
+            return raw, seg, mask
         else:
             raw = torch.from_numpy(raw)
             return raw
@@ -50,7 +53,7 @@ class Memb3DDataset(Dataset):
 
     def collate(self, batch):
         out_batch =  [torch.cat(v) for v in zip(*batch)]
-        if len(batch) == 1:
-            out_batch = [x.unsqueeze(0) for x in out_batch]
+        # if len(batch) == 1:
+        #     out_batch = [x.unsqueeze(0) for x in out_batch]
         return out_batch
 
