@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 
 # import user defined
 from .data_utils import get_all_stack, pkload
-from .augmentations import sliced_distance
+from .augmentations import cell_sliced_distance
 from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation, Pad, Resize
 
 
@@ -29,8 +29,8 @@ class Memb3DDataset(Dataset):
         stack_name = self.names[item]
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         if self.return_target:
-            raw, seg = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"]])
-            seg = sliced_distance(seg)
+            seg = cell_sliced_distance(load_dict["seg_cell"], load_dict["seg_nuc"], sampled=True, d_threshold=15)
+            raw, seg = self.transforms([load_dict["raw_memb"], seg])
             seg = seg[np.newaxis, ...].transpose([0, 3, 1, 2])  #[Batchsize, Depth, Height, Width]
             seg = np.ascontiguousarray(seg)
         else:

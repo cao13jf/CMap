@@ -1,11 +1,10 @@
-batch_size: 8
+batch_size: 1
 cfg: DMFNET_MEMB3D_TRAIN
 ckpt_dir: ./ckpts
 criterion: generalized_dice_loss
 dataset: Memb3DDataset
 eps: 1.0e-05
 gpu: '0'
-mode: 2
 name: DMFNET_MEMB3D_TRAIN
 net: DMFNet
 net_params:
@@ -21,13 +20,12 @@ opt_params:
   amsgrad: true
   lr: 0.005
   weight_decay: 1.0e-05
-save_format: nii.gz
+restore: ''
 save_freq: 10
-save_result: true
 seed: 1024
-snap_shot: true
+show_image_freq: -1
+show_loss_freq: -1
 start_iter: 0
-suffix: '*5.pkl'
 test_data_dir: dataset/test
 test_embryos: ('181210plc1p2',)
 test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
@@ -36,7 +34,6 @@ train_data_dir: dataset/train
 train_embryos: ('170614plc1p1', '170704plc1p1')
 train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
   NumpyType((np.float32, np.int64)) ])
-trained_model: model_epoch_50.pth
 valid_data_dir: dataset/validation
 valid_freq: 10
 weight_type: square
