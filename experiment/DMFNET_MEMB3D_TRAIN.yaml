@@ -5,7 +5,7 @@ net_params:
   conv_channels: 128
   groups: 16
   norm: sync_bn #sync_bn
-  out_class: 5
+  out_class: 8
 
 criterion: attention_dice_loss
 criterion_kwargs:
@@ -13,11 +13,14 @@ criterion_kwargs:
   eps: 1e-5
 
 dataset: Memb3DDataset
+d_threshold: 20
+d_uniform: False
+
 seed: 1024
 batch_size: 8
-num_epochs: 50
-save_freq: 10     # save every 50 epochs
-valid_freq: 10   # validate every 10 epochs
+num_epochs: 20
+save_freq: 5     # save every 50 epochs
+valid_freq: 5   # validate every 10 epochs
 start_iter: 0
 
 opt: Adam

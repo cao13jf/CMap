@@ -21,7 +21,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             target_cpu = data["seg_memb"][0, 0, :, :, :].numpy() if scoring else None
             x, target = data["raw_memb"], data["seg_memb"]  # TODO: batch = in prediction
         else:
-            x = data[0]  # TODO: change collate in dataloader
+            x = data[0][np.newaxis, ...]  # TODO: change collate in dataloader
         #  go through the network
         start_time = time.time()
         log_predict = model(x)   # [1, 2, depth, width, height]

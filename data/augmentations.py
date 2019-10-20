@@ -62,6 +62,6 @@ def cell_sliced_distance(cell_label, seg_nuc, sampled=True, d_threshold=15):
 def regression_to_class(res_data, out_class, uniform=True):
     bins = np.arange(out_class) / (out_class - 1)
     if not uniform:
-        bins = np.exp(bins) / math.e
+        bins = np.sqrt(bins)
 
     return np.digitize(res_data, bins, right=True)

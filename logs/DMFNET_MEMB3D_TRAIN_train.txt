@@ -12338,3 +12338,1743 @@ valid_data_dir: dataset/validation
 valid_freq: 10
 workers: 8
 
+2019-10-20 13:03:45,620 Iter 1, Epoch 0.2222, Loss 0.8408838
+2019-10-20 13:04:42,298 Iter 2, Epoch 0.4444, Loss 0.7249432
+2019-10-20 14:30:28,555 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+dataset: Memb3DDataset
+gpu: 0,1,2,3
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 5
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: -1
+show_loss_freq: -1
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 14:38:58,946 Iter 1, Epoch 0.1481, Loss 0.8409452
+2019-10-20 14:39:18,379 Iter 2, Epoch 0.2963, Loss 0.7187632
+2019-10-20 14:39:41,555 Iter 3, Epoch 0.4444, Loss 0.6289532
+2019-10-20 14:40:09,900 Iter 4, Epoch 0.5926, Loss 0.5787828
+2019-10-20 14:40:43,878 Iter 5, Epoch 0.7407, Loss 0.5071706
+2019-10-20 14:41:21,015 Iter 6, Epoch 0.8889, Loss 0.4727957
+2019-10-20 14:41:55,660 Iter 7, Epoch 1.0370, Loss 0.4588409
+2019-10-20 14:42:30,330 Iter 8, Epoch 1.1852, Loss 0.4196983
+2019-10-20 14:43:05,193 Iter 9, Epoch 1.3333, Loss 0.4507189
+2019-10-20 14:43:40,421 Iter 10, Epoch 1.4815, Loss 0.4621944
+2019-10-20 14:44:15,411 Iter 11, Epoch 1.6296, Loss 0.3886650
+2019-10-20 14:44:50,594 Iter 12, Epoch 1.7778, Loss 0.3945555
+2019-10-20 14:45:25,828 Iter 13, Epoch 1.9259, Loss 0.3950039
+2019-10-20 14:46:01,116 Iter 14, Epoch 2.0741, Loss 0.3669917
+2019-10-20 14:46:36,907 Iter 15, Epoch 2.2222, Loss 0.3756135
+2019-10-20 14:47:11,895 Iter 16, Epoch 2.3704, Loss 0.4119435
+2019-10-20 14:47:46,842 Iter 17, Epoch 2.5185, Loss 0.3737000
+2019-10-20 14:48:22,286 Iter 18, Epoch 2.6667, Loss 0.3606521
+2019-10-20 14:48:57,158 Iter 19, Epoch 2.8148, Loss 0.3504102
+2019-10-20 14:49:32,225 Iter 20, Epoch 2.9630, Loss 0.3583403
+2019-10-20 14:50:07,198 Iter 21, Epoch 3.1111, Loss 0.3444142
+2019-10-20 14:50:42,875 Iter 22, Epoch 3.2593, Loss 0.3360747
+2019-10-20 14:51:17,907 Iter 23, Epoch 3.4074, Loss 0.3453109
+2019-10-20 14:51:52,775 Iter 24, Epoch 3.5556, Loss 0.3582233
+2019-10-20 14:52:27,551 Iter 25, Epoch 3.7037, Loss 0.3306330
+2019-10-20 14:53:02,659 Iter 26, Epoch 3.8519, Loss 0.3452982
+2019-10-20 14:53:38,312 Iter 27, Epoch 4.0000, Loss 0.3111619
+2019-10-20 14:54:14,116 Iter 28, Epoch 4.1481, Loss 0.3189637
+2019-10-20 14:54:49,846 Iter 29, Epoch 4.2963, Loss 0.3271282
+2019-10-20 14:55:25,226 Iter 30, Epoch 4.4444, Loss 0.3048069
+2019-10-20 14:56:00,197 Iter 31, Epoch 4.5926, Loss 0.3148614
+2019-10-20 14:56:35,412 Iter 32, Epoch 4.7407, Loss 0.3305564
+2019-10-20 14:57:09,824 Iter 33, Epoch 4.8889, Loss 0.3564630
+2019-10-20 14:57:44,901 Iter 34, Epoch 5.0370, Loss 0.3287103
+2019-10-20 14:58:20,311 Iter 35, Epoch 5.1852, Loss 0.2975787
+2019-10-20 14:58:55,203 Iter 36, Epoch 5.3333, Loss 0.3241380
+2019-10-20 14:59:30,503 Iter 37, Epoch 5.4815, Loss 0.3233014
+2019-10-20 15:00:05,989 Iter 38, Epoch 5.6296, Loss 0.3150104
+2019-10-20 15:00:41,389 Iter 39, Epoch 5.7778, Loss 0.3087813
+2019-10-20 15:01:16,370 Iter 40, Epoch 5.9259, Loss 0.2900922
+2019-10-20 15:01:51,600 Iter 41, Epoch 6.0741, Loss 0.3131643
+2019-10-20 15:02:26,761 Iter 42, Epoch 6.2222, Loss 0.3112559
+2019-10-20 15:03:01,767 Iter 43, Epoch 6.3704, Loss 0.3187389
+2019-10-20 15:03:37,099 Iter 44, Epoch 6.5185, Loss 0.3044086
+2019-10-20 15:04:11,911 Iter 45, Epoch 6.6667, Loss 0.3188474
+2019-10-20 15:04:47,272 Iter 46, Epoch 6.8148, Loss 0.3114460
+2019-10-20 15:05:22,555 Iter 47, Epoch 6.9630, Loss 0.2932838
+2019-10-20 15:05:57,812 Iter 48, Epoch 7.1111, Loss 0.3050449
+2019-10-20 15:06:32,742 Iter 49, Epoch 7.2593, Loss 0.3157531
+2019-10-20 15:07:08,223 Iter 50, Epoch 7.4074, Loss 0.2875586
+2019-10-20 15:07:44,153 Iter 51, Epoch 7.5556, Loss 0.2940661
+2019-10-20 15:08:19,616 Iter 52, Epoch 7.7037, Loss 0.3120658
+2019-10-20 15:08:54,997 Iter 53, Epoch 7.8519, Loss 0.2986883
+2019-10-20 15:09:30,346 Iter 54, Epoch 8.0000, Loss 0.2985815
+2019-10-20 15:10:05,256 Iter 55, Epoch 8.1481, Loss 0.3035051
+2019-10-20 15:10:40,680 Iter 56, Epoch 8.2963, Loss 0.2833535
+2019-10-20 15:11:15,814 Iter 57, Epoch 8.4444, Loss 0.3001959
+2019-10-20 15:11:51,184 Iter 58, Epoch 8.5926, Loss 0.2928937
+2019-10-20 15:12:26,221 Iter 59, Epoch 8.7407, Loss 0.3001596
+2019-10-20 15:13:01,608 Iter 60, Epoch 8.8889, Loss 0.3049237
+2019-10-20 15:13:37,205 Iter 61, Epoch 9.0370, Loss 0.3033172
+2019-10-20 15:14:12,446 Iter 62, Epoch 9.1852, Loss 0.2820181
+2019-10-20 15:14:47,996 Iter 63, Epoch 9.3333, Loss 0.2963746
+2019-10-20 15:15:22,996 Iter 64, Epoch 9.4815, Loss 0.2921807
+2019-10-20 15:15:57,805 Iter 65, Epoch 9.6296, Loss 0.2973340
+2019-10-20 15:16:33,303 Iter 66, Epoch 9.7778, Loss 0.2857246
+2019-10-20 15:17:09,724 Iter 67, Epoch 9.9259, Loss 0.2832924
+2019-10-20 15:17:44,562 Iter 68, Epoch 10.0741, Loss 0.2875034
+2019-10-20 15:18:19,916 Iter 69, Epoch 10.2222, Loss 0.2773103
+2019-10-20 15:18:55,064 Iter 70, Epoch 10.3704, Loss 0.2826898
+2019-10-20 15:19:29,864 Iter 71, Epoch 10.5185, Loss 0.2896118
+2019-10-20 15:20:04,755 Iter 72, Epoch 10.6667, Loss 0.2805009
+2019-10-20 15:20:40,027 Iter 73, Epoch 10.8148, Loss 0.2933997
+2019-10-20 15:21:16,016 Iter 74, Epoch 10.9630, Loss 0.2791519
+2019-10-20 15:21:51,312 Iter 75, Epoch 11.1111, Loss 0.2774495
+2019-10-20 15:22:26,825 Iter 76, Epoch 11.2593, Loss 0.3253220
+2019-10-20 15:23:01,817 Iter 77, Epoch 11.4074, Loss 0.2926008
+2019-10-20 15:23:36,498 Iter 78, Epoch 11.5556, Loss 0.2953505
+2019-10-20 15:24:11,691 Iter 79, Epoch 11.7037, Loss 0.2655525
+2019-10-20 15:24:46,644 Iter 80, Epoch 11.8519, Loss 0.2895887
+2019-10-20 15:25:21,501 Iter 81, Epoch 12.0000, Loss 0.2850628
+2019-10-20 15:25:56,312 Iter 82, Epoch 12.1481, Loss 0.2759728
+2019-10-20 15:26:31,828 Iter 83, Epoch 12.2963, Loss 0.2894506
+2019-10-20 15:27:07,206 Iter 84, Epoch 12.4444, Loss 0.2747775
+2019-10-20 15:27:42,029 Iter 85, Epoch 12.5926, Loss 0.2768291
+2019-10-20 15:28:17,590 Iter 86, Epoch 12.7407, Loss 0.2642120
+2019-10-20 15:28:52,749 Iter 87, Epoch 12.8889, Loss 0.2923416
+2019-10-20 15:29:28,107 Iter 88, Epoch 13.0370, Loss 0.2697502
+2019-10-20 15:30:02,877 Iter 89, Epoch 13.1852, Loss 0.2868384
+2019-10-20 15:30:37,945 Iter 90, Epoch 13.3333, Loss 0.2959230
+2019-10-20 15:31:12,815 Iter 91, Epoch 13.4815, Loss 0.2731795
+2019-10-20 15:31:47,940 Iter 92, Epoch 13.6296, Loss 0.2792632
+2019-10-20 15:32:23,000 Iter 93, Epoch 13.7778, Loss 0.2863340
+2019-10-20 15:32:58,465 Iter 94, Epoch 13.9259, Loss 0.2712083
+2019-10-20 15:33:33,646 Iter 95, Epoch 14.0741, Loss 0.2686041
+2019-10-20 15:34:08,803 Iter 96, Epoch 14.2222, Loss 0.2781895
+2019-10-20 15:34:43,884 Iter 97, Epoch 14.3704, Loss 0.2736737
+2019-10-20 15:35:19,588 Iter 98, Epoch 14.5185, Loss 0.2787238
+2019-10-20 15:35:54,543 Iter 99, Epoch 14.6667, Loss 0.2661530
+2019-10-20 15:36:29,760 Iter 100, Epoch 14.8148, Loss 0.2805538
+2019-10-20 15:37:04,510 Iter 101, Epoch 14.9630, Loss 0.2737731
+2019-10-20 15:37:39,299 Iter 102, Epoch 15.1111, Loss 0.2674757
+2019-10-20 15:38:14,199 Iter 103, Epoch 15.2593, Loss 0.2617665
+2019-10-20 15:38:49,716 Iter 104, Epoch 15.4074, Loss 0.2606875
+2019-10-20 15:39:25,038 Iter 105, Epoch 15.5556, Loss 0.2645644
+2019-10-20 15:40:00,130 Iter 106, Epoch 15.7037, Loss 0.2520236
+2019-10-20 15:40:35,036 Iter 107, Epoch 15.8519, Loss 0.2891432
+2019-10-20 15:41:10,392 Iter 108, Epoch 16.0000, Loss 0.2584888
+2019-10-20 15:41:45,668 Iter 109, Epoch 16.1481, Loss 0.2601883
+2019-10-20 15:42:21,103 Iter 110, Epoch 16.2963, Loss 0.2622707
+2019-10-20 15:42:56,126 Iter 111, Epoch 16.4444, Loss 0.2664773
+2019-10-20 15:43:31,006 Iter 112, Epoch 16.5926, Loss 0.2586018
+2019-10-20 15:44:06,041 Iter 113, Epoch 16.7407, Loss 0.2812567
+2019-10-20 15:44:41,126 Iter 114, Epoch 16.8889, Loss 0.2667491
+2019-10-20 15:45:16,376 Iter 115, Epoch 17.0370, Loss 0.2711045
+2019-10-20 15:45:51,410 Iter 116, Epoch 17.1852, Loss 0.2651232
+2019-10-20 15:46:26,915 Iter 117, Epoch 17.3333, Loss 0.2610513
+2019-10-20 15:47:02,218 Iter 118, Epoch 17.4815, Loss 0.2723922
+2019-10-20 15:47:37,653 Iter 119, Epoch 17.6296, Loss 0.2664243
+2019-10-20 15:48:12,451 Iter 120, Epoch 17.7778, Loss 0.2563308
+2019-10-20 15:48:47,519 Iter 121, Epoch 17.9259, Loss 0.2689438
+2019-10-20 15:49:22,772 Iter 122, Epoch 18.0741, Loss 0.2695544
+2019-10-20 15:49:57,934 Iter 123, Epoch 18.2222, Loss 0.2803832
+2019-10-20 15:50:33,290 Iter 124, Epoch 18.3704, Loss 0.2583819
+2019-10-20 15:51:08,259 Iter 125, Epoch 18.5185, Loss 0.2749069
+2019-10-20 15:51:43,273 Iter 126, Epoch 18.6667, Loss 0.2653864
+2019-10-20 15:52:18,217 Iter 127, Epoch 18.8148, Loss 0.2610145
+2019-10-20 15:52:53,042 Iter 128, Epoch 18.9630, Loss 0.2637889
+2019-10-20 15:53:28,425 Iter 129, Epoch 19.1111, Loss 0.2615262
+2019-10-20 15:54:04,154 Iter 130, Epoch 19.2593, Loss 0.2620735
+2019-10-20 15:54:39,487 Iter 131, Epoch 19.4074, Loss 0.2622378
+2019-10-20 15:55:14,274 Iter 132, Epoch 19.5556, Loss 0.2565507
+2019-10-20 15:55:49,584 Iter 133, Epoch 19.7037, Loss 0.2634739
+2019-10-20 15:56:26,393 Iter 134, Epoch 19.8519, Loss 0.2650833
+2019-10-20 15:57:00,998 Iter 135, Epoch 20.0000, Loss 0.2584915
+2019-10-20 15:57:35,875 Iter 136, Epoch 20.1481, Loss 0.2582282
+2019-10-20 15:58:10,947 Iter 137, Epoch 20.2963, Loss 0.2702757
+2019-10-20 15:58:45,514 Iter 138, Epoch 20.4444, Loss 0.2609536
+2019-10-20 15:59:20,223 Iter 139, Epoch 20.5926, Loss 0.2575255
+2019-10-20 15:59:55,499 Iter 140, Epoch 20.7407, Loss 0.2561345
+2019-10-20 16:00:30,354 Iter 141, Epoch 20.8889, Loss 0.2595422
+2019-10-20 16:01:05,457 Iter 142, Epoch 21.0370, Loss 0.2771603
+2019-10-20 16:01:41,062 Iter 143, Epoch 21.1852, Loss 0.2625277
+2019-10-20 16:02:15,857 Iter 144, Epoch 21.3333, Loss 0.2617919
+2019-10-20 16:02:51,556 Iter 145, Epoch 21.4815, Loss 0.2664517
+2019-10-20 16:03:26,258 Iter 146, Epoch 21.6296, Loss 0.2621459
+2019-10-20 16:04:01,430 Iter 147, Epoch 21.7778, Loss 0.2709454
+2019-10-20 16:04:36,417 Iter 148, Epoch 21.9259, Loss 0.2525418
+2019-10-20 16:05:11,276 Iter 149, Epoch 22.0741, Loss 0.2544670
+2019-10-20 16:05:46,353 Iter 150, Epoch 22.2222, Loss 0.2709551
+2019-10-20 16:06:21,799 Iter 151, Epoch 22.3704, Loss 0.2709732
+2019-10-20 16:06:56,437 Iter 152, Epoch 22.5185, Loss 0.2729589
+2019-10-20 16:07:31,666 Iter 153, Epoch 22.6667, Loss 0.2483937
+2019-10-20 16:08:08,091 Iter 154, Epoch 22.8148, Loss 0.2615579
+2019-10-20 16:08:42,937 Iter 155, Epoch 22.9630, Loss 0.2552170
+2019-10-20 16:09:18,077 Iter 156, Epoch 23.1111, Loss 0.2705718
+2019-10-20 16:09:53,785 Iter 157, Epoch 23.2593, Loss 0.2579326
+2019-10-20 16:10:28,656 Iter 158, Epoch 23.4074, Loss 0.2742000
+2019-10-20 16:11:03,653 Iter 159, Epoch 23.5556, Loss 0.2547231
+2019-10-20 16:11:38,382 Iter 160, Epoch 23.7037, Loss 0.2821583
+2019-10-20 16:12:13,643 Iter 161, Epoch 23.8519, Loss 0.2536450
+2019-10-20 16:12:48,764 Iter 162, Epoch 24.0000, Loss 0.2490361
+2019-10-20 16:13:24,405 Iter 163, Epoch 24.1481, Loss 0.2559509
+2019-10-20 16:13:59,446 Iter 164, Epoch 24.2963, Loss 0.2563561
+2019-10-20 16:14:34,718 Iter 165, Epoch 24.4444, Loss 0.2535142
+2019-10-20 16:15:10,335 Iter 166, Epoch 24.5926, Loss 0.2610393
+2019-10-20 16:15:45,521 Iter 167, Epoch 24.7407, Loss 0.2564520
+2019-10-20 16:16:20,936 Iter 168, Epoch 24.8889, Loss 0.2674672
+2019-10-20 16:16:56,316 Iter 169, Epoch 25.0370, Loss 0.2677026
+2019-10-20 16:17:31,202 Iter 170, Epoch 25.1852, Loss 0.2733418
+2019-10-20 16:18:06,176 Iter 171, Epoch 25.3333, Loss 0.2554277
+2019-10-20 16:18:41,601 Iter 172, Epoch 25.4815, Loss 0.2634245
+2019-10-20 16:19:16,681 Iter 173, Epoch 25.6296, Loss 0.2545012
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       2019-10-20 16:19:52,197 Iter 174, Epoch 25.7778, Loss 0.2573283
+                                                                                                                    2019-10-20 16:20:27,406 Iter 175, Epoch 25.9259, Loss 0.2613595
+/DMFNET_MEMB3D_TRAIN/
+batch_size: 1
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 5
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:23:47,539 Setting up a new session...
+2019-10-20 16:23:47,549 Visdom successfully connected to server
+2019-10-20 16:23:52,114 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 1
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 5
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:24:04,009 Iter 1, Epoch 0.0185, Loss 0.8503500
+2019-10-20 16:24:04,855 Iter 2, Epoch 0.0370, Loss 0.7752411
+2019-10-20 16:24:05,831 Iter 3, Epoch 0.0556, Loss 0.7304962
+2019-10-20 16:24:06,794 Iter 4, Epoch 0.0741, Loss 0.6455066
+2019-10-20 16:24:07,824 Iter 5, Epoch 0.0926, Loss 0.6406797
+2019-10-20 16:24:08,745 Iter 6, Epoch 0.1111, Loss 0.6083313
+2019-10-20 16:24:09,749 Iter 7, Epoch 0.1296, Loss 0.5678524
+2019-10-20 16:24:10,657 Iter 8, Epoch 0.1481, Loss 0.6146188
+2019-10-20 16:24:11,691 Iter 9, Epoch 0.1667, Loss 0.6236131
+2019-10-20 16:24:12,868 Iter 10, Epoch 0.1852, Loss 0.5579777
+2019-10-20 16:24:13,902 Iter 11, Epoch 0.2037, Loss 0.6127129
+2019-10-20 16:24:14,955 Iter 12, Epoch 0.2222, Loss 0.5166789
+2019-10-20 16:24:16,092 Iter 13, Epoch 0.2407, Loss 0.6782691
+2019-10-20 16:24:16,987 Iter 14, Epoch 0.2593, Loss 0.5762765
+2019-10-20 16:24:17,850 Iter 15, Epoch 0.2778, Loss 0.5963697
+2019-10-20 16:24:18,819 Iter 16, Epoch 0.2963, Loss 0.5170347
+2019-10-20 16:24:19,695 Iter 17, Epoch 0.3148, Loss 0.5388436
+2019-10-20 16:24:20,660 Iter 18, Epoch 0.3333, Loss 0.6142213
+2019-10-20 16:24:21,698 Iter 19, Epoch 0.3519, Loss 0.6634631
+2019-10-20 16:24:22,782 Iter 20, Epoch 0.3704, Loss 0.5938193
+2019-10-20 16:24:23,822 Iter 21, Epoch 0.3889, Loss 0.5747193
+2019-10-20 16:24:24,799 Iter 22, Epoch 0.4074, Loss 0.5848778
+2019-10-20 16:24:25,669 Iter 23, Epoch 0.4259, Loss 0.5491210
+2019-10-20 16:24:26,551 Iter 24, Epoch 0.4444, Loss 0.5459900
+2019-10-20 16:24:27,470 Iter 25, Epoch 0.4630, Loss 0.4895581
+2019-10-20 16:24:28,518 Iter 26, Epoch 0.4815, Loss 0.4668422
+2019-10-20 16:24:29,491 Iter 27, Epoch 0.5000, Loss 0.6550119
+2019-10-20 16:24:30,522 Iter 28, Epoch 0.5185, Loss 0.5139290
+2019-10-20 16:24:31,578 Iter 29, Epoch 0.5370, Loss 0.8766837
+2019-10-20 16:24:32,705 Iter 30, Epoch 0.5556, Loss 0.5055972
+2019-10-20 16:24:33,612 Iter 31, Epoch 0.5741, Loss 0.9999980
+2019-10-20 16:24:34,496 Iter 32, Epoch 0.5926, Loss 0.4097630
+2019-10-20 16:24:35,372 Iter 33, Epoch 0.6111, Loss 0.7089292
+2019-10-20 16:24:36,324 Iter 34, Epoch 0.6296, Loss 0.4373170
+2019-10-20 16:24:37,325 Iter 35, Epoch 0.6481, Loss 0.4700310
+2019-10-20 16:24:38,315 Iter 36, Epoch 0.6667, Loss 0.4297365
+2019-10-20 16:24:39,281 Iter 37, Epoch 0.6852, Loss 0.4187420
+2019-10-20 16:24:40,156 Iter 38, Epoch 0.7037, Loss 0.7063344
+2019-10-20 16:24:41,056 Iter 39, Epoch 0.7222, Loss 0.4160792
+2019-10-20 16:24:41,918 Iter 40, Epoch 0.7407, Loss 0.4499764
+2019-10-20 16:24:42,834 Iter 41, Epoch 0.7593, Loss 0.4292355
+2019-10-20 16:24:43,879 Iter 42, Epoch 0.7778, Loss 0.4903160
+2019-10-20 16:24:44,948 Iter 43, Epoch 0.7963, Loss 0.5612669
+2019-10-20 16:24:45,940 Iter 44, Epoch 0.8148, Loss 0.3761945
+2019-10-20 16:24:46,991 Iter 45, Epoch 0.8333, Loss 0.6104999
+2019-10-20 16:24:47,976 Iter 46, Epoch 0.8519, Loss 0.4962431
+2019-10-20 16:24:48,928 Iter 47, Epoch 0.8704, Loss 0.5669434
+2019-10-20 16:24:49,849 Iter 48, Epoch 0.8889, Loss 0.3947482
+2019-10-20 16:24:50,766 Iter 49, Epoch 0.9074, Loss 0.4462803
+2019-10-20 16:24:51,621 Iter 50, Epoch 0.9259, Loss 0.5286329
+2019-10-20 16:24:52,634 Iter 51, Epoch 0.9444, Loss 0.5744322
+2019-10-20 16:24:53,742 Iter 52, Epoch 0.9630, Loss 0.8618374
+2019-10-20 16:24:54,789 Iter 53, Epoch 0.9815, Loss 0.4495260
+2019-10-20 16:24:55,865 Iter 54, Epoch 1.0000, Loss 0.4664182
+2019-10-20 16:24:56,869 Iter 55, Epoch 1.0185, Loss 0.9921411
+2019-10-20 16:24:57,770 Iter 56, Epoch 1.0370, Loss 0.5181936
+2019-10-20 16:24:58,762 Iter 57, Epoch 1.0556, Loss 0.6035324
+2019-10-20 16:24:59,705 Iter 58, Epoch 1.0741, Loss 0.5346704
+2019-10-20 16:25:00,822 Iter 59, Epoch 1.0926, Loss 0.6465784
+2019-10-20 16:25:01,852 Iter 60, Epoch 1.1111, Loss 0.4763377
+2019-10-20 16:25:02,819 Iter 61, Epoch 1.1296, Loss 0.4546375
+2019-10-20 16:25:03,915 Iter 62, Epoch 1.1481, Loss 0.5578933
+2019-10-20 16:25:04,892 Iter 63, Epoch 1.1667, Loss 0.4298039
+2019-10-20 16:25:05,855 Iter 64, Epoch 1.1852, Loss 0.4537622
+2019-10-20 16:25:06,794 Iter 65, Epoch 1.2037, Loss 0.4325839
+2019-10-20 16:25:07,725 Iter 66, Epoch 1.2222, Loss 0.4094113
+2019-10-20 16:25:08,693 Iter 67, Epoch 1.2407, Loss 0.5062063
+2019-10-20 16:25:09,682 Iter 68, Epoch 1.2593, Loss 0.3738754
+2019-10-20 16:25:10,645 Iter 69, Epoch 1.2778, Loss 0.3684074
+2019-10-20 16:25:11,662 Iter 70, Epoch 1.2963, Loss 0.4783822
+2019-10-20 16:25:12,674 Iter 71, Epoch 1.3148, Loss 0.4559853
+2019-10-20 16:25:13,738 Iter 72, Epoch 1.3333, Loss 0.4315442
+2019-10-20 16:25:14,693 Iter 73, Epoch 1.3519, Loss 0.4407552
+2019-10-20 16:25:15,648 Iter 74, Epoch 1.3704, Loss 0.3921080
+2019-10-20 16:25:16,641 Iter 75, Epoch 1.3889, Loss 0.4325153
+2019-10-20 16:25:17,721 Iter 76, Epoch 1.4074, Loss 0.3483843
+2019-10-20 16:25:18,715 Iter 77, Epoch 1.4259, Loss 0.4468737
+2019-10-20 16:25:19,859 Iter 78, Epoch 1.4444, Loss 0.5544524
+2019-10-20 16:25:20,911 Iter 79, Epoch 1.4630, Loss 0.5033517
+2019-10-20 16:25:22,021 Iter 80, Epoch 1.4815, Loss 0.3828989
+2019-10-20 16:25:22,916 Iter 81, Epoch 1.5000, Loss 0.3668831
+2019-10-20 16:25:23,759 Iter 82, Epoch 1.5185, Loss 0.4776041
+2019-10-20 16:25:24,723 Iter 83, Epoch 1.5370, Loss 0.3623385
+2019-10-20 16:25:25,796 Iter 84, Epoch 1.5556, Loss 0.5151755
+2019-10-20 16:25:26,805 Iter 85, Epoch 1.5741, Loss 0.9362860
+2019-10-20 16:25:27,761 Iter 86, Epoch 1.5926, Loss 0.4146930
+2019-10-20 16:25:28,811 Iter 87, Epoch 1.6111, Loss 0.4906284
+2019-10-20 16:25:29,884 Iter 88, Epoch 1.6296, Loss 0.4735494
+2019-10-20 16:25:30,710 Iter 89, Epoch 1.6481, Loss 0.3381594
+2019-10-20 16:25:31,674 Iter 90, Epoch 1.6667, Loss 0.5273701
+2019-10-20 16:25:32,746 Iter 91, Epoch 1.6852, Loss 0.4723569
+2019-10-20 16:25:33,730 Iter 92, Epoch 1.7037, Loss 0.4024044
+2019-10-20 16:25:34,738 Iter 93, Epoch 1.7222, Loss 0.4229677
+2019-10-20 16:25:35,889 Iter 94, Epoch 1.7407, Loss 0.4813264
+2019-10-20 16:25:36,966 Iter 95, Epoch 1.7593, Loss 0.3622267
+2019-10-20 16:25:38,038 Iter 96, Epoch 1.7778, Loss 0.3346197
+2019-10-20 16:25:38,880 Iter 97, Epoch 1.7963, Loss 0.3796749
+2019-10-20 16:25:39,755 Iter 98, Epoch 1.8148, Loss 0.3490968
+2019-10-20 16:25:40,738 Iter 99, Epoch 1.8333, Loss 0.3254230
+2019-10-20 16:25:41,707 Iter 100, Epoch 1.8519, Loss 0.3255152
+2019-10-20 16:25:42,682 Iter 101, Epoch 1.8704, Loss 0.3076158
+2019-10-20 16:25:43,648 Iter 102, Epoch 1.8889, Loss 0.5527909
+2019-10-20 16:25:44,682 Iter 103, Epoch 1.9074, Loss 0.5531652
+2019-10-20 16:25:45,699 Iter 104, Epoch 1.9259, Loss 0.3605309
+2019-10-20 16:25:46,578 Iter 105, Epoch 1.9444, Loss 0.3454757
+2019-10-20 16:25:47,524 Iter 106, Epoch 1.9630, Loss 0.3775508
+2019-10-20 16:25:48,551 Iter 107, Epoch 1.9815, Loss 0.3209824
+2019-10-20 16:25:49,527 Iter 108, Epoch 2.0000, Loss 0.3613862
+2019-10-20 16:25:50,488 Iter 109, Epoch 2.0185, Loss 0.4432155
+2019-10-20 16:25:51,665 Iter 110, Epoch 2.0370, Loss 0.3644245
+2019-10-20 16:25:52,733 Iter 111, Epoch 2.0556, Loss 0.3555616
+2019-10-20 16:25:53,810 Iter 112, Epoch 2.0741, Loss 0.3306586
+2019-10-20 16:25:54,725 Iter 113, Epoch 2.0926, Loss 0.3543441
+2019-10-20 16:25:55,690 Iter 114, Epoch 2.1111, Loss 0.3174869
+2019-10-20 16:25:56,734 Iter 115, Epoch 2.1296, Loss 0.3129846
+2019-10-20 16:25:57,732 Iter 116, Epoch 2.1481, Loss 0.3225839
+2019-10-20 16:25:58,738 Iter 117, Epoch 2.1667, Loss 0.3802937
+2019-10-20 16:25:59,854 Iter 118, Epoch 2.1852, Loss 0.4169180
+2019-10-20 16:26:00,803 Iter 119, Epoch 2.2037, Loss 0.4176137
+2019-10-20 16:26:01,742 Iter 120, Epoch 2.2222, Loss 0.3331720
+2019-10-20 16:26:02,718 Iter 121, Epoch 2.2407, Loss 0.3578821
+2019-10-20 16:26:03,717 Iter 122, Epoch 2.2593, Loss 0.6613140
+2019-10-20 16:26:04,687 Iter 123, Epoch 2.2778, Loss 0.4029304
+2019-10-20 16:26:05,689 Iter 124, Epoch 2.2963, Loss 0.3660132
+2019-10-20 16:26:06,661 Iter 125, Epoch 2.3148, Loss 0.4519674
+2019-10-20 16:26:07,813 Iter 126, Epoch 2.3333, Loss 0.4439641
+2019-10-20 16:26:08,844 Iter 127, Epoch 2.3519, Loss 0.5306086
+2019-10-20 16:26:09,771 Iter 128, Epoch 2.3704, Loss 0.5180227
+2019-10-20 16:26:10,633 Iter 129, Epoch 2.3889, Loss 0.3605475
+2019-10-20 16:26:11,548 Iter 130, Epoch 2.4074, Loss 0.5676913
+2019-10-20 16:26:12,551 Iter 131, Epoch 2.4259, Loss 0.5097204
+2019-10-20 16:26:13,538 Iter 132, Epoch 2.4444, Loss 0.4053957
+2019-10-20 16:26:14,484 Iter 133, Epoch 2.4630, Loss 0.5001811
+2019-10-20 16:26:15,472 Iter 134, Epoch 2.4815, Loss 0.4774570
+2019-10-20 16:26:16,432 Iter 135, Epoch 2.5000, Loss 0.4014509
+2019-10-20 16:26:17,455 Iter 136, Epoch 2.5185, Loss 0.5597936
+2019-10-20 16:26:18,429 Iter 137, Epoch 2.5370, Loss 0.4056036
+2019-10-20 16:26:19,378 Iter 138, Epoch 2.5556, Loss 0.5851368
+2019-10-20 16:26:20,404 Iter 139, Epoch 2.5741, Loss 0.4384281
+2019-10-20 16:26:27,486 Setting up a new session...
+2019-10-20 16:26:27,497 Visdom successfully connected to server
+2019-10-20 16:26:32,097 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 5
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:26:47,963 Iter 1, Epoch 0.0370, Loss 0.8480801
+2019-10-20 16:26:49,877 Iter 2, Epoch 0.0741, Loss 0.7480968
+2019-10-20 16:26:51,624 Iter 3, Epoch 0.1111, Loss 0.7203951
+2019-10-20 16:26:53,743 Iter 4, Epoch 0.1481, Loss 0.7420045
+2019-10-20 16:26:55,641 Iter 5, Epoch 0.1852, Loss 0.6046631
+2019-10-20 16:26:57,343 Iter 6, Epoch 0.2222, Loss 0.6453336
+2019-10-20 16:26:59,322 Iter 7, Epoch 0.2593, Loss 0.5833946
+2019-10-20 16:27:01,379 Iter 8, Epoch 0.2963, Loss 0.5382123
+2019-10-20 16:27:03,340 Iter 9, Epoch 0.3333, Loss 0.5207757
+2019-10-20 16:27:05,029 Iter 10, Epoch 0.3704, Loss 0.4204547
+2019-10-20 16:27:06,856 Iter 11, Epoch 0.4074, Loss 0.4416351
+2019-10-20 16:27:08,918 Iter 12, Epoch 0.4444, Loss 0.4305819
+2019-10-20 16:27:10,881 Iter 13, Epoch 0.4815, Loss 0.4743310
+2019-10-20 16:27:12,713 Iter 14, Epoch 0.5185, Loss 0.5536748
+2019-10-20 16:27:14,667 Iter 15, Epoch 0.5556, Loss 0.4342604
+2019-10-20 16:27:16,743 Iter 16, Epoch 0.5926, Loss 0.4385608
+2019-10-20 16:27:18,606 Iter 17, Epoch 0.6296, Loss 0.5936308
+2019-10-20 16:27:20,315 Iter 18, Epoch 0.6667, Loss 0.4227903
+2019-10-20 16:27:22,084 Iter 19, Epoch 0.7037, Loss 0.4039186
+2019-10-20 16:27:23,796 Iter 20, Epoch 0.7407, Loss 0.3856248
+2019-10-20 16:27:25,662 Iter 21, Epoch 0.7778, Loss 0.4276493
+2019-10-20 16:27:27,680 Iter 22, Epoch 0.8148, Loss 0.4458055
+2019-10-20 16:27:29,583 Iter 23, Epoch 0.8519, Loss 0.3873076
+2019-10-20 16:27:31,669 Iter 24, Epoch 0.8889, Loss 0.3810894
+2019-10-20 16:27:33,532 Iter 25, Epoch 0.9259, Loss 0.4767824
+2019-10-20 16:27:35,236 Iter 26, Epoch 0.9630, Loss 0.8892820
+2019-10-20 16:27:37,237 Iter 27, Epoch 1.0000, Loss 0.3832189
+2019-10-20 16:27:39,017 Iter 28, Epoch 1.0370, Loss 0.4128457
+2019-10-20 16:27:40,844 Iter 29, Epoch 1.0741, Loss 0.4217241
+2019-10-20 16:27:42,639 Iter 30, Epoch 1.1111, Loss 0.4612017
+2019-10-20 16:27:44,385 Iter 31, Epoch 1.1481, Loss 0.3601017
+2019-10-20 16:27:46,464 Iter 32, Epoch 1.1852, Loss 0.3543904
+2019-10-20 16:27:48,199 Iter 33, Epoch 1.2222, Loss 0.3887745
+2019-10-20 16:27:49,944 Iter 34, Epoch 1.2593, Loss 0.4487700
+2019-10-20 16:27:51,694 Iter 35, Epoch 1.2963, Loss 0.3815362
+2019-10-20 16:27:53,471 Iter 36, Epoch 1.3333, Loss 0.4622134
+2019-10-20 16:27:55,428 Iter 37, Epoch 1.3704, Loss 0.4157678
+2019-10-20 16:27:57,343 Iter 38, Epoch 1.4074, Loss 0.3721055
+2019-10-20 16:27:58,965 Iter 39, Epoch 1.4444, Loss 0.3635643
+2019-10-20 16:28:00,920 Iter 40, Epoch 1.4815, Loss 0.3763217
+2019-10-20 16:28:02,948 Iter 41, Epoch 1.5185, Loss 0.3348569
+2019-10-20 16:28:04,941 Iter 42, Epoch 1.5556, Loss 0.3367200
+2019-10-20 16:28:06,779 Iter 43, Epoch 1.5926, Loss 0.4510651
+2019-10-20 16:28:08,799 Iter 44, Epoch 1.6296, Loss 0.6305358
+2019-10-20 16:28:10,626 Iter 45, Epoch 1.6667, Loss 0.3618273
+2019-10-20 16:28:12,447 Iter 46, Epoch 1.7037, Loss 0.3507746
+2019-10-20 16:28:14,162 Iter 47, Epoch 1.7407, Loss 0.3836745
+2019-10-20 16:28:16,233 Iter 48, Epoch 1.7778, Loss 0.3554124
+2019-10-20 16:28:18,064 Iter 49, Epoch 1.8148, Loss 0.3866495
+2019-10-20 16:28:20,080 Iter 50, Epoch 1.8519, Loss 0.3415912
+2019-10-20 16:28:21,938 Iter 51, Epoch 1.8889, Loss 0.3207527
+2019-10-20 16:28:23,924 Iter 52, Epoch 1.9259, Loss 0.4558002
+2019-10-20 16:28:25,919 Iter 53, Epoch 1.9630, Loss 0.3820771
+2019-10-20 16:28:27,818 Iter 54, Epoch 2.0000, Loss 0.3388512
+2019-10-20 16:28:29,472 Iter 55, Epoch 2.0370, Loss 0.3771990
+2019-10-20 16:28:31,582 Iter 56, Epoch 2.0741, Loss 0.3373018
+2019-10-20 16:28:33,420 Iter 57, Epoch 2.1111, Loss 0.3561381
+2019-10-20 16:28:35,365 Iter 58, Epoch 2.1481, Loss 0.3168586
+2019-10-20 16:28:37,132 Iter 59, Epoch 2.1852, Loss 0.3258249
+2019-10-20 16:29:00,788 Setting up a new session...
+2019-10-20 16:29:00,799 Visdom successfully connected to server
+2019-10-20 16:29:05,330 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 10
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:29:21,643 Iter 1, Epoch 0.0370, Loss 0.9168508
+2019-10-20 16:29:23,338 Iter 2, Epoch 0.0741, Loss 0.8793867
+2019-10-20 16:29:25,121 Iter 3, Epoch 0.1111, Loss 0.8515457
+2019-10-20 16:29:27,038 Iter 4, Epoch 0.1481, Loss 0.7961173
+2019-10-20 16:29:28,914 Iter 5, Epoch 0.1852, Loss 0.7808565
+2019-10-20 16:29:31,125 Iter 6, Epoch 0.2222, Loss 0.8045841
+2019-10-20 16:29:33,084 Iter 7, Epoch 0.2593, Loss 0.7729164
+2019-10-20 16:29:34,963 Iter 8, Epoch 0.2963, Loss 0.7873358
+2019-10-20 16:29:36,736 Iter 9, Epoch 0.3333, Loss 0.7756926
+2019-10-20 16:29:38,465 Iter 10, Epoch 0.3704, Loss 0.7602339
+2019-10-20 16:29:40,303 Iter 11, Epoch 0.4074, Loss 0.7653320
+2019-10-20 16:29:42,210 Iter 12, Epoch 0.4444, Loss 0.7556649
+2019-10-20 16:29:44,066 Iter 13, Epoch 0.4815, Loss 0.7695702
+2019-10-20 16:29:45,912 Iter 14, Epoch 0.5185, Loss 0.7703665
+2019-10-20 16:29:47,964 Iter 15, Epoch 0.5556, Loss 0.7590010
+2019-10-20 16:29:50,078 Iter 16, Epoch 0.5926, Loss 0.7579510
+2019-10-20 16:29:51,845 Iter 17, Epoch 0.6296, Loss 0.8008715
+2019-10-20 16:29:53,625 Iter 18, Epoch 0.6667, Loss 0.7478790
+2019-10-20 16:29:55,397 Iter 19, Epoch 0.7037, Loss 0.7714366
+2019-10-20 16:29:57,258 Iter 20, Epoch 0.7407, Loss 0.7584091
+2019-10-20 16:29:59,360 Iter 21, Epoch 0.7778, Loss 0.7627468
+2019-10-20 16:30:01,418 Iter 22, Epoch 0.8148, Loss 0.7773149
+2019-10-20 16:30:03,426 Iter 23, Epoch 0.8519, Loss 0.7795470
+2019-10-20 16:30:05,296 Iter 24, Epoch 0.8889, Loss 0.7457055
+2019-10-20 16:30:07,029 Iter 25, Epoch 0.9259, Loss 0.7605661
+2019-10-20 16:30:08,834 Iter 26, Epoch 0.9630, Loss 0.8827094
+2019-10-20 16:30:10,644 Iter 27, Epoch 1.0000, Loss 0.7459004
+2019-10-20 16:30:12,493 Iter 28, Epoch 1.0370, Loss 0.7625542
+2019-10-20 16:30:14,380 Iter 29, Epoch 1.0741, Loss 0.7232615
+2019-10-20 16:30:16,289 Iter 30, Epoch 1.1111, Loss 0.7604102
+2019-10-20 16:30:18,362 Iter 31, Epoch 1.1481, Loss 0.7142744
+2019-10-20 16:30:20,150 Iter 32, Epoch 1.1852, Loss 0.7238036
+2019-10-20 16:30:22,141 Iter 33, Epoch 1.2222, Loss 0.7500338
+2019-10-20 16:30:23,906 Iter 34, Epoch 1.2593, Loss 0.7616995
+2019-10-20 16:30:25,694 Iter 35, Epoch 1.2963, Loss 0.7334117
+2019-10-20 16:30:27,555 Iter 36, Epoch 1.3333, Loss 0.7637333
+2019-10-20 16:30:29,412 Iter 37, Epoch 1.3704, Loss 0.7326692
+2019-10-20 16:30:31,245 Iter 38, Epoch 1.4074, Loss 0.7096422
+2019-10-20 16:30:33,277 Iter 39, Epoch 1.4444, Loss 0.7124756
+2019-10-20 16:30:35,076 Iter 40, Epoch 1.4815, Loss 0.7360605
+2019-10-20 16:30:37,205 Iter 41, Epoch 1.5185, Loss 0.7030426
+2019-10-20 16:30:39,053 Iter 42, Epoch 1.5556, Loss 0.7066398
+2019-10-20 16:30:40,781 Iter 43, Epoch 1.5926, Loss 0.8069938
+2019-10-20 16:30:42,624 Iter 44, Epoch 1.6296, Loss 0.8727362
+2019-10-20 16:30:44,460 Iter 45, Epoch 1.6667, Loss 0.7159628
+2019-10-20 16:30:46,316 Iter 46, Epoch 1.7037, Loss 0.7089001
+2019-10-20 16:30:48,390 Iter 47, Epoch 1.7407, Loss 0.6994814
+2019-10-20 16:30:50,129 Iter 48, Epoch 1.7778, Loss 0.6998428
+2019-10-20 16:30:51,952 Iter 49, Epoch 1.8148, Loss 0.7164999
+2019-10-20 16:30:53,752 Iter 50, Epoch 1.8519, Loss 0.7036792
+2019-10-20 16:30:55,612 Iter 51, Epoch 1.8889, Loss 0.6947532
+2019-10-20 16:30:57,519 Iter 52, Epoch 1.9259, Loss 0.7668650
+2019-10-20 16:30:59,457 Iter 53, Epoch 1.9630, Loss 0.7080313
+2019-10-20 16:31:01,580 Iter 54, Epoch 2.0000, Loss 0.7002604
+2019-10-20 16:31:03,677 Iter 55, Epoch 2.0370, Loss 0.6922792
+2019-10-20 16:31:05,506 Iter 56, Epoch 2.0741, Loss 0.6874875
+2019-10-20 16:31:07,304 Iter 57, Epoch 2.1111, Loss 0.6946645
+2019-10-20 16:31:09,163 Iter 58, Epoch 2.1481, Loss 0.6904705
+2019-10-20 16:31:11,013 Iter 59, Epoch 2.1852, Loss 0.7044642
+2019-10-20 16:31:12,899 Iter 60, Epoch 2.2222, Loss 0.7046046
+2019-10-20 16:31:15,086 Iter 61, Epoch 2.2593, Loss 0.6958858
+2019-10-20 16:31:17,121 Iter 62, Epoch 2.2963, Loss 0.6923689
+2019-10-20 16:31:18,964 Iter 63, Epoch 2.3333, Loss 0.6981971
+2019-10-20 16:31:20,784 Iter 64, Epoch 2.3704, Loss 0.7186188
+2019-10-20 16:31:22,645 Iter 65, Epoch 2.4074, Loss 0.6963888
+2019-10-20 16:31:24,441 Iter 66, Epoch 2.4444, Loss 0.6926923
+2019-10-20 16:31:26,274 Iter 67, Epoch 2.4815, Loss 0.7128625
+2019-10-20 16:31:28,137 Iter 68, Epoch 2.5185, Loss 0.7273188
+2019-10-20 16:31:30,049 Iter 69, Epoch 2.5556, Loss 0.6985373
+2019-10-20 16:31:31,924 Iter 70, Epoch 2.5926, Loss 0.6898161
+2019-10-20 16:31:33,833 Iter 71, Epoch 2.6296, Loss 0.7302521
+2019-10-20 16:31:35,991 Iter 72, Epoch 2.6667, Loss 0.7616582
+2019-10-20 16:31:37,810 Iter 73, Epoch 2.7037, Loss 0.6888218
+2019-10-20 16:31:39,591 Iter 74, Epoch 2.7407, Loss 0.7023569
+2019-10-20 16:31:41,429 Iter 75, Epoch 2.7778, Loss 0.7365271
+2019-10-20 16:31:43,321 Iter 76, Epoch 2.8148, Loss 0.7724158
+2019-10-20 16:31:45,488 Iter 77, Epoch 2.8519, Loss 0.7535960
+2019-10-20 16:31:47,344 Iter 78, Epoch 2.8889, Loss 0.7260809
+2019-10-20 16:31:49,121 Iter 79, Epoch 2.9259, Loss 0.6883705
+2019-10-20 16:31:50,947 Iter 80, Epoch 2.9630, Loss 0.7049869
+2019-10-20 16:31:52,787 Iter 81, Epoch 3.0000, Loss 0.6925704
+2019-10-20 16:31:54,930 Iter 82, Epoch 3.0370, Loss 0.7067622
+2019-10-20 16:31:56,754 Iter 83, Epoch 3.0741, Loss 0.7069194
+2019-10-20 16:31:58,569 Iter 84, Epoch 3.1111, Loss 0.7075350
+2019-10-20 16:32:00,718 Iter 85, Epoch 3.1481, Loss 0.6859162
+2019-10-20 16:32:02,904 Iter 86, Epoch 3.1852, Loss 0.6874084
+2019-10-20 16:32:04,794 Iter 87, Epoch 3.2222, Loss 0.7512968
+2019-10-20 16:32:06,661 Iter 88, Epoch 3.2593, Loss 0.6856032
+2019-10-20 16:32:08,545 Iter 89, Epoch 3.2963, Loss 0.7108092
+2019-10-20 16:32:10,317 Iter 90, Epoch 3.3333, Loss 0.7117280
+2019-10-20 16:32:12,194 Iter 91, Epoch 3.3704, Loss 0.7057507
+2019-10-20 16:32:13,974 Iter 92, Epoch 3.4074, Loss 0.6988781
+2019-10-20 16:32:20,770 Setting up a new session...
+2019-10-20 16:32:20,782 Visdom successfully connected to server
+2019-10-20 16:32:25,352 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 10
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:32:41,738 Iter 1, Epoch 0.0370, Loss 0.9168508
+2019-10-20 16:32:43,750 Iter 2, Epoch 0.0741, Loss 0.8793864
+2019-10-20 16:32:45,679 Iter 3, Epoch 0.1111, Loss 0.8516145
+2019-10-20 16:32:47,508 Iter 4, Epoch 0.1481, Loss 0.7968481
+2019-10-20 16:32:49,615 Iter 5, Epoch 0.1852, Loss 0.7766384
+2019-10-20 16:32:51,461 Iter 6, Epoch 0.2222, Loss 0.8002994
+2019-10-20 16:32:53,544 Iter 7, Epoch 0.2593, Loss 0.7822675
+2019-10-20 16:32:55,640 Iter 8, Epoch 0.2963, Loss 0.7841905
+2019-10-20 16:32:57,745 Iter 9, Epoch 0.3333, Loss 0.7707162
+2019-10-20 16:32:59,646 Iter 10, Epoch 0.3704, Loss 0.7579237
+2019-10-20 16:33:01,468 Iter 11, Epoch 0.4074, Loss 0.7640021
+2019-10-20 16:33:03,582 Iter 12, Epoch 0.4444, Loss 0.7594392
+2019-10-20 16:33:05,525 Iter 13, Epoch 0.4815, Loss 0.7723714
+2019-10-20 16:33:07,407 Iter 14, Epoch 0.5185, Loss 0.7682959
+2019-10-20 16:33:09,486 Iter 15, Epoch 0.5556, Loss 0.7598100
+2019-10-20 16:33:11,662 Iter 16, Epoch 0.5926, Loss 0.7570247
+2019-10-20 16:33:13,773 Iter 17, Epoch 0.6296, Loss 0.8045477
+2019-10-20 16:33:15,758 Iter 18, Epoch 0.6667, Loss 0.7490516
+2019-10-20 16:33:17,783 Iter 19, Epoch 0.7037, Loss 0.7742648
+2019-10-20 16:33:19,555 Iter 20, Epoch 0.7407, Loss 0.7603638
+2019-10-20 16:33:21,558 Iter 21, Epoch 0.7778, Loss 0.7652686
+2019-10-20 16:33:23,625 Iter 22, Epoch 0.8148, Loss 0.7824678
+2019-10-20 16:33:25,768 Iter 23, Epoch 0.8519, Loss 0.7848942
+2019-10-20 16:33:27,690 Iter 24, Epoch 0.8889, Loss 0.7576399
+2019-10-20 16:33:29,847 Iter 25, Epoch 0.9259, Loss 0.7835624
+2019-10-20 16:33:31,875 Iter 26, Epoch 0.9630, Loss 0.8926983
+2019-10-20 16:33:34,024 Iter 27, Epoch 1.0000, Loss 0.7500509
+2019-10-20 16:33:35,865 Iter 28, Epoch 1.0370, Loss 0.7450646
+2019-10-20 16:33:37,858 Iter 29, Epoch 1.0741, Loss 0.7339901
+2019-10-20 16:33:39,721 Iter 30, Epoch 1.1111, Loss 0.7486441
+2019-10-20 16:33:41,531 Iter 31, Epoch 1.1481, Loss 0.7248664
+2019-10-20 16:33:43,654 Iter 32, Epoch 1.1852, Loss 0.7288592
+2019-10-20 16:33:45,754 Iter 33, Epoch 1.2222, Loss 0.7510505
+2019-10-20 16:33:47,808 Iter 34, Epoch 1.2593, Loss 0.7623912
+2019-10-20 16:33:49,694 Iter 35, Epoch 1.2963, Loss 0.7361950
+2019-10-20 16:33:51,736 Iter 36, Epoch 1.3333, Loss 0.7850513
+2019-10-20 16:33:53,839 Iter 37, Epoch 1.3704, Loss 0.7392064
+2019-10-20 16:33:55,848 Iter 38, Epoch 1.4074, Loss 0.7101794
+2019-10-20 16:33:57,623 Iter 39, Epoch 1.4444, Loss 0.7102677
+2019-10-20 16:33:59,487 Iter 40, Epoch 1.4815, Loss 0.7546564
+2019-10-20 16:34:01,673 Iter 41, Epoch 1.5185, Loss 0.7118377
+2019-10-20 16:34:03,697 Iter 42, Epoch 1.5556, Loss 0.7075168
+2019-10-20 16:34:05,859 Iter 43, Epoch 1.5926, Loss 0.7968543
+2019-10-20 16:34:07,679 Iter 44, Epoch 1.6296, Loss 0.8731793
+2019-10-20 16:34:09,812 Iter 45, Epoch 1.6667, Loss 0.7058305
+2019-10-20 16:34:11,938 Iter 46, Epoch 1.7037, Loss 0.6977597
+2019-10-20 16:34:14,057 Iter 47, Epoch 1.7407, Loss 0.6969185
+2019-10-20 16:34:16,087 Iter 48, Epoch 1.7778, Loss 0.6999558
+2019-10-20 16:34:18,178 Iter 49, Epoch 1.8148, Loss 0.7197617
+2019-10-20 16:34:20,186 Iter 50, Epoch 1.8519, Loss 0.6988553
+2019-10-20 16:34:22,218 Iter 51, Epoch 1.8889, Loss 0.6938393
+2019-10-20 16:34:24,298 Iter 52, Epoch 1.9259, Loss 0.7604052
+2019-10-20 16:34:26,402 Iter 53, Epoch 1.9630, Loss 0.7138202
+2019-10-20 16:34:28,518 Iter 54, Epoch 2.0000, Loss 0.7191483
+2019-10-20 16:34:30,267 Iter 55, Epoch 2.0370, Loss 0.6897057
+2019-10-20 16:34:32,142 Iter 56, Epoch 2.0741, Loss 0.6875941
+2019-10-20 16:34:34,142 Iter 57, Epoch 2.1111, Loss 0.6992692
+2019-10-20 16:34:36,056 Iter 58, Epoch 2.1481, Loss 0.6939969
+2019-10-20 16:34:37,954 Iter 59, Epoch 2.1852, Loss 0.6939875
+2019-10-20 16:34:40,021 Iter 60, Epoch 2.2222, Loss 0.7072306
+2019-10-20 16:34:41,922 Iter 61, Epoch 2.2593, Loss 0.7121571
+2019-10-20 16:34:44,042 Iter 62, Epoch 2.2963, Loss 0.6974367
+2019-10-20 16:34:45,815 Iter 63, Epoch 2.3333, Loss 0.7026207
+2019-10-20 16:34:47,700 Iter 64, Epoch 2.3704, Loss 0.7189338
+2019-10-20 16:34:49,853 Iter 65, Epoch 2.4074, Loss 0.7004423
+2019-10-20 16:34:51,927 Iter 66, Epoch 2.4444, Loss 0.7017347
+2019-10-20 16:34:54,017 Iter 67, Epoch 2.4815, Loss 0.7235193
+2019-10-20 16:34:56,007 Iter 68, Epoch 2.5185, Loss 0.7218635
+2019-10-20 16:34:57,925 Iter 69, Epoch 2.5556, Loss 0.7069771
+2019-10-20 16:34:59,813 Iter 70, Epoch 2.5926, Loss 0.6958119
+2019-10-20 16:35:01,682 Iter 71, Epoch 2.6296, Loss 0.7341956
+2019-10-20 16:35:03,809 Iter 72, Epoch 2.6667, Loss 0.7648811
+2019-10-20 16:35:05,853 Iter 73, Epoch 2.7037, Loss 0.6914847
+2019-10-20 16:35:07,860 Iter 74, Epoch 2.7407, Loss 0.7062685
+2019-10-20 16:35:09,954 Iter 75, Epoch 2.7778, Loss 0.7469217
+2019-10-20 16:35:11,773 Iter 76, Epoch 2.8148, Loss 0.7819319
+2019-10-20 16:35:13,940 Iter 77, Epoch 2.8519, Loss 0.7574955
+2019-10-20 16:35:16,019 Iter 78, Epoch 2.8889, Loss 0.7318189
+2019-10-20 16:35:17,718 Iter 79, Epoch 2.9259, Loss 0.6906832
+2019-10-20 16:35:19,872 Iter 80, Epoch 2.9630, Loss 0.7087990
+2019-10-20 16:35:21,925 Iter 81, Epoch 3.0000, Loss 0.6947514
+2019-10-20 16:35:23,950 Iter 82, Epoch 3.0370, Loss 0.7153476
+2019-10-20 16:35:25,878 Iter 83, Epoch 3.0741, Loss 0.7097715
+2019-10-20 16:35:27,682 Iter 84, Epoch 3.1111, Loss 0.6951746
+2019-10-20 16:35:29,840 Iter 85, Epoch 3.1481, Loss 0.6910732
+2019-10-20 16:35:31,899 Iter 86, Epoch 3.1852, Loss 0.6926166
+2019-10-20 16:35:34,012 Iter 87, Epoch 3.2222, Loss 0.7546111
+2019-10-20 16:35:36,147 Iter 88, Epoch 3.2593, Loss 0.6907649
+2019-10-20 16:35:38,114 Iter 89, Epoch 3.2963, Loss 0.7188426
+2019-10-20 16:35:40,068 Iter 90, Epoch 3.3333, Loss 0.7061505
+2019-10-20 16:35:41,957 Iter 91, Epoch 3.3704, Loss 0.7171892
+2019-10-20 16:35:44,065 Iter 92, Epoch 3.4074, Loss 0.7058665
+2019-10-20 16:35:46,190 Iter 93, Epoch 3.4444, Loss 0.7108845
+2019-10-20 16:35:48,269 Iter 94, Epoch 3.4815, Loss 0.7383202
+2019-10-20 16:35:50,028 Iter 95, Epoch 3.5185, Loss 0.6865886
+2019-10-20 16:35:52,160 Iter 96, Epoch 3.5556, Loss 0.6822921
+2019-10-20 16:35:54,193 Iter 97, Epoch 3.5926, Loss 0.6896988
+2019-10-20 16:35:56,227 Iter 98, Epoch 3.6296, Loss 0.6957547
+2019-10-20 16:35:58,339 Iter 99, Epoch 3.6667, Loss 0.6818010
+2019-10-20 16:36:00,161 Iter 100, Epoch 3.7037, Loss 0.6853609
+2019-10-20 16:36:02,233 Iter 101, Epoch 3.7407, Loss 0.6870875
+2019-10-20 16:36:04,349 Iter 102, Epoch 3.7778, Loss 0.6900488
+2019-10-20 16:36:06,152 Iter 103, Epoch 3.8148, Loss 0.7435589
+2019-10-20 16:36:08,106 Iter 104, Epoch 3.8519, Loss 0.6982673
+2019-10-20 16:36:10,194 Iter 105, Epoch 3.8889, Loss 0.6883787
+2019-10-20 16:36:12,145 Iter 106, Epoch 3.9259, Loss 0.6818593
+2019-10-20 16:36:14,230 Iter 107, Epoch 3.9630, Loss 0.6948773
+2019-10-20 16:36:16,163 Iter 108, Epoch 4.0000, Loss 0.7368206
+2019-10-20 16:36:18,383 Iter 109, Epoch 4.0370, Loss 0.6814705
+2019-10-20 16:36:20,415 Iter 110, Epoch 4.0741, Loss 0.6799578
+2019-10-20 16:36:22,384 Iter 111, Epoch 4.1111, Loss 0.7001846
+2019-10-20 16:36:24,395 Iter 112, Epoch 4.1481, Loss 0.7060331
+2019-10-20 16:36:26,526 Iter 113, Epoch 4.1852, Loss 0.6873554
+2019-10-20 16:36:28,498 Iter 114, Epoch 4.2222, Loss 0.6767693
+2019-10-20 16:36:30,499 Iter 115, Epoch 4.2593, Loss 0.6879536
+2019-10-20 16:36:32,420 Iter 116, Epoch 4.2963, Loss 0.6956767
+2019-10-20 16:36:34,557 Iter 117, Epoch 4.3333, Loss 0.6806716
+2019-10-20 16:36:36,509 Iter 118, Epoch 4.3704, Loss 0.7272207
+2019-10-20 16:36:38,351 Iter 119, Epoch 4.4074, Loss 0.6960995
+2019-10-20 16:36:40,511 Iter 120, Epoch 4.4444, Loss 0.6825272
+2019-10-20 16:36:42,505 Iter 121, Epoch 4.4815, Loss 0.7012268
+2019-10-20 16:36:44,360 Iter 122, Epoch 4.5185, Loss 0.7062503
+2019-10-20 16:36:46,201 Iter 123, Epoch 4.5556, Loss 0.6868467
+2019-10-20 16:36:48,088 Iter 124, Epoch 4.5926, Loss 0.6883227
+2019-10-20 16:36:50,283 Iter 125, Epoch 4.6296, Loss 0.6831203
+2019-10-20 16:36:52,261 Iter 126, Epoch 4.6667, Loss 0.6870493
+2019-10-20 16:36:54,103 Iter 127, Epoch 4.7037, Loss 0.6787206
+2019-10-20 16:36:56,216 Iter 128, Epoch 4.7407, Loss 0.6838750
+2019-10-20 16:36:58,453 Iter 129, Epoch 4.7778, Loss 0.7721532
+2019-10-20 16:37:00,327 Iter 130, Epoch 4.8148, Loss 0.7000738
+2019-10-20 16:37:02,244 Iter 131, Epoch 4.8519, Loss 0.7000574
+2019-10-20 16:37:04,419 Iter 132, Epoch 4.8889, Loss 0.7051594
+2019-10-20 16:37:06,406 Iter 133, Epoch 4.9259, Loss 0.7383074
+2019-10-20 16:37:08,491 Iter 134, Epoch 4.9630, Loss 0.7000499
+2019-10-20 16:37:10,375 Iter 135, Epoch 5.0000, Loss 0.6935257
+2019-10-20 16:37:12,373 Iter 136, Epoch 5.0370, Loss 0.7926185
+2019-10-20 16:37:14,378 Iter 137, Epoch 5.0741, Loss 0.6803823
+2019-10-20 16:37:16,344 Iter 138, Epoch 5.1111, Loss 0.6817548
+2019-10-20 16:37:18,306 Iter 139, Epoch 5.1481, Loss 0.6896809
+2019-10-20 16:37:20,326 Iter 140, Epoch 5.1852, Loss 0.6832191
+2019-10-20 16:37:22,345 Iter 141, Epoch 5.2222, Loss 0.6881304
+2019-10-20 16:37:24,477 Iter 142, Epoch 5.2593, Loss 0.6800188
+2019-10-20 16:37:26,504 Iter 143, Epoch 5.2963, Loss 0.6917795
+2019-10-20 16:37:28,499 Iter 144, Epoch 5.3333, Loss 0.6897607
+2019-10-20 16:37:30,502 Iter 145, Epoch 5.3704, Loss 0.6861631
+2019-10-20 16:37:32,577 Iter 146, Epoch 5.4074, Loss 0.6899289
+2019-10-20 16:37:34,524 Iter 147, Epoch 5.4444, Loss 0.7131305
+2019-10-20 16:37:36,684 Iter 148, Epoch 5.4815, Loss 0.6903916
+2019-10-20 16:37:38,673 Iter 149, Epoch 5.5185, Loss 0.6900038
+2019-10-20 16:37:40,648 Iter 150, Epoch 5.5556, Loss 0.6781474
+2019-10-20 16:37:42,725 Iter 151, Epoch 5.5926, Loss 0.6810390
+2019-10-20 16:37:44,839 Iter 152, Epoch 5.6296, Loss 0.6926547
+2019-10-20 16:37:46,895 Iter 153, Epoch 5.6667, Loss 0.7224431
+2019-10-20 16:37:48,956 Iter 154, Epoch 5.7037, Loss 0.6820755
+2019-10-20 16:37:50,995 Iter 155, Epoch 5.7407, Loss 0.7283587
+2019-10-20 16:37:53,050 Iter 156, Epoch 5.7778, Loss 0.6984089
+2019-10-20 16:37:55,077 Iter 157, Epoch 5.8148, Loss 0.6879195
+2019-10-20 16:37:57,129 Iter 158, Epoch 5.8519, Loss 0.6840356
+2019-10-20 16:37:59,198 Iter 159, Epoch 5.8889, Loss 0.7008324
+2019-10-20 16:38:01,257 Iter 160, Epoch 5.9259, Loss 0.6981300
+2019-10-20 16:38:03,346 Iter 161, Epoch 5.9630, Loss 0.6782925
+2019-10-20 16:38:05,433 Iter 162, Epoch 6.0000, Loss 0.6855149
+2019-10-20 16:38:07,459 Iter 163, Epoch 6.0370, Loss 0.6816154
+2019-10-20 16:38:09,463 Iter 164, Epoch 6.0741, Loss 0.6896796
+2019-10-20 16:38:11,463 Iter 165, Epoch 6.1111, Loss 0.6872211
+2019-10-20 16:38:13,505 Iter 166, Epoch 6.1481, Loss 0.6802166
+2019-10-20 16:38:15,588 Iter 167, Epoch 6.1852, Loss 0.6894084
+2019-10-20 16:38:17,616 Iter 168, Epoch 6.2222, Loss 0.6772721
+2019-10-20 16:38:19,708 Iter 169, Epoch 6.2593, Loss 0.7656996
+2019-10-20 16:38:21,728 Iter 170, Epoch 6.2963, Loss 0.6852394
+2019-10-20 16:38:23,783 Iter 171, Epoch 6.3333, Loss 0.6907362
+2019-10-20 16:38:25,879 Iter 172, Epoch 6.3704, Loss 0.6769983
+2019-10-20 16:38:27,925 Iter 173, Epoch 6.4074, Loss 0.6844724
+2019-10-20 16:38:29,940 Iter 174, Epoch 6.4444, Loss 0.6823442
+2019-10-20 16:38:31,974 Iter 175, Epoch 6.4815, Loss 0.7146893
+2019-10-20 16:38:34,035 Iter 176, Epoch 6.5185, Loss 0.7103713
+2019-10-20 16:38:36,227 Iter 177, Epoch 6.5556, Loss 0.6963330
+2019-10-20 16:38:38,276 Iter 178, Epoch 6.5926, Loss 0.6881353
+2019-10-20 16:38:40,363 Iter 179, Epoch 6.6296, Loss 0.6829571
+2019-10-20 16:38:42,451 Iter 180, Epoch 6.6667, Loss 0.7217479
+2019-10-20 16:38:44,492 Iter 181, Epoch 6.7037, Loss 0.7101037
+2019-10-20 16:38:46,514 Iter 182, Epoch 6.7407, Loss 0.7007621
+2019-10-20 16:38:48,698 Iter 183, Epoch 6.7778, Loss 0.6837794
+2019-10-20 16:38:50,707 Iter 184, Epoch 6.8148, Loss 0.6896900
+2019-10-20 16:38:52,689 Iter 185, Epoch 6.8519, Loss 0.6865798
+2019-10-20 16:38:54,751 Iter 186, Epoch 6.8889, Loss 0.7003602
+2019-10-20 16:38:56,725 Iter 187, Epoch 6.9259, Loss 0.6849152
+2019-10-20 16:38:58,817 Iter 188, Epoch 6.9630, Loss 0.6867526
+2019-10-20 16:39:00,877 Iter 189, Epoch 7.0000, Loss 0.6993071
+2019-10-20 16:39:02,967 Iter 190, Epoch 7.0370, Loss 0.6814044
+2019-10-20 16:39:05,068 Iter 191, Epoch 7.0741, Loss 0.6810946
+2019-10-20 16:39:06,986 Iter 192, Epoch 7.1111, Loss 0.6839075
+2019-10-20 16:40:32,550 Setting up a new session...
+2019-10-20 16:40:32,561 Visdom successfully connected to server
+2019-10-20 16:40:36,211 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  d_threshold: 30
+  d_uniform: true
+  eps: 1.0e-05
+  weight_type: identity
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 10
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:41:44,493 Setting up a new session...
+2019-10-20 16:41:44,518 Visdom successfully connected to server
+2019-10-20 16:41:48,299 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  d_threshold: 30
+  d_uniform: true
+  eps: 1.0e-05
+  weight_type: identity
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 10
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:44:02,254 Setting up a new session...
+2019-10-20 16:44:02,264 Visdom successfully connected to server
+2019-10-20 16:46:13,703 Setting up a new session...
+2019-10-20 16:46:13,713 Visdom successfully connected to server
+2019-10-20 16:46:17,483 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+d_threshold: 30
+d_uniform: true
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 10
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:49:15,223 Setting up a new session...
+2019-10-20 16:49:15,233 Visdom successfully connected to server
+2019-10-20 16:49:18,861 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+d_threshold: 30
+d_uniform: true
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 10
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:49:35,022 Iter 1, Epoch 0.0370, Loss 1.0000000
+2019-10-20 16:49:36,734 Iter 2, Epoch 0.0741, Loss 1.0000000
+2019-10-20 16:49:38,461 Iter 3, Epoch 0.1111, Loss 1.0000000
+2019-10-20 16:49:40,480 Iter 4, Epoch 0.1481, Loss 1.0000000
+2019-10-20 16:49:42,504 Iter 5, Epoch 0.1852, Loss 1.0000000
+2019-10-20 16:49:44,475 Iter 6, Epoch 0.2222, Loss 1.0000000
+2019-10-20 16:49:46,449 Iter 7, Epoch 0.2593, Loss 0.9209728
+2019-10-20 16:49:48,546 Iter 8, Epoch 0.2963, Loss 1.0000000
+2019-10-20 16:49:50,322 Iter 9, Epoch 0.3333, Loss 1.0000000
+2019-10-20 16:49:52,180 Iter 10, Epoch 0.3704, Loss 1.0000000
+2019-10-20 16:49:54,024 Iter 11, Epoch 0.4074, Loss 0.9971482
+2019-10-20 16:49:55,900 Iter 12, Epoch 0.4444, Loss 0.8993062
+2019-10-20 16:49:58,051 Iter 13, Epoch 0.4815, Loss 1.0000000
+2019-10-20 16:49:59,984 Iter 14, Epoch 0.5185, Loss 1.0000000
+2019-10-20 16:50:02,028 Iter 15, Epoch 0.5556, Loss 0.9999999
+2019-10-20 16:50:03,765 Iter 16, Epoch 0.5926, Loss 1.0000000
+2019-10-20 16:50:05,595 Iter 17, Epoch 0.6296, Loss 1.0000000
+2019-10-20 16:50:07,411 Iter 18, Epoch 0.6667, Loss 0.8357903
+2019-10-20 16:50:09,231 Iter 19, Epoch 0.7037, Loss 0.9999999
+2019-10-20 16:50:11,067 Iter 20, Epoch 0.7407, Loss 1.0000000
+2019-10-20 16:50:13,211 Iter 21, Epoch 0.7778, Loss 1.0000000
+2019-10-20 16:50:15,344 Iter 22, Epoch 0.8148, Loss 1.0000000
+2019-10-20 16:50:17,513 Iter 23, Epoch 0.8519, Loss 0.8282654
+2019-10-20 16:50:19,777 Iter 24, Epoch 0.8889, Loss 0.9999992
+2019-10-20 16:50:21,666 Iter 25, Epoch 0.9259, Loss 0.7384667
+2019-10-20 16:50:23,481 Iter 26, Epoch 0.9630, Loss 1.0000000
+2019-10-20 16:50:25,255 Iter 27, Epoch 1.0000, Loss 0.9999929
+2019-10-20 16:50:27,199 Iter 28, Epoch 1.0370, Loss 0.9999996
+2019-10-20 16:50:29,066 Iter 29, Epoch 1.0741, Loss 0.7288545
+2019-10-20 16:50:31,072 Iter 30, Epoch 1.1111, Loss 0.6973986
+2019-10-20 16:50:33,188 Iter 31, Epoch 1.1481, Loss 0.6937585
+2019-10-20 16:50:35,066 Iter 32, Epoch 1.1852, Loss 0.7117864
+2019-10-20 16:50:37,016 Iter 33, Epoch 1.2222, Loss 0.9999924
+2019-10-20 16:50:39,016 Iter 34, Epoch 1.2593, Loss 0.9999913
+2019-10-20 16:50:40,788 Iter 35, Epoch 1.2963, Loss 0.9999611
+2019-10-20 16:50:42,771 Iter 36, Epoch 1.3333, Loss 0.9999940
+2019-10-20 16:50:44,557 Iter 37, Epoch 1.3704, Loss 0.9999224
+2019-10-20 16:50:46,410 Iter 38, Epoch 1.4074, Loss 0.9450147
+2019-10-20 16:50:48,370 Iter 39, Epoch 1.4444, Loss 0.6938121
+2019-10-20 16:50:50,458 Iter 40, Epoch 1.4815, Loss 0.9986580
+2019-10-20 16:50:52,695 Iter 41, Epoch 1.5185, Loss 0.6722792
+2019-10-20 16:50:54,460 Iter 42, Epoch 1.5556, Loss 0.6888985
+2019-10-20 16:50:56,260 Iter 43, Epoch 1.5926, Loss 0.9997556
+2019-10-20 16:50:58,082 Iter 44, Epoch 1.6296, Loss 0.9999999
+2019-10-20 16:51:00,301 Iter 45, Epoch 1.6667, Loss 0.6812882
+2019-10-20 16:51:02,349 Iter 46, Epoch 1.7037, Loss 0.9953237
+2019-10-20 16:51:04,545 Iter 47, Epoch 1.7407, Loss 0.8772608
+2019-10-20 16:51:06,636 Iter 48, Epoch 1.7778, Loss 0.6098478
+2019-10-20 16:51:08,704 Iter 49, Epoch 1.8148, Loss 0.7722597
+2019-10-20 16:51:10,430 Iter 50, Epoch 1.8519, Loss 0.6645860
+2019-10-20 16:51:12,224 Iter 51, Epoch 1.8889, Loss 0.6091083
+2019-10-20 16:51:14,063 Iter 52, Epoch 1.9259, Loss 0.6076900
+2019-10-20 16:51:15,891 Iter 53, Epoch 1.9630, Loss 0.6589723
+2019-10-20 16:51:17,947 Iter 54, Epoch 2.0000, Loss 0.7312081
+2019-10-20 16:51:19,808 Iter 55, Epoch 2.0370, Loss 0.6708319
+2019-10-20 16:51:21,662 Iter 56, Epoch 2.0741, Loss 0.6762224
+2019-10-20 16:51:23,660 Iter 57, Epoch 2.1111, Loss 0.5805277
+2019-10-20 16:51:25,778 Iter 58, Epoch 2.1481, Loss 0.6805514
+2019-10-20 16:51:27,559 Iter 59, Epoch 2.1852, Loss 0.6988195
+2019-10-20 16:51:29,424 Iter 60, Epoch 2.2222, Loss 0.6846579
+2019-10-20 16:51:31,373 Iter 61, Epoch 2.2593, Loss 0.6098548
+2019-10-20 16:51:33,424 Iter 62, Epoch 2.2963, Loss 0.5345565
+2019-10-20 16:51:35,238 Iter 63, Epoch 2.3333, Loss 0.4875966
+2019-10-20 16:51:37,317 Iter 64, Epoch 2.3704, Loss 0.6522993
+2019-10-20 16:51:39,387 Iter 65, Epoch 2.4074, Loss 0.6323472
+2019-10-20 16:51:41,208 Iter 66, Epoch 2.4444, Loss 0.5399120
+2019-10-20 16:51:43,274 Iter 67, Epoch 2.4815, Loss 0.6532508
+2019-10-20 16:51:45,329 Iter 68, Epoch 2.5185, Loss 0.5943353
+2019-10-20 16:51:47,167 Iter 69, Epoch 2.5556, Loss 0.6958140
+2019-10-20 16:51:49,251 Iter 70, Epoch 2.5926, Loss 0.6837605
+2019-10-20 16:51:51,199 Iter 71, Epoch 2.6296, Loss 0.6100296
+2019-10-20 16:51:53,053 Iter 72, Epoch 2.6667, Loss 0.6531054
+2019-10-20 16:51:55,144 Iter 73, Epoch 2.7037, Loss 0.5969308
+2019-10-20 16:51:57,047 Iter 74, Epoch 2.7407, Loss 0.5117193
+2019-10-20 16:51:58,805 Iter 75, Epoch 2.7778, Loss 0.5475911
+2019-10-20 16:52:00,679 Iter 76, Epoch 2.8148, Loss 0.7540846
+2019-10-20 16:52:02,604 Iter 77, Epoch 2.8519, Loss 0.7878803
+2019-10-20 16:52:04,674 Iter 78, Epoch 2.8889, Loss 0.5602601
+2019-10-20 16:52:06,836 Iter 79, Epoch 2.9259, Loss 0.6613872
+2019-10-20 16:52:08,915 Iter 80, Epoch 2.9630, Loss 0.6434042
+2019-10-20 16:52:11,055 Iter 81, Epoch 3.0000, Loss 0.7324936
+2019-10-20 16:52:12,903 Iter 82, Epoch 3.0370, Loss 0.6124780
+2019-10-20 16:52:14,656 Iter 83, Epoch 3.0741, Loss 0.6951041
+2019-10-20 16:52:16,624 Iter 84, Epoch 3.1111, Loss 0.7556777
+2019-10-20 16:52:18,545 Iter 85, Epoch 3.1481, Loss 0.7114338
+2019-10-20 16:52:20,615 Iter 86, Epoch 3.1852, Loss 0.6221514
+2019-10-20 16:52:22,404 Iter 87, Epoch 3.2222, Loss 0.5606931
+2019-10-20 16:52:24,492 Iter 88, Epoch 3.2593, Loss 0.5309088
+2019-10-20 16:52:26,532 Iter 89, Epoch 3.2963, Loss 0.6705921
+2019-10-20 16:52:28,495 Iter 90, Epoch 3.3333, Loss 0.5443645
+2019-10-20 16:52:30,288 Iter 91, Epoch 3.3704, Loss 0.7048035
+2019-10-20 16:52:32,152 Iter 92, Epoch 3.4074, Loss 0.6078602
+2019-10-20 16:52:34,015 Iter 93, Epoch 3.4444, Loss 0.7057799
+2019-10-20 16:52:35,748 Iter 94, Epoch 3.4815, Loss 0.8556412
+2019-10-20 16:52:37,578 Iter 95, Epoch 3.5185, Loss 0.5441383
+2019-10-20 16:52:39,408 Iter 96, Epoch 3.5556, Loss 0.6336024
+2019-10-20 16:52:41,208 Iter 97, Epoch 3.5926, Loss 0.6076056
+2019-10-20 16:52:43,064 Iter 98, Epoch 3.6296, Loss 0.4474716
+2019-10-20 16:52:44,826 Iter 99, Epoch 3.6667, Loss 0.5468898
+2019-10-20 16:52:46,746 Iter 100, Epoch 3.7037, Loss 0.6539300
+2019-10-20 16:52:48,632 Iter 101, Epoch 3.7407, Loss 0.6573349
+2019-10-20 16:52:50,414 Iter 102, Epoch 3.7778, Loss 0.5616888
+2019-10-20 16:52:52,241 Iter 103, Epoch 3.8148, Loss 0.6819048
+2019-10-20 16:52:54,055 Iter 104, Epoch 3.8519, Loss 0.5470408
+2019-10-20 16:52:55,959 Iter 105, Epoch 3.8889, Loss 0.6571484
+2019-10-20 16:52:58,034 Iter 106, Epoch 3.9259, Loss 0.6556658
+2019-10-20 16:52:59,930 Iter 107, Epoch 3.9630, Loss 0.5448067
+2019-10-20 16:53:01,819 Iter 108, Epoch 4.0000, Loss 0.6703136
+2019-10-20 16:53:03,650 Iter 109, Epoch 4.0370, Loss 0.5381593
+2019-10-20 16:53:05,480 Iter 110, Epoch 4.0741, Loss 0.6405820
+2019-10-20 16:53:07,358 Iter 111, Epoch 4.1111, Loss 0.5850681
+2019-10-20 16:53:09,242 Iter 112, Epoch 4.1481, Loss 0.5413316
+2019-10-20 16:53:11,308 Iter 113, Epoch 4.1852, Loss 0.7019041
+2019-10-20 16:53:13,210 Iter 114, Epoch 4.2222, Loss 0.5864435
+2019-10-20 16:53:15,043 Iter 115, Epoch 4.2593, Loss 0.6665053
+2019-10-20 16:53:16,974 Iter 116, Epoch 4.2963, Loss 0.5625188
+2019-10-20 16:53:18,803 Iter 117, Epoch 4.3333, Loss 0.5497334
+2019-10-20 16:53:20,613 Iter 118, Epoch 4.3704, Loss 0.5597128
+2019-10-20 16:53:22,610 Iter 119, Epoch 4.4074, Loss 0.6725687
+2019-10-20 16:53:24,775 Iter 120, Epoch 4.4444, Loss 0.5797582
+2019-10-20 16:53:26,624 Iter 121, Epoch 4.4815, Loss 0.4808037
+2019-10-20 16:53:28,484 Iter 122, Epoch 4.5185, Loss 0.6796650
+2019-10-20 16:53:30,329 Iter 123, Epoch 4.5556, Loss 0.5884843
+2019-10-20 16:53:32,161 Iter 124, Epoch 4.5926, Loss 0.6695350
+2019-10-20 16:53:33,989 Iter 125, Epoch 4.6296, Loss 0.5893489
+2019-10-20 16:53:35,822 Iter 126, Epoch 4.6667, Loss 0.6207232
+2019-10-20 16:53:37,701 Iter 127, Epoch 4.7037, Loss 0.6059260
+2019-10-20 16:53:39,779 Iter 128, Epoch 4.7407, Loss 0.5767927
+2019-10-20 16:53:41,606 Iter 129, Epoch 4.7778, Loss 0.5726359
+2019-10-20 16:53:43,433 Iter 130, Epoch 4.8148, Loss 0.5029502
+2019-10-20 16:53:45,270 Iter 131, Epoch 4.8519, Loss 0.6331650
+2019-10-20 16:53:47,170 Iter 132, Epoch 4.8889, Loss 0.5931033
+2019-10-20 16:53:49,019 Iter 133, Epoch 4.9259, Loss 0.6909976
+2019-10-20 16:53:51,126 Iter 134, Epoch 4.9630, Loss 0.7065008
+2019-10-20 16:53:52,931 Iter 135, Epoch 5.0000, Loss 0.6150556
+2019-10-20 16:53:54,728 Iter 136, Epoch 5.0370, Loss 0.4607180
+2019-10-20 16:53:56,557 Iter 137, Epoch 5.0741, Loss 0.5828625
+2019-10-20 16:53:58,454 Iter 138, Epoch 5.1111, Loss 0.6783030
+2019-10-20 16:54:00,238 Iter 139, Epoch 5.1481, Loss 0.5442287
+2019-10-20 16:54:02,074 Iter 140, Epoch 5.1852, Loss 0.6249719
+2019-10-20 16:54:03,988 Iter 141, Epoch 5.2222, Loss 0.5357597
+2019-10-20 16:54:06,013 Iter 142, Epoch 5.2593, Loss 0.6682981
+2019-10-20 16:54:08,077 Iter 143, Epoch 5.2963, Loss 0.6861513
+2019-10-20 16:54:09,887 Iter 144, Epoch 5.3333, Loss 0.4954304
+2019-10-20 16:54:11,718 Iter 145, Epoch 5.3704, Loss 0.5403396
+2019-10-20 16:54:13,583 Iter 146, Epoch 5.4074, Loss 0.5321652
+2019-10-20 16:54:15,436 Iter 147, Epoch 5.4444, Loss 0.5409023
+2019-10-20 16:54:17,334 Iter 148, Epoch 5.4815, Loss 0.6745920
+2019-10-20 16:54:19,321 Iter 149, Epoch 5.5185, Loss 0.5820616
+2019-10-20 16:54:21,391 Iter 150, Epoch 5.5556, Loss 0.5252333
+2019-10-20 16:54:23,288 Iter 151, Epoch 5.5926, Loss 0.6705090
+2019-10-20 16:54:25,053 Iter 152, Epoch 5.6296, Loss 0.4950853
+2019-10-20 16:54:26,905 Iter 153, Epoch 5.6667, Loss 0.4701427
+2019-10-20 16:54:28,735 Iter 154, Epoch 5.7037, Loss 0.6144165
+2019-10-20 16:54:30,508 Iter 155, Epoch 5.7407, Loss 0.7345264
+2019-10-20 16:54:32,356 Iter 156, Epoch 5.7778, Loss 0.4921025
+2019-10-20 16:54:34,312 Iter 157, Epoch 5.8148, Loss 0.6016397
+2019-10-20 16:54:36,400 Iter 158, Epoch 5.8519, Loss 0.6648297
+2019-10-20 16:54:38,238 Iter 159, Epoch 5.8889, Loss 0.4806061
+2019-10-20 16:54:40,043 Iter 160, Epoch 5.9259, Loss 0.5420606
+2019-10-20 16:54:41,890 Iter 161, Epoch 5.9630, Loss 0.5267758
+2019-10-20 16:54:43,736 Iter 162, Epoch 6.0000, Loss 0.5848769
+2019-10-20 16:54:45,473 Iter 163, Epoch 6.0370, Loss 0.6671100
+2019-10-20 16:54:47,387 Iter 164, Epoch 6.0741, Loss 0.6854093
+2019-10-20 16:54:49,242 Iter 165, Epoch 6.1111, Loss 0.6183326
+2019-10-20 16:54:51,227 Iter 166, Epoch 6.1481, Loss 0.6182076
+2019-10-20 16:54:53,185 Iter 167, Epoch 6.1852, Loss 0.5487109
+2019-10-20 16:54:54,975 Iter 168, Epoch 6.2222, Loss 0.5858999
+2019-10-20 16:54:56,805 Iter 169, Epoch 6.2593, Loss 0.6246506
+2019-10-20 16:54:58,652 Iter 170, Epoch 6.2963, Loss 0.5383030
+2019-10-20 16:55:00,445 Iter 171, Epoch 6.3333, Loss 0.5424522
+2019-10-20 16:55:02,378 Iter 172, Epoch 6.3704, Loss 0.5375712
+2019-10-20 16:55:04,218 Iter 173, Epoch 6.4074, Loss 0.6424586
+2019-10-20 16:55:06,083 Iter 174, Epoch 6.4444, Loss 0.5971536
+2019-10-20 16:55:07,932 Iter 175, Epoch 6.4815, Loss 0.4801930
+2019-10-20 16:55:09,795 Iter 176, Epoch 6.5185, Loss 0.5758716
+2019-10-20 16:55:11,666 Iter 177, Epoch 6.5556, Loss 0.4778904
+2019-10-20 16:55:13,519 Iter 178, Epoch 6.5926, Loss 0.5503849
+2019-10-20 16:55:15,281 Iter 179, Epoch 6.6296, Loss 0.6753274
+2019-10-20 16:55:17,138 Iter 180, Epoch 6.6667, Loss 0.4644523
+2019-10-20 16:55:19,003 Iter 181, Epoch 6.7037, Loss 0.5793829
+2019-10-20 16:55:21,032 Iter 182, Epoch 6.7407, Loss 0.5584129
+2019-10-20 16:55:22,863 Iter 183, Epoch 6.7778, Loss 0.6768688
+2019-10-20 16:55:24,653 Iter 184, Epoch 6.8148, Loss 0.6292403
+2019-10-20 16:55:26,478 Iter 185, Epoch 6.8519, Loss 0.6450725
+2019-10-20 16:55:28,285 Iter 186, Epoch 6.8889, Loss 0.6125447
+2019-10-20 16:55:30,041 Iter 187, Epoch 6.9259, Loss 0.6601160
+2019-10-20 16:55:31,875 Iter 188, Epoch 6.9630, Loss 0.6516414
+2019-10-20 16:55:33,696 Iter 189, Epoch 7.0000, Loss 0.6372799
+2019-10-20 16:55:35,561 Iter 190, Epoch 7.0370, Loss 0.5546958
+2019-10-20 16:55:37,392 Iter 191, Epoch 7.0741, Loss 0.5428270
+2019-10-20 16:55:39,116 Iter 192, Epoch 7.1111, Loss 0.6480261
+2019-10-20 16:55:41,082 Iter 193, Epoch 7.1481, Loss 0.6227640
+2019-10-20 16:55:42,907 Iter 194, Epoch 7.1852, Loss 0.5360335
+2019-10-20 16:55:44,699 Iter 195, Epoch 7.2222, Loss 0.5362148
+2019-10-20 16:55:46,632 Iter 196, Epoch 7.2593, Loss 0.5581518
+2019-10-20 16:55:48,850 Iter 197, Epoch 7.2963, Loss 0.6924872
+2019-10-20 16:55:50,653 Iter 198, Epoch 7.3333, Loss 0.4481264
+2019-10-20 16:55:52,523 Iter 199, Epoch 7.3704, Loss 0.6256392
+2019-10-20 16:55:54,317 Iter 200, Epoch 7.4074, Loss 0.5627825
+2019-10-20 16:55:56,191 Iter 201, Epoch 7.4444, Loss 0.5736253
+2019-10-20 16:55:58,045 Iter 202, Epoch 7.4815, Loss 0.6537884
+2019-10-20 16:56:58,818 Setting up a new session...
+2019-10-20 16:56:58,842 Visdom successfully connected to server
+2019-10-20 16:57:02,631 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+d_threshold: 30
+d_uniform: true
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 10
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 16:59:58,843 Setting up a new session...
+2019-10-20 16:59:58,869 Visdom successfully connected to server
+2019-10-20 17:00:02,594 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+d_threshold: 20
+d_uniform: true
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 10
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 17:04:35,345 Setting up a new session...
+2019-10-20 17:04:35,373 Visdom successfully connected to server
+2019-10-20 17:04:39,040 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+d_threshold: 20
+d_uniform: false
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 8
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 17:08:54,405 Setting up a new session...
+2019-10-20 17:08:54,430 Visdom successfully connected to server
+2019-10-20 17:08:58,090 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+d_threshold: 20
+d_uniform: false
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 8
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 17:09:50,564 Setting up a new session...
+2019-10-20 17:09:50,576 Visdom successfully connected to server
+2019-10-20 17:09:54,174 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+d_threshold: 20
+d_uniform: false
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 8
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-10-20 17:11:42,841 Setting up a new session...
+2019-10-20 17:11:42,854 Visdom successfully connected to server
+2019-10-20 17:11:46,578 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 2
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: attention_dice_loss
+criterion_kwargs:
+  eps: 1.0e-05
+  weight_type: identity
+d_threshold: 20
+d_uniform: false
+dataset: Memb3DDataset
+gpu: '0'
+name: DMFNET_MEMB3D_TRAIN
+net: DMFNet
+net_params:
+  conv_channels: 128
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: sync_bn
+  out_class: 8
+num_epochs: 20
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 5
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('181210plc1p2',)
+test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
+  np.int64)), ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
+  NumpyType((np.float32, np.int64, np.int64)) ])
+valid_data_dir: dataset/validation
+valid_freq: 5
+workers: 8
+
+2019-10-20 17:12:02,678 Iter 1, Epoch 0.0370, Loss 0.9675426
+2019-10-20 17:12:04,678 Iter 2, Epoch 0.0741, Loss 1.0000000
+2019-10-20 17:12:06,551 Iter 3, Epoch 0.1111, Loss 0.8493015
+2019-10-20 17:12:08,268 Iter 4, Epoch 0.1481, Loss 0.9999995
+2019-10-20 17:12:10,393 Iter 5, Epoch 0.1852, Loss 0.8373242
+2019-10-20 17:12:12,239 Iter 6, Epoch 0.2222, Loss 0.9999994
+2019-10-20 17:12:14,015 Iter 7, Epoch 0.2593, Loss 0.8193650
+2019-10-20 17:12:15,804 Iter 8, Epoch 0.2963, Loss 0.7718022
+2019-10-20 17:12:17,749 Iter 9, Epoch 0.3333, Loss 0.7660410
+2019-10-20 17:12:19,691 Iter 10, Epoch 0.3704, Loss 0.7498716
+2019-10-20 17:12:21,544 Iter 11, Epoch 0.4074, Loss 0.7611082
+2019-10-20 17:12:23,482 Iter 12, Epoch 0.4444, Loss 0.7452121
+2019-10-20 17:12:25,292 Iter 13, Epoch 0.4815, Loss 0.7108387
+2019-10-20 17:12:27,127 Iter 14, Epoch 0.5185, Loss 0.9999690
+2019-10-20 17:12:28,964 Iter 15, Epoch 0.5556, Loss 0.7264078
+2019-10-20 17:12:30,794 Iter 16, Epoch 0.5926, Loss 0.7035280
+2019-10-20 17:12:32,969 Iter 17, Epoch 0.6296, Loss 0.9999405
+2019-10-20 17:12:34,875 Iter 18, Epoch 0.6667, Loss 0.6730667
+2019-10-20 17:12:36,697 Iter 19, Epoch 0.7037, Loss 0.6562787
+2019-10-20 17:12:38,695 Iter 20, Epoch 0.7407, Loss 0.9997808
+2019-10-20 17:12:40,518 Iter 21, Epoch 0.7778, Loss 0.6330489
+2019-10-20 17:12:42,673 Iter 22, Epoch 0.8148, Loss 0.9970177
+2019-10-20 17:12:44,528 Iter 23, Epoch 0.8519, Loss 0.6770169
+2019-10-20 17:12:46,321 Iter 24, Epoch 0.8889, Loss 0.6489936
+2019-10-20 17:12:48,205 Iter 25, Epoch 0.9259, Loss 0.6384934
+2019-10-20 17:12:50,260 Iter 26, Epoch 0.9630, Loss 0.9999968
+2019-10-20 17:12:52,120 Iter 27, Epoch 1.0000, Loss 0.6622328
+2019-10-20 17:12:54,114 Iter 28, Epoch 1.0370, Loss 0.9717377
+2019-10-20 17:12:56,183 Iter 29, Epoch 1.0741, Loss 0.6287321
+2019-10-20 17:12:57,959 Iter 30, Epoch 1.1111, Loss 0.6709554
+2019-10-20 17:12:59,944 Iter 31, Epoch 1.1481, Loss 0.5878665
+2019-10-20 17:13:01,928 Iter 32, Epoch 1.1852, Loss 0.5983030
+2019-10-20 17:13:03,817 Iter 33, Epoch 1.2222, Loss 0.6067665
+2019-10-20 17:13:05,866 Iter 34, Epoch 1.2593, Loss 0.6521093
+2019-10-20 17:13:07,717 Iter 35, Epoch 1.2963, Loss 0.5985052
+2019-10-20 17:13:09,708 Iter 36, Epoch 1.3333, Loss 0.5981715
+2019-10-20 17:13:11,820 Iter 37, Epoch 1.3704, Loss 0.6459059
+2019-10-20 17:13:13,819 Iter 38, Epoch 1.4074, Loss 0.6244735
+2019-10-20 17:13:15,702 Iter 39, Epoch 1.4444, Loss 0.5911779
+2019-10-20 17:13:17,723 Iter 40, Epoch 1.4815, Loss 0.5853218
+2019-10-20 17:13:19,665 Iter 41, Epoch 1.5185, Loss 0.5904612
+2019-10-20 17:13:21,547 Iter 42, Epoch 1.5556, Loss 0.5998521
+2019-10-20 17:13:23,385 Iter 43, Epoch 1.5926, Loss 0.6749748
+2019-10-20 17:13:25,316 Iter 44, Epoch 1.6296, Loss 0.6679534
+2019-10-20 17:13:27,285 Iter 45, Epoch 1.6667, Loss 0.6555595
+2019-10-20 17:13:29,221 Iter 46, Epoch 1.7037, Loss 0.6397530
+2019-10-20 17:13:31,361 Iter 47, Epoch 1.7407, Loss 0.6424937
+2019-10-20 17:13:33,117 Iter 48, Epoch 1.7778, Loss 0.5321808
+2019-10-20 17:13:35,202 Iter 49, Epoch 1.8148, Loss 0.5877979
+2019-10-20 17:13:37,054 Iter 50, Epoch 1.8519, Loss 0.5751230
+2019-10-20 17:13:39,113 Iter 51, Epoch 1.8889, Loss 0.5688070
+2019-10-20 17:13:41,030 Iter 52, Epoch 1.9259, Loss 0.7129043
+2019-10-20 17:13:43,076 Iter 53, Epoch 1.9630, Loss 0.5493861
+2019-10-20 17:13:44,950 Iter 54, Epoch 2.0000, Loss 0.5953315
+2019-10-20 17:13:46,899 Iter 55, Epoch 2.0370, Loss 0.5490822
+2019-10-20 17:13:48,695 Iter 56, Epoch 2.0741, Loss 0.5864747
+2019-10-20 17:13:50,629 Iter 57, Epoch 2.1111, Loss 0.5316792
+2019-10-20 17:13:52,524 Iter 58, Epoch 2.1481, Loss 0.5812200
+2019-10-20 17:13:54,446 Iter 59, Epoch 2.1852, Loss 0.5925808
+2019-10-20 17:13:56,339 Iter 60, Epoch 2.2222, Loss 0.5764273
+2019-10-20 17:13:58,423 Iter 61, Epoch 2.2593, Loss 0.6257932
+2019-10-20 17:14:00,451 Iter 62, Epoch 2.2963, Loss 0.5774929
+2019-10-20 17:14:02,410 Iter 63, Epoch 2.3333, Loss 0.5030181
+2019-10-20 17:14:04,491 Iter 64, Epoch 2.3704, Loss 0.5576139
+2019-10-20 17:14:06,593 Iter 65, Epoch 2.4074, Loss 0.5733973
+2019-10-20 17:14:08,540 Iter 66, Epoch 2.4444, Loss 0.5530123
+2019-10-20 17:14:10,377 Iter 67, Epoch 2.4815, Loss 0.5846537
+2019-10-20 17:14:12,256 Iter 68, Epoch 2.5185, Loss 0.5546525
+2019-10-20 17:14:14,054 Iter 69, Epoch 2.5556, Loss 0.6370481
+2019-10-20 17:14:16,000 Iter 70, Epoch 2.5926, Loss 0.5817922
+2019-10-20 17:14:17,919 Iter 71, Epoch 2.6296, Loss 0.5411550
+2019-10-20 17:14:19,913 Iter 72, Epoch 2.6667, Loss 0.5948767
+2019-10-20 17:14:21,785 Iter 73, Epoch 2.7037, Loss 0.5296308
+2019-10-20 17:14:23,687 Iter 74, Epoch 2.7407, Loss 0.5244641
+2019-10-20 17:14:25,499 Iter 75, Epoch 2.7778, Loss 0.6281387
+2019-10-20 17:14:27,634 Iter 76, Epoch 2.8148, Loss 0.6154385
+2019-10-20 17:14:29,678 Iter 77, Epoch 2.8519, Loss 0.6062648
+2019-10-20 17:14:31,568 Iter 78, Epoch 2.8889, Loss 0.5372337
+2019-10-20 17:14:33,641 Iter 79, Epoch 2.9259, Loss 0.4965197
+2019-10-20 17:14:35,662 Iter 80, Epoch 2.9630, Loss 0.5258663
+2019-10-20 17:14:37,768 Iter 81, Epoch 3.0000, Loss 0.5497465
+2019-10-20 17:14:39,933 Iter 82, Epoch 3.0370, Loss 0.4965283
+2019-10-20 17:14:41,977 Iter 83, Epoch 3.0741, Loss 0.5939397
+2019-10-20 17:14:43,967 Iter 84, Epoch 3.1111, Loss 0.5769242
+2019-10-20 17:14:46,061 Iter 85, Epoch 3.1481, Loss 0.5541307
+2019-10-20 17:14:47,939 Iter 86, Epoch 3.1852, Loss 0.5500696
+2019-10-20 17:14:50,004 Iter 87, Epoch 3.2222, Loss 0.5375950
+2019-10-20 17:14:51,733 Iter 88, Epoch 3.2593, Loss 0.5267432
+2019-10-20 17:14:53,643 Iter 89, Epoch 3.2963, Loss 0.5043887
+2019-10-20 17:14:55,503 Iter 90, Epoch 3.3333, Loss 0.4819033
+2019-10-20 17:14:57,533 Iter 91, Epoch 3.3704, Loss 0.6206859
+2019-10-20 17:14:59,504 Iter 92, Epoch 3.4074, Loss 0.5432562
+2019-10-20 17:15:01,311 Iter 93, Epoch 3.4444, Loss 0.5739566
+2019-10-20 17:15:03,324 Iter 94, Epoch 3.4815, Loss 0.9390487
+2019-10-20 17:15:05,241 Iter 95, Epoch 3.5185, Loss 0.5204489
+2019-10-20 17:15:07,084 Iter 96, Epoch 3.5556, Loss 0.5129813
+2019-10-20 17:15:09,083 Iter 97, Epoch 3.5926, Loss 0.5221937
+2019-10-20 17:15:11,125 Iter 98, Epoch 3.6296, Loss 0.5084565
+2019-10-20 17:15:13,060 Iter 99, Epoch 3.6667, Loss 0.4723855
+2019-10-20 17:15:14,886 Iter 100, Epoch 3.7037, Loss 0.5074155
+2019-10-20 17:15:16,709 Iter 101, Epoch 3.7407, Loss 0.5352972
+2019-10-20 17:15:18,660 Iter 102, Epoch 3.7778, Loss 0.5197495
+2019-10-20 17:15:20,511 Iter 103, Epoch 3.8148, Loss 0.6042194
+2019-10-20 17:15:22,312 Iter 104, Epoch 3.8519, Loss 0.5428527
+2019-10-20 17:15:24,319 Iter 105, Epoch 3.8889, Loss 0.5538863
+2019-10-20 17:15:26,318 Iter 106, Epoch 3.9259, Loss 0.5560349
+2019-10-20 17:15:28,469 Iter 107, Epoch 3.9630, Loss 0.5156366
+2019-10-20 17:15:30,265 Iter 108, Epoch 4.0000, Loss 0.5590045
+2019-10-20 17:15:32,159 Iter 109, Epoch 4.0370, Loss 0.5268711
+2019-10-20 17:15:34,065 Iter 110, Epoch 4.0741, Loss 0.5090495
+2019-10-20 17:15:36,005 Iter 111, Epoch 4.1111, Loss 0.4897730
+2019-10-20 17:15:37,812 Iter 112, Epoch 4.1481, Loss 0.4795779
+2019-10-20 17:15:39,825 Iter 113, Epoch 4.1852, Loss 0.6197490
+2019-10-20 17:15:41,813 Iter 114, Epoch 4.2222, Loss 0.5147126
+2019-10-20 17:15:43,947 Iter 115, Epoch 4.2593, Loss 0.5467547
+2019-10-20 17:15:45,868 Iter 116, Epoch 4.2963, Loss 0.4963083
+2019-10-20 17:15:47,987 Iter 117, Epoch 4.3333, Loss 0.4898907
+2019-10-20 17:15:49,894 Iter 118, Epoch 4.3704, Loss 0.4975821
+2019-10-20 17:15:51,893 Iter 119, Epoch 4.4074, Loss 0.5778160
+2019-10-20 17:15:53,567 Iter 120, Epoch 4.4444, Loss 0.4940822
+2019-10-20 17:15:55,501 Iter 121, Epoch 4.4815, Loss 0.4417798
+2019-10-20 17:15:57,572 Iter 122, Epoch 4.5185, Loss 0.5886352
+2019-10-20 17:15:59,352 Iter 123, Epoch 4.5556, Loss 0.5180415
+2019-10-20 17:16:01,139 Iter 124, Epoch 4.5926, Loss 0.5035281
+2019-10-20 17:16:02,976 Iter 125, Epoch 4.6296, Loss 0.5226998

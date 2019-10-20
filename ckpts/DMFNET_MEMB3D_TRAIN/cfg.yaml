@@ -1,10 +1,12 @@
-batch_size: 12
+batch_size: 8
 cfg: DMFNET_MEMB3D_TRAIN
 ckpt_dir: ./ckpts
 criterion: attention_dice_loss
 criterion_kwargs:
   eps: 1.0e-05
   weight_type: identity
+d_threshold: 20
+d_uniform: false
 dataset: Memb3DDataset
 gpu: 0,1,2,3
 name: DMFNET_MEMB3D_TRAIN
@@ -15,15 +17,15 @@ net_params:
   in_channels: 1
   n_first: 32
   norm: sync_bn
-  out_class: 5
-num_epochs: 50
+  out_class: 8
+num_epochs: 20
 opt: Adam
 opt_params:
   amsgrad: true
   lr: 0.005
   weight_decay: 1.0e-05
 restore: ''
-save_freq: 10
+save_freq: 5
 seed: 1024
 show_image_freq: -1
 show_loss_freq: -1
@@ -37,5 +39,5 @@ train_embryos: ('170614plc1p1', '170704plc1p1')
 train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
   NumpyType((np.float32, np.int64, np.int64)) ])
 valid_data_dir: dataset/validation
-valid_freq: 10
+valid_freq: 5
 workers: 8
