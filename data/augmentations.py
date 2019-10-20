@@ -43,23 +43,25 @@ def cell_sliced_distance(cell_label, seg_nuc, sampled=True, d_threshold=15):
     vertical_slice_edt = distance_transform_edt(cell_mask)
     vertical_slice_edt[vertical_slice_edt > d_threshold] = d_threshold
     vertical_slice_edt = (d_threshold - vertical_slice_edt) / d_threshold
-    #  to simulate slice annotation, only keep slices through the nucleus
-    keep_mask = np.zeros_like(cell_mask, dtype=bool)
-    for label in sampled_labels:
-        tem_mask = np.zeros_like(cell_mask, dtype=bool)
-        single_cell_mask = (cell_label==label)
-        x, y, z = np.nonzero(np.logical_and(seg_nuc, single_cell_mask))
-        tem_mask[x, :, :] = True; tem_mask[:, y, :] = True; tem_mask[:, :, z] = True  # still too many slices annotation
-        # combine different cells
-        keep_mask = np.logical_or(keep_mask, np.logical_and(single_cell_mask, tem_mask))
-
-    vertical_slice_edt[~keep_mask] = 0  # Output -1 for less attetion in loss
-    return vertical_slice_edt.astype(np.float), (~keep_mask).astype(np.float)
+    # #  to simulate slice annotation, only keep slices through the nucleus # TODO: change from slice to entire cell mask
+    # keep_mask = np.zeros_like(cell_mask, dtype=bool)
+    # for label in sampled_labels:
+    #     tem_mask = np.zeros_like(cell_mask, dtype=bool)
+    #     single_cell_mask = (cell_label==label)
+    #     x, y, z = np.nonzero(np.logical_and(seg_nuc, single_cell_mask))
+    #     tem_mask[x, :, :] = True; tem_mask[:, y, :] = True; tem_mask[:, :, z] = True  # still too many slices annotation
+    #     # combine different cells
+    #     keep_mask = np.logical_or(keep_mask, np.logical_and(single_cell_mask, tem_mask))
+    #
+    # vertical_slice_edt[~keep_mask] = 0  # Output -1 for less attetion in loss
+    keep_mask = cell_mask.copy()
+    return vertical_slice_edt.astype(np.float), (keep_mask).astype(np.float)   # output keep_mask to count on valid mask
 
 
 #  change regression data to discrete class data
-def regression_to_class(res_data, n_class, uniform=True):
+def regression_to_class(res_data, out_class, uniform=True):
+    bins = np.arange(out_class) / (out_class - 1)
     if not uniform:
-        res_data = np.exp(res_data) / math.e
+        bins = np.exp(bins) / math.e
 
-    return np.floor(res_data * n_class)
+    return np.digitize(res_data, bins, right=True)

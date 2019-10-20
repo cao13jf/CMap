@@ -92,7 +92,8 @@ def main():
     #  set dataset loader
     #=====================================================
     Dataset = getattr(datasets, args.dataset)
-    train_set = Dataset(root=args.train_data_dir, membrane_names=args.train_embryos, for_train=True, transforms=args.train_transforms, return_target=True)
+    train_set = Dataset(root=args.train_data_dir, membrane_names=args.train_embryos, for_train=True,
+                        transforms=args.train_transforms, return_target=True, args=args.net_params)
     num_iters = args.num_iters or (len(train_set) * args.num_epochs) // args.batch_size
     num_iters -= args.start_iter
     train_sampler = CycleSampler(len(train_set), num_iters*args.batch_size)
@@ -142,7 +143,7 @@ def main():
         #=============================================================
         #   Show mmiddle results
         if args.show_image_freq > 0 and (i % args.show_image_freq) == 0:
-            image_dict = dict(Raw=raw[0, 0, :, :, 60], Target=target[0, :, :, 60].float(), Prediction=output[0, 5, :, :, 60])
+            image_dict = dict(Raw=raw[0, 0, :, :, 60], Target=target[0, :, :, 60].float(), Prediction=output[0, args.net_params["out_class"]-1, :, :, 60])
             visualizer.show_current_images(image_dict)
         if args.show_loss_freq > 0 and (i % args.show_loss_freq) == 0:
             visualizer.plot_current_losses(progress_ratio=(i+1)/enum_batches, losses=dict(Diceloss=loss.item()))

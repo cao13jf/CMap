@@ -16,21 +16,22 @@ from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation
 #=======================================
 #   data format: dict([raw_memb, raw_nuc, seg_nuc, 'seg_memb, seg_cell'])
 class Memb3DDataset(Dataset):
-    def __init__(self, root="dataset/train", membrane_names=None, for_train=True, return_target=True, transforms=None, suffix="*.pkl"):
+    def __init__(self, root="dataset/train", membrane_names=None, for_train=True, return_target=True, transforms=None, suffix="*.pkl", args=None):
         if membrane_names is None:
             membrane_names = [name for name in os.listdir(root) if os.path.isdir(os.path.join(root, name))]
         self.paths = get_all_stack(root, membrane_names, suffix=suffix)
         self.names = [os.path.basename(path).split(".")[0] for path in self.paths]
         self.for_train = for_train
         self.return_target = return_target
+        self.out_class = args.out_class
         self.transforms = eval(transforms or "Identity()")  # TODO: define transformation library
 
     def __getitem__(self, item):
         stack_name = self.names[item]
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         if self.return_target:
-            seg, mask = cell_sliced_distance(load_dict["seg_cell"], load_dict["seg_nuc"], sampled=True, d_threshold=10)
-            seg = regression_to_class(seg, 10, uniform=False)
+            seg, mask = cell_sliced_distance(load_dict["seg_cell"], load_dict["seg_nuc"], sampled=True, d_threshold=15)
+            seg = regression_to_class(seg, self.out_class, uniform=False)
             raw, seg, mask = self.transforms([load_dict["raw_memb"], seg, mask])
             seg = seg[np.newaxis, ...].transpose([0, 3, 1, 2])  #[Batchsize, Depth, Height, Width]
             mask = mask[np.newaxis, ...].transpose([0, 3, 1, 2])  #[Batchsize, Depth, Height, Width]

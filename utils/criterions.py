@@ -69,16 +69,16 @@ def AttentionMSELoss(output, target, eps=1e-5):
 #   attention dice loss
 #  generalized dice
 def attention_dice_loss(output, target, mask, eps=1e-5, weight_type="square"):
-    target = target.float(); mask = mask.float()
+    mask = mask.float()
     if len(target.shape) == 4:  # multiple class are combined in on volume
         n_class = output.shape[1]
-        target = expand_target(target, n_class, "softmax")
+        target = one_hot_encode(target, n_class).float()
         mask = mask.unsqueeze(1).repeat(1, n_class, 1, 1, 1)
 
     output = flatten(output)
     target = flatten(target)
     mask = flatten(mask)
-    target_sum = target.sum(-1)
+    target_sum = (target * mask).sum(-1)
     if weight_type == "square":
         class_weights = 1. / (target_sum * target_sum + eps)
     elif weight_type == "identity":
@@ -127,6 +127,15 @@ def expand_target(condensed_data, n_class, mode="softmax"):
         target_expand[:, 1, :, :, :] = (condensed_data == 2).float()
     return target_expand.to(condensed_data.device)
 
+#  one hot encode
+def one_hot_encode(condensed_data, n_class):
+    target_size = list(condensed_data.size())
+    target_size.insert(1, n_class)
+    target_shape = tuple(target_size)
+    target_expand = torch.zeros(target_shape)
+    target_expand.scatter_(1, condensed_data.cpu().unsqueeze(1), 1)
+
+    return target_expand.to(condensed_data.device)
 
 def flatten(input):
     # has C channel

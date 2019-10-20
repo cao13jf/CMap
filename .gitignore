@@ -7,3 +7,4 @@ models/sync_batchnorm/__pycache__/
 **.pyc
 **.pth
 **.nii.gz
+**.out
