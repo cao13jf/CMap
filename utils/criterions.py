@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -94,6 +95,7 @@ def attention_dice_loss(output, target, mask, eps=1e-5, weight_type="square"):
         class_weights = 1. / (torch.sqrt(target_sum) + eps)
     else:
         raise ValueError("Unsupport weight type '{}' for generalized loss".format(weight_type))
+    # class_weights = torch.Tensor([1, 50, 50, 1, 1, 1, 1, 1]).float().to(target.device)  # TODO: revise the weight
 
     intersect = (output * target * mask).sum(-1)
     intersect_sum = (intersect * class_weights).sum()

@@ -43,7 +43,7 @@ def cell_sliced_distance(cell_label, seg_nuc, sampled=True, d_threshold=15):
     vertical_slice_edt = distance_transform_edt(cell_mask)
     vertical_slice_edt[vertical_slice_edt > d_threshold] = d_threshold
     vertical_slice_edt = (d_threshold - vertical_slice_edt) / d_threshold
-    vertical_slice_edt = add_volume_boundary_mask(vertical_slice_edt)
+    vertical_slice_edt = add_volume_boundary_mask(vertical_slice_edt, fill_value=0)
     # #  to simulate slice annotation, only keep slices through the nucleus # TODO: change from slice to entire cell mask
     # keep_mask = np.zeros_like(cell_mask, dtype=bool)
     # for label in sampled_labels:
@@ -55,7 +55,7 @@ def cell_sliced_distance(cell_label, seg_nuc, sampled=True, d_threshold=15):
     #     keep_mask = np.logical_or(keep_mask, np.logical_and(single_cell_mask, tem_mask))
     #
     # vertical_slice_edt[~keep_mask] = 0  # Output -1 for less attetion in loss
-    keep_mask = cell_mask.copy()
+    keep_mask = add_volume_boundary_mask(cell_mask, fill_value=True)
     return vertical_slice_edt.astype(np.float), (keep_mask).astype(np.float)   # output keep_mask to count on valid mask
 
 
@@ -68,11 +68,11 @@ def regression_to_class(res_data, out_class, uniform=True):
     return np.digitize(res_data, bins, right=True)
 
 #  add prior information to boundary mask
-def add_volume_boundary_mask(data):
+def add_volume_boundary_mask(data, fill_value):
     W, H, D = data.shape
-    data[[0, W-1], :, :] = 0
-    data[:, [0, H-1], :] = 0
-    data[:, :, [0, D-1]] = 0
+    data[[0, W-1], :, :] = fill_value
+    data[:, [0, H-1], :] = fill_value
+    data[:, :, [0, D-1]] = fill_value
 
     return data
 
