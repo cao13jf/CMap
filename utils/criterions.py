@@ -59,12 +59,19 @@ def generalized_dice_loss(output, target, eps=1e-5, weight_type="square"):
     return 1 - 2 * intersect_sum / denominator_sum
 
 #  attention loss.
-def AttentionMSELoss(output, target, eps=1e-5):
-    target = target.float()
-    MSE_wise = (output - target)**2
-    attention_mask = (target >= 0).float()
+def attention_MSE_loss(output, target, mask, eps=1e-5, weight_type=None):
+    mask = mask.float()
+    n_class = output.shape[1]
+    if len(target.shape) == 4:  # multiple class are combined in on volume
+        #  get weight for soft MSE
+        weight_dis = torch.abs(target.unsqueeze(1) - 0)
+        for i in range(1, n_class):
+            weight_dis = torch.cat((weight_dis, torch.abs(target.unsqueeze(1) - i)), dim=1)
+        weight_dis = weight_dis.float() / n_class
+        target = one_hot_encode(target, n_class).float()
+        mask = mask.unsqueeze(1).repeat(1, n_class, 1, 1, 1)
 
-    return (attention_mask * MSE_wise).sum() / (attention_mask.sum() + eps)
+    return (torch.abs(output - target) * weight_dis * mask).sum() / (mask.sum() + eps)
 
 #   attention dice loss
 #  generalized dice

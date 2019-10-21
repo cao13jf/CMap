@@ -72,7 +72,7 @@ def add_volume_boundary_mask(data):
     W, H, D = data.shape
     data[[0, W-1], :, :] = 0
     data[:, [0, H-1], :] = 0
-    data[:, :, [0, H-1]] = 0
+    data[:, :, [0, D-1]] = 0
 
     return data
 

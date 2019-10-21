@@ -67,8 +67,7 @@ def main():
     model = Network(**args.net_params)
     model = torch.nn.DataParallel(model).cuda()
     optimizer = getattr(torch.optim, args.opt)(model.parameters(), **args.opt_params)
-    criterion = getattr(criterions, args.criterion)
-
+    losses = args.criterion
     #=====================================================
     #  resume network
     #=====================================================
@@ -127,13 +126,17 @@ def main():
         raw, target, mask = data[:3]
         output = model(raw)
 
-        #  get loss
-        if not args.weight_type:
-            args.weight_type = "square"
-        if args.criterion_kwargs is not None:
-            loss = criterion(output, target, mask, **args.criterion_kwargs)
-        else:
-            loss = criterion(output, target)
+        #  get multiple losses.
+        if not args.criterion_kwargs.weight_type:
+            args.criterion_kwargs.weight_type = "square"
+        loss = []
+        for loss_func, loss_weight in zip(losses, args.criterion_weights):
+            criterion = getattr(criterions, loss_func)
+            if args.criterion_kwargs is not None:
+                loss.append(loss_weight * criterion(output, target, mask, **args.criterion_kwargs))
+            else:
+                loss.append(criterion(output, target, mask))
+        loss = sum(loss)
 
         #  backward
         optimizer.zero_grad()
