@@ -4,7 +4,7 @@ net_params:
   n_first: 32
   conv_channels: 128
   groups: 16
-  norm: sync_bn #sync_bn
+  norm: in #sync_bn
   out_class: 8
 
 criterion: attention_dice_loss

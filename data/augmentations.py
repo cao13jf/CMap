@@ -43,6 +43,7 @@ def cell_sliced_distance(cell_label, seg_nuc, sampled=True, d_threshold=15):
     vertical_slice_edt = distance_transform_edt(cell_mask)
     vertical_slice_edt[vertical_slice_edt > d_threshold] = d_threshold
     vertical_slice_edt = (d_threshold - vertical_slice_edt) / d_threshold
+    vertical_slice_edt = add_volume_boundary_mask(vertical_slice_edt)
     # #  to simulate slice annotation, only keep slices through the nucleus # TODO: change from slice to entire cell mask
     # keep_mask = np.zeros_like(cell_mask, dtype=bool)
     # for label in sampled_labels:
@@ -65,3 +66,13 @@ def regression_to_class(res_data, out_class, uniform=True):
         bins = np.sqrt(bins)
 
     return np.digitize(res_data, bins, right=True)
+
+#  add prior information to boundary mask
+def add_volume_boundary_mask(data):
+    W, H, D = data.shape
+    data[[0, W-1], :, :] = 0
+    data[:, [0, H-1], :] = 0
+    data[:, :, [0, H-1]] = 0
+
+    return data
+

@@ -81,3 +81,33 @@
 2019-10-20 16:15:00,697 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_19.pth' (iter 133)
 2019-10-20 16:15:00,702 --------------------------------------------------
 2019-10-20 16:15:00,702 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_19.pth' (iter 133)
+2019-10-21 10:25:29,536 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_19.pth' (iter 131)
+2019-10-21 10:25:29,539 --------------------------------------------------
+2019-10-21 10:25:29,539 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_19.pth' (iter 131)
+2019-10-21 10:30:15,127 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_19.pth' (iter 131)
+2019-10-21 10:30:15,128 --------------------------------------------------
+2019-10-21 10:30:15,128 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_19.pth' (iter 131)
+2019-10-21 10:44:52,627 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_10.pth' (iter 269)
+2019-10-21 10:44:52,629 --------------------------------------------------
+2019-10-21 10:44:52,629 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_10.pth' (iter 269)
+2019-10-21 10:50:23,226 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_5.pth' (iter 134)
+2019-10-21 10:50:23,230 --------------------------------------------------
+2019-10-21 10:50:23,230 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_5.pth' (iter 134)
+2019-10-21 10:56:39,867 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_5.pth' (iter 134)
+2019-10-21 10:56:39,872 --------------------------------------------------
+2019-10-21 10:56:39,872 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_5.pth' (iter 134)
+2019-10-21 11:35:10,659 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_20.pth' (iter 1079)
+2019-10-21 11:35:10,661 --------------------------------------------------
+2019-10-21 11:35:10,661 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_20.pth' (iter 1079)
+2019-10-21 14:31:21,528 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_5.pth' (iter 269)
+2019-10-21 14:31:21,533 --------------------------------------------------
+2019-10-21 14:31:21,534 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_5.pth' (iter 269)
+2019-10-21 15:08:50,729 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_20.pth' (iter 539)
+2019-10-21 15:08:50,733 --------------------------------------------------
+2019-10-21 15:08:50,734 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_20.pth' (iter 539)
+2019-10-21 15:26:15,784 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_10.pth' (iter 269)
+2019-10-21 15:26:15,788 --------------------------------------------------
+2019-10-21 15:26:15,788 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_10.pth' (iter 269)
+2019-10-21 15:44:42,438 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_15.pth' (iter 404)
+2019-10-21 15:44:42,443 --------------------------------------------------
+2019-10-21 15:44:42,443 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_15.pth' (iter 404)

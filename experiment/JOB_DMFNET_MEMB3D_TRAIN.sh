@@ -3,6 +3,7 @@
 
 #SBATCH -J Memb_3D_WEAKDIS
 #SBATCH -N 1
+#SBATCH -c 8
 #SBATCH --gres=gpu:4
 #SBATCH
 

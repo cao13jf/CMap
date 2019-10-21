@@ -31,6 +31,7 @@ class Memb3DDataset(Dataset):
 
     def __getitem__(self, item):
         stack_name = self.names[item]
+
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         if self.return_target:
             seg, mask = cell_sliced_distance(load_dict["seg_cell"], load_dict["seg_nuc"], sampled=self.d_uniform, d_threshold=self.d_threshold)
@@ -43,6 +44,8 @@ class Memb3DDataset(Dataset):
         else:
             raw = self.transforms(load_dict["raw_memb"])
         raw = raw[np.newaxis, np.newaxis, :, :, :]  # [Batchsize, channels, Height, Width, Depth]
+        # time_channel = np.ones_like(raw) * float(stack_name.split("_")[1][1:])
+        # raw = np.concatenate((raw, time_channel), axis=1)
         raw = np.ascontiguousarray(raw.transpose([0, 1, 4, 2, 3]))  # [Batchsize, channels, Depth, Height, Width]
 
         if self.return_target:

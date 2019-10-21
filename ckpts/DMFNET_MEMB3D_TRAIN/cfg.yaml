@@ -8,7 +8,8 @@ criterion_kwargs:
 d_threshold: 20
 d_uniform: false
 dataset: Memb3DDataset
-gpu: 0,1,2,3
+gpu: '0'
+mode: 2
 name: DMFNET_MEMB3D_TRAIN
 net: DMFNet
 net_params:
@@ -16,7 +17,7 @@ net_params:
   groups: 16
   in_channels: 1
   n_first: 32
-  norm: sync_bn
+  norm: in
   out_class: 8
 num_epochs: 20
 opt: Adam
@@ -24,12 +25,13 @@ opt_params:
   amsgrad: true
   lr: 0.005
   weight_decay: 1.0e-05
-restore: ''
+save_format: nii.gz
 save_freq: 5
+save_result: true
 seed: 1024
-show_image_freq: -1
-show_loss_freq: -1
+snap_shot: true
 start_iter: 0
+suffix: '*5.pkl'
 test_data_dir: dataset/test
 test_embryos: ('181210plc1p2',)
 test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
@@ -38,6 +40,7 @@ train_data_dir: dataset/train
 train_embryos: ('170614plc1p1', '170704plc1p1')
 train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
   NumpyType((np.float32, np.int64, np.int64)) ])
+trained_model: model_epoch_15.pth
 valid_data_dir: dataset/validation
 valid_freq: 5
 workers: 8
