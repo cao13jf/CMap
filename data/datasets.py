@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 
 # import user defined
 from .data_utils import get_all_stack, pkload
-from .augmentations import cell_sliced_distance, regression_to_class
+from .augmentations import cell_sliced_distance, regression_to_class, sampled_cell_mask
 from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation, Pad, Resize
 
 
@@ -15,6 +15,7 @@ from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation
 #  Import membrane datasets
 #=======================================
 #   data format: dict([raw_memb, raw_nuc, seg_nuc, 'seg_memb, seg_cell'])
+#   "weak dataset" where unanotated datasets are masked out
 class Memb3DDataset(Dataset):
     def __init__(self, root="dataset/train", membrane_names=None, out_class=10, for_train=True, return_target=True, transforms=None, suffix="*.pkl", args=None):
         if membrane_names is None:
@@ -34,8 +35,9 @@ class Memb3DDataset(Dataset):
 
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         if self.return_target:
-            seg, mask = cell_sliced_distance(load_dict["seg_cell"], load_dict["seg_nuc"], sampled=self.d_uniform, d_threshold=self.d_threshold)
+            seg, mask = cell_sliced_distance(load_dict["seg_cell"], load_dict["seg_memb"], sampled=self.d_uniform, d_threshold=self.d_threshold)
             seg = regression_to_class(seg, self.out_class, uniform=self.d_uniform)
+            # seg, mask = sampled_cell_mask(load_dict["seg_cell"], load_dict["seg_memb"])
             raw, seg, mask = self.transforms([load_dict["raw_memb"], seg, mask])
             seg = seg[np.newaxis, ...].transpose([0, 3, 1, 2])  #[Batchsize, Depth, Height, Width]
             mask = mask[np.newaxis, ...].transpose([0, 3, 1, 2])  #[Batchsize, Depth, Height, Width]
@@ -63,4 +65,3 @@ class Memb3DDataset(Dataset):
         # if len(batch) == 1:
         #     out_batch = [x.unsqueeze(0) for x in out_batch]
         return out_batch
-

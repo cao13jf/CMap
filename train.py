@@ -147,8 +147,9 @@ def main():
         #   Show mmiddle results
         prediction = output.detach().cpu().numpy()
         prediction = prediction.argmax(1)  # [channel, height, width, depth]
+        print(np.unique(prediction))
         if args.show_image_freq > 0 and (i % args.show_image_freq) == 0:
-            image_dict = dict(Raw=raw[0, 0, :, :, 60], Target=target[0, :, :, 60].float()/args.net_params["out_class"], Prediction=prediction[0, :, :, 60]/args.net_params["out_class"])
+            image_dict = dict(Raw=raw[0, 0, :, :, 60], Target=target[0, :, :, 60].float()/(args.net_params["out_class"]-1), Prediction=prediction[0, :, :, 60]/(args.net_params["out_class"]-1))
             visualizer.show_current_images(image_dict)
         if args.show_loss_freq > 0 and (i % args.show_loss_freq) == 0:
             visualizer.plot_current_losses(progress_ratio=(i+1)/enum_batches, losses=dict(Diceloss=loss.item()))

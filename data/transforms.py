@@ -79,7 +79,7 @@ class RandomRotation(Base):
         return list(shape)
 
     def tf(self, img, k=0):  # TODO: consider 'cval'
-        img = ndimage.rotate(img, self.angle_buffer, axes=self.axes_buffer, reshape=False, order=0, mode="constant", cval=0)
+        img = ndimage.rotate(img, self.angle_buffer, axes=self.axes_buffer, reshape=False, order=0, mode="reflect", cval=0)
         return img
 
     def __str__(self):

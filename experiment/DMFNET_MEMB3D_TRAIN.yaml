@@ -1,11 +1,11 @@
-net: DMFNet #  Parameters used for training.
+net: SliceNet #  Parameters used for training.
 net_params:
   in_channels: 1
   n_first: 32
   conv_channels: 128
   groups: 16
   norm: in #sync_bn
-  out_class: 8
+  out_class: 6
 
 criterion: [attention_dice_loss]  # , attention_MSE_loss
 criterion_weights: [1]
