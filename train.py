@@ -165,7 +165,7 @@ def main():
     torch.save(dict(
         iter=i,
         state_dict=model.state_dict(),
-        optim_dict=model.state_dict()
+        optim_dict=optimizer.state_dict()
     ), file_name)
 
 

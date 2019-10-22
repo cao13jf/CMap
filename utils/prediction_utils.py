@@ -31,7 +31,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
         #  get measurement
         prediction = prediction.cpu().numpy()
         prediction = prediction.argmax(0).transpose([1, 2, 0])  # [channel, height, width, depth]
-        prediction = resize(prediction, (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
+        prediction = resize(prediction.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True).astype(np.uint8)
 
         #  post process
         if postprocess == True:
