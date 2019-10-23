@@ -16,4 +16,5 @@ be counted.
 weights on neighboring slices** 
 * [ ] For <u>*boundary pixels*</u>, the distance to the centers of neighboring pixels should be
 embeded with smooth changes. From the prediction results, pixels from the same class **is grouped
-together**. So only boundary pixels are needed to be counted into the distance constrain. 
+together**. So only boundary pixels are needed to be counted into the distance constrain.
+* [ ] The **weight at distance wieghts should not =0** when the region overlaps with the target. 

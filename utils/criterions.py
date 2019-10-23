@@ -68,7 +68,7 @@ def attention_MSE_loss(output, target, mask, eps=1e-5, weight_type=None):
         weight_dis = torch.abs(target.unsqueeze(1) - 0)
         for i in range(1, n_class):
             weight_dis = torch.cat((weight_dis, torch.abs(target.unsqueeze(1) - i)), dim=1)
-        weight_dis = weight_dis.float() / n_class
+        weight_dis = (weight_dis.float() + n_class)/ (n_class * 2)
         target = one_hot_encode(target, n_class).float()
         mask = mask.unsqueeze(1).repeat(1, n_class, 1, 1, 1)
 

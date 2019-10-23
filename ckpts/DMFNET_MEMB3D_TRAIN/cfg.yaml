@@ -1,7 +1,7 @@
 batch_size: 8
 cfg: DMFNET_MEMB3D_TRAIN
 ckpt_dir: ./ckpts
-criterion: ('attention_dice_loss',)
+criterion: ('attention_MSE_loss',)
 criterion_kwargs:
   eps: 1.0e-05
   weight_type: identity

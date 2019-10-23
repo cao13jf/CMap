@@ -7,7 +7,7 @@ net_params:
   norm: in #sync_bn
   out_class: 6
 
-criterion: [attention_dice_loss]  # , attention_MSE_loss
+criterion: [attention_MSE_loss]  # , attention_MSE_loss
 criterion_weights: [1]
 criterion_kwargs:
   weight_type: identity
