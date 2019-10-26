@@ -4,6 +4,8 @@ ckpt_dir: ./ckpts
 criterion: generalized_dice_loss
 dataset: Memb3DDataset
 eps: 1.0e-05
+get_cell: true
+get_memb_bin: false
 gpu: '0'
 mode: 2
 name: DMFNET_MEMB3D_TRAIN
@@ -27,7 +29,7 @@ save_result: true
 seed: 1024
 snap_shot: true
 start_iter: 0
-suffix: '*5.pkl'
+suffix: '*.pkl'
 test_data_dir: dataset/test
 test_embryos: ('181210plc1p2',)
 test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
@@ -36,7 +38,7 @@ train_data_dir: dataset/train
 train_embryos: ('170614plc1p1', '170704plc1p1')
 train_transforms: Compose([ RandCrop((128,128,128)), RandomRotation(10), RandomFlip(0),
   NumpyType((np.float32, np.int64)) ])
-trained_model: model_epoch_40.pth
+trained_model: model_epoch_50.pth
 valid_data_dir: dataset/validation
 valid_freq: 10
 weight_type: square

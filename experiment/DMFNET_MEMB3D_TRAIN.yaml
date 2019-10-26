@@ -27,6 +27,8 @@ opt_params:
 
 workers: 8
 
+get_memb_bin: false
+get_cell: true
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
 test_embryos: [181210plc1p2]  # embryos used for testing.
 train_transforms: # for training
