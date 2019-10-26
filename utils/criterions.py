@@ -71,8 +71,12 @@ def attention_MSE_loss(output, target, mask, eps=1e-5, weight_type=None):
         weight_dis = (weight_dis.float() + n_class)/ (n_class * 2)
         target = one_hot_encode(target, n_class).float()
         mask = mask.unsqueeze(1).repeat(1, n_class, 1, 1, 1)
+    output, target, weight_dis, mask = flatten([output, target, weight_dis, mask])
+    # target_sum = (target * mask).sum(-1)
+    # class_weights = get_weight(target_sum, weight_type)
+    # class_wegits = torch.tensor([1, 1, 1, 2, 2, 5]).float().to(output.device)
 
-    return (torch.abs(output - target) * weight_dis * mask).sum() / (mask.sum() + eps)
+    return ((torch.abs(output - target) * weight_dis * mask)).sum() / (mask.sum() + eps)
 
 #   attention dice loss
 #  generalized dice
@@ -83,20 +87,11 @@ def attention_dice_loss(output, target, mask, eps=1e-5, weight_type="square"):
         target = one_hot_encode(target, n_class).float()
         mask = mask.unsqueeze(1).repeat(1, n_class, 1, 1, 1)
 
-    output = flatten(output)
-    target = flatten(target)
-    mask = flatten(mask)
+    output, target, mask = flatten([output, target, mask])
     target_sum = (target * mask).sum(-1)
-    if weight_type == "square":
-        class_weights = 1. / (target_sum * target_sum + eps)
-    elif weight_type == "identity":
-        class_weights = 1. / (target_sum + eps)
-    elif weight_type == "sqrt":
-        class_weights = 1. / (torch.sqrt(target_sum) + eps)
-    else:
-        raise ValueError("Unsupport weight type '{}' for generalized loss".format(weight_type))
-    # class_weights = torch.Tensor([1, 50, 50, 1, 1, 1, 1, 1]).float().to(target.device)  # TODO: revise the weight
+    class_weights = get_weight(target_sum, weight_type)
 
+    #  calculate generalized Dice
     intersect = (output * target * mask).sum(-1)
     intersect_sum = (intersect * class_weights).sum()
     denominator = ((output + target)* mask).sum(-1)
@@ -148,11 +143,33 @@ def one_hot_encode(condensed_data, n_class):
 
 def flatten(input):
     # has C channel
-    assert input.dim() > 3, "Only support volume data flatten"
-    if input.dim() == 5:
-        C = input.size(1)
-        axis_order = (1, 0) + tuple(range(2, input.dim()))
-        input = input.permute(axis_order)
+    input_list = [input] if not isinstance(input, (list, tuple)) else input
+    output_list = []
+    for data in input_list:
+        if data.dim() == 5:
+            C = data.size(1)
+            axis_order = (1, 0) + tuple(range(2, data.dim()))
+            data = data.permute(axis_order)
+        else:
+            C = 1
+        output_list.append(data.reshape(C, -1))
+
+    return output_list
+
+def get_weight(target_sum, weight_type):
+    """
+    Get weights for classes
+    :param target_sum:  [C x N]  sum of pixels in each class
+    :param weight_type:
+    :return:
+    """
+    if weight_type == "square":
+        class_weights = 1. / (target_sum * target_sum + 1e-5)
+    elif weight_type == "identity":
+        class_weights = 1. / (target_sum + 1e-5)
+    elif weight_type == "sqrt":
+        class_weights = 1. / (torch.sqrt(target_sum) + 1e-5)
     else:
-        C = 1
-    return input.reshape(C, -1)
+        raise ValueError("Unsupport weight type '{}' for generalized loss".format(weight_type))
+
+    return class_weights

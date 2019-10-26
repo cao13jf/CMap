@@ -129,3 +129,6 @@
 2019-10-23 13:31:15,756 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_20.pth' (iter 539)
 2019-10-23 13:31:15,760 --------------------------------------------------
 2019-10-23 13:31:15,760 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_20.pth' (iter 539)
+2019-10-23 23:36:37,147 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_40.pth' (iter 359)
+2019-10-23 23:36:37,152 --------------------------------------------------
+2019-10-23 23:36:37,152 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_epoch_40.pth' (iter 359)

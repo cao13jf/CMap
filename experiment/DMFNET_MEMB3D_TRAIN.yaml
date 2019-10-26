@@ -4,7 +4,7 @@ net_params:
   n_first: 32
   conv_channels: 128
   groups: 16
-  norm: in #sync_bn
+  norm: sync_bn #sync_bn
   out_class: 6
 
 criterion: [attention_MSE_loss]  # , attention_MSE_loss
@@ -19,8 +19,8 @@ d_uniform: False
 
 seed: 1024
 batch_size: 8
-num_epochs: 20
-save_freq: 5     # save every 50 epochs
+num_epochs: 80
+save_freq: 10     # save every 50 epochs
 valid_freq: 5   # validate every 10 epochs
 start_iter: 0
 
