@@ -153,9 +153,9 @@ class MFNet(nn.Module):
         # time encoder
         self.MLP_in = nn.Sequential(
             nn.Linear(in_features=1, out_features=256),
-            nn.InstanceNorm1d(256),
+            nn.BatchNorm1d(256),
             nn.Linear(in_features=256, out_features=1024),
-            nn.InstanceNorm1d(1024)
+            nn.BatchNorm1d(1024)
         )
         # encoder
         self.first_conv = nn.Conv3d(in_channels, n_first, kernel_size=3, padding=1, stride=2, bias=False)
@@ -177,7 +177,7 @@ class MFNet(nn.Module):
 
         # decoder
         self.upsample1 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block1 = MFUnit(2*conv_channels+2*conv_channels, 2*conv_channels, groups=groups, stride=1, norm=norm)
+        self.decoder_block1 = MFUnit(2*conv_channels+2*conv_channels + 2, 2*conv_channels, groups=groups, stride=1, norm=norm)
 
         self.upsample2 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
         self.decoder_block2 = MFUnit(2*conv_channels+conv_channels, conv_channels, groups=groups, stride=1, norm=norm)
@@ -208,7 +208,7 @@ class MFNet(nn.Module):
         x1 = self.encoder_block1(x0)
         x2 = self.encoder_block2(x1)
         x3 = self.encoder_block3(x2)
-        x3 = torch.concat(x3, t0_reshape, dim=1)
+        x3 = torch.cat([x3, t0_reshape], dim=1)
 
         #  decoder
         y1 = self.upsample1(x3)

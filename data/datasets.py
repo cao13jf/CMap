@@ -26,6 +26,7 @@ class Memb3DDataset(Dataset):
 
     def __getitem__(self, item):
         stack_name = self.names[item]
+        tp = float(stack_name.split("_")[1][1:])
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         if self.return_target:
             raw, seg = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"]])
@@ -37,8 +38,8 @@ class Memb3DDataset(Dataset):
         raw = np.ascontiguousarray(raw.transpose([0, 1, 4, 2, 3]))  # [Batchsize, channels, Depth, Height, Width]
 
         if self.return_target:
-            raw, seg = torch.from_numpy(raw), torch.from_numpy(seg)
-            return raw, seg
+            raw, seg, tp = torch.from_numpy(raw), torch.from_numpy(seg), torch.tensor([tp]).unsqueeze(dim=0)
+            return raw, seg, tp
         else:
             raw = torch.from_numpy(raw)
             return raw
