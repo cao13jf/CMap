@@ -17,11 +17,10 @@ from utils.data_io import nib_load, nib_save
 #=========================================================================
 def segment_membrane(para):
     embryo_name = para[0]
-    file_name = para[1]  # TODO: change for parallel
+    file_name = para[1]
     egg_shell = para[2]
     name_embryo_T = "_".join(os.path.basename(file_name).split("_")[0:2])
 
-    #  TODO: clear binary image
     binary_embryo = nib_load(file_name) * egg_shell
     assert len(np.unique(binary_embryo)) == 2, "Post process can only process binary image"
     binary_cell = (binary_embryo == 0).astype(np.uint8)

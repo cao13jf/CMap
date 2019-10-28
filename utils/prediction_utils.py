@@ -63,6 +63,6 @@ def membrane2cell(args):
                 parameters.append([embryo_name, file_name, embryo_mask])
                 # segment_membrane(parameters)  # test without parallel compu
         mpPool = mp.Pool(mp.cpu_count() - 1)
-        for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters)):
+        for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters), desc="membrane --> cell"):
             pass
 

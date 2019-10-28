@@ -150,6 +150,13 @@ class MFNet(nn.Module):
     def __init__(self, in_channels=1, n_first=32, conv_channels=128, groups=16, norm="bn", out_class=2):
         super(MFNet, self).__init__()
 
+        # time encoder
+        self.MLP_in = nn.Sequential(
+            nn.Linear(in_features=1, out_features=256),
+            nn.InstanceNorm1d(256),
+            nn.Linear(in_features=256, out_features=1024),
+            nn.InstanceNorm1d(1024)
+        )
         # encoder
         self.first_conv = nn.Conv3d(in_channels, n_first, kernel_size=3, padding=1, stride=2, bias=False)
         self.encoder_block1 = nn.Sequential(
@@ -190,13 +197,18 @@ class MFNet(nn.Module):
                 nn.init.constant_(m.weight, 1.)
                 nn.init.constant(m.bias, 0.0)
 
-    def forward(self, x):
+    def forward(self, x, t):
+        #  encoder time domain with MLP
+        t0 = self.MLP_in(t)
+        t0_reshape = torch.reshape(t0, [-1, 2, 8, 8, 8])
+
         x0 = self.first_conv(x)
 
         #  encoder
         x1 = self.encoder_block1(x0)
         x2 = self.encoder_block2(x1)
         x3 = self.encoder_block3(x2)
+        x3 = torch.concat(x3, t0_reshape, dim=1)
 
         #  decoder
         y1 = self.upsample1(x3)
