@@ -224,15 +224,15 @@ def cell_filter_with_nucleus(cell_seg, nuc_seg):
 
 
 def get_largest_connected_region(embryo_mask):
-    embryo_mask = ndimage.morphology.binary_opening(embryo_mask)
     label_structure = np.ones((3, 3, 3))
+    embryo_mask = ndimage.morphology.binary_closing(embryo_mask, structure=label_structure)
     [labelled_regions, _]= ndimage.label(embryo_mask, label_structure)
     count_label = np.bincount(labelled_regions.flat)
     count_label[0] = 0
     valid_edt_mask0 = (labelled_regions == np.argmax(count_label))
     valid_edt_mask0 = ndimage.morphology.binary_closing(valid_edt_mask0)
 
-    return valid_edt_mask0
+    return valid_edt_mask0.astype(np.uint8)
 
 
 #================================================================

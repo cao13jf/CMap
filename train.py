@@ -123,8 +123,8 @@ def main():
 
         #  go through the network
         data = [t.cuda(non_blocking=True) for t in data]  # Set non_blocking for multiple GPUs
-        raw, target, tp = data[:3]
-        output = model(raw, tp)
+        raw, target = data[:2]
+        output = model(raw)
 
         #  get loss
         if not args.weight_type:

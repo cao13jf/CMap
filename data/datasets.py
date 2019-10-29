@@ -37,11 +37,16 @@ class Memb3DDataset(Dataset):
         raw = raw[np.newaxis, np.newaxis, :, :, :]  # [Batchsize, channels, Height, Width, Depth]
         raw = np.ascontiguousarray(raw.transpose([0, 1, 4, 2, 3]))  # [Batchsize, channels, Depth, Height, Width]
 
+        #==================================== add time information =======================
+        raw = torch.from_numpy(raw)
+        tp = tp * torch.ones_like(raw) / 200.0
+        raw = torch.cat([raw, tp], dim=1)
+        #==================================== add time information =======================
+
         if self.return_target:
-            raw, seg, tp = torch.from_numpy(raw), torch.from_numpy(seg), torch.tensor([tp]).unsqueeze(dim=0)
-            return raw, seg, tp
+            seg= torch.from_numpy(seg)
+            return raw, seg
         else:
-            raw = torch.from_numpy(raw)
             return raw
 
     def __len__(self):

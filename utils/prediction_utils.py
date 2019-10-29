@@ -19,7 +19,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
     H, W, T = 205, 285, 134  # input size to the network
     model.eval()
     runtimes = []
-    for i, data in enumerate(tqdm(valid_loader, desc="Segmenting testing data:")):
+    for i, data in enumerate(tqdm(valid_loader, desc="Getting binary membrane:")):
         if scoring:
             target_cpu = data["seg_memb"][0, 0, :, :, :].numpy() if scoring else None
             x, target = data["raw_memb"], data["seg_memb"]  # TODO: batch = in prediction
@@ -41,7 +41,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             pass  # TODO: add postprocess
 
         #  save volume and snapshot data
-        prediction = get_largest_connected_region(prediction)
+        # prediction = get_largest_connected_region(prediction)
         if savepath is not None:
             if "npy" in save_format.lower():
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "MembBin", names[i] + "_membBin"), prediction)

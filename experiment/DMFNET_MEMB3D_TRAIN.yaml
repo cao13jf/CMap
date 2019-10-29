@@ -1,6 +1,6 @@
 net: DMFNet #  Parameters used for training.
 net_params:
-  in_channels: 1
+  in_channels: 2
   n_first: 32
   conv_channels: 128
   groups: 16
@@ -27,8 +27,8 @@ opt_params:
 
 workers: 8
 
-get_memb_bin: false
-get_cell: true
+get_memb_bin: true
+get_cell: false
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
 test_embryos: [181210plc1p2]  # embryos used for testing.
 train_transforms: # for training
