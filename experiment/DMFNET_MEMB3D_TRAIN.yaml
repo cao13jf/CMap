@@ -1,16 +1,16 @@
 net: DMFNet #  Parameters used for training.
 net_params:
-  in_channels: 2
+  in_channels: 1
   n_first: 32
   conv_channels: 128
   groups: 16
   norm: in #sync_bn
-  out_class: 2
+  out_class: 1
 
-criterion: generalized_dice_loss
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
 
-weight_type: square
-eps: 1e-5
 dataset: Memb3DDataset
 seed: 1024
 batch_size: 8
@@ -27,20 +27,23 @@ opt_params:
 
 workers: 8
 
-get_memb_bin: true
+get_memb_bin: ture
+show_snap: true
+#  Postprocess
 get_cell: false
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
 test_embryos: [181210plc1p2]  # embryos used for testing.
 train_transforms: # for training
   Compose([
+    ContourEDT(15),
     RandCrop((128,128,128)),
     RandomRotation(10),
     RandomFlip(0),
-    NumpyType((np.float32, np.int64))
+    NumpyType((np.float32, np.float32))
     ])
 test_transforms: # for testing
   Compose([
     Pad([205, 285, 144]),
     Resize((208, 288, 144)),
-    NumpyType((np.float32, np.int64)),
+    NumpyType((np.float32, np.float32)),
     ])

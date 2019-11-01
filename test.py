@@ -18,6 +18,7 @@ from torch.utils.data import DataLoader
 import models
 from data import datasets
 from utils import ParserUse, str2bool
+from utils.show_train import Visualizer
 from utils.prediction_utils import validate, membrane2cell
 
 cudnn.benchmark = True
@@ -31,14 +32,19 @@ parser.add_argument("--mode", default=2, type=int, help="0 -- cross-validation o
                                                                        "2 -- testing on the testing set")
 parser.add_argument("--gpu", default="0", type=str, help="GPUs used for training")
 parser.add_argument("--suffix", default="*.pkl", type=str, help="Suffix used fo filter data")
-parser.add_argument("--save_result", default=False, type=str2bool, help="Whether save the result")
 parser.add_argument("--save_format", default="nii", type=str, help="Format of saved file")
-parser.add_argument("--snap_shot", default=False, type=str2bool, help="Whether save one snapped slice for the result")
 args = parser.parse_args()
 args = ParserUse(args.cfg, log="test").add_args(args)
 args.gpu = str(args.gpu)
 ckpts = args.makedir()
 args.resume = os.path.join(ckpts, args.trained_model)
+
+#===========================================
+# Snap visualizer
+#===========================================
+visualizer = None
+if args.show_snap:
+    visualizer = Visualizer(1)
 
 #=========================================================
 #  main program for prediction
@@ -47,7 +53,6 @@ def main():
     setproctitle.setproctitle(args.cfg)
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     assert torch.cuda.is_available(), "CPU is needed for prediction"
-
 
     #=============================================================
     #  set seeds for randomlization
@@ -71,7 +76,7 @@ def main():
         model.load_state_dict(check_point["state_dict"])
 
         msg = ("Loaded checkpoint '{}' (iter {})".format(args.resume, check_point["iter"]))
-        masg = "\n" + str(args)
+        msg = msg + "\n" + str(args)
         logging.info(msg)
 
         #=============================================================
@@ -88,7 +93,7 @@ def main():
             is_scoring = False
         else:
             raise ValueError("Choose mode from '0--train, 1--valid, 2--test'")
-        if args.save_result:
+        if args.get_memb_bin or args.get_cell:
             if args.test_embryos is None:
                 args.test_embryos = [name for name in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, name))]
         Dataset = getattr(datasets, args.dataset)
@@ -106,7 +111,7 @@ def main():
         #  begin prediction
         #=============================================================
         #  Prepare (or clear) in order to update all files
-        if args.save_result:
+        if args.get_memb_bin or args.get_cell:
             for embryo_name in args.test_embryos:
                 if os.path.isdir(os.path.join("./output", embryo_name)):
                     shutil.rmtree(os.path.join("./output", embryo_name))
@@ -117,11 +122,11 @@ def main():
             validate(
                 valid_loader=test_loader,  # dataset loader
                 model=model,  # model
-                savepath="./output",  # output folder
+                savepath= None, #"./output",  # output folder
                 names=test_set.names,  # stack name lists
                 scoring=False,  # whether keep accuracy
                 save_format=".nii.gz",  # save volume format
-                snapsot=False,  # whether keep snap
+                snapsot=visualizer,  # whether keep snap
                 postprocess=False,
             )
     #  Post process on binary segmentation.

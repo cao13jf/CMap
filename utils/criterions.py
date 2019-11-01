@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -6,6 +7,31 @@ import torch.nn.functional as F
 #==================================================
 #   different loss functions
 #==================================================
+
+#  MSE loss
+def mse_loss(output, target, weight_type):
+    # bk_sum = (target == 0).sum([1, 2, 3]).float()
+    # ft_sum = (target != 0).sum([1, 2, 3]).float()
+
+    # #  get weights
+    # if weight_type == "square":
+    #     instance_weights = (bk_sum / (ft_sum + 1e-5))**2
+    # elif weight_type == "identity":
+    #     instance_weights = (bk_sum / (ft_sum + 1e-5))
+    # elif weight_type == "sqrt":
+    #     instance_weights = torch.sqrt((bk_sum / (ft_sum + 1e-5)))
+    # else:
+    #     raise ValueError("Unsupport weight type '{}' for generalized loss".format(weight_type))
+    # weights = []
+    # for i in range(target.shape[0]):
+    #     weight0 = (target[i, ...] != 0).float()
+    #     weight = weight0 * instance_weights[i]
+    #     weight[weight0 == 0] = 1
+    #     weights.append(weight)
+    loss = 0.5 * ((0.2 * target + target.mean()) * (target - output)**2).mean()
+
+    return loss
+
 #  Focal loss
 def focal_loss(output, target, alpha=0.25, gamma=2.0):
     #  change data into [N, C]
@@ -58,6 +84,44 @@ def generalized_dice_loss(output, target, eps=1e-5, weight_type="square"):
 
     return 1 - 2 * intersect_sum / denominator_sum
 
+#  attention loss.
+def attention_MSE_loss(output, target, mask, eps=1e-5, weight_type=None):
+    mask = mask.float()
+    n_class = output.shape[1]
+    if len(target.shape) == 4:  # multiple class are combined in on volume
+        #  get weight for soft MSE
+        weight_dis = torch.abs(target.unsqueeze(1) - 0)
+        for i in range(1, n_class):
+            weight_dis = torch.cat((weight_dis, torch.abs(target.unsqueeze(1) - i)), dim=1)
+        weight_dis = (weight_dis.float() + n_class)/ (n_class * 2)
+        target = one_hot_encode(target, n_class).float()
+        mask = mask.unsqueeze(1).repeat(1, n_class, 1, 1, 1)
+    output, target, weight_dis, mask = flatten([output, target, weight_dis, mask])
+    # target_sum = (target * mask).sum(-1)
+    # class_weights = get_weight(target_sum, weight_type)
+    # class_wegits = torch.tensor([1, 1, 1, 2, 2, 5]).float().to(output.device)
+
+    return ((torch.abs(output - target) * weight_dis * mask)).sum() / (mask.sum() + eps)
+
+#   attention dice loss
+def attention_dice_loss(output, target, mask, eps=1e-5, weight_type="square"):
+    mask = mask.float()
+    if len(target.shape) == 4:  # multiple class are combined in on volume
+        n_class = output.shape[1]
+        target = one_hot_encode(target, n_class).float()
+        mask = mask.unsqueeze(1).repeat(1, n_class, 1, 1, 1)
+
+    output, target, mask = flatten([output, target, mask])
+    target_sum = (target * mask).sum(-1)
+    class_weights = get_weight(target_sum, weight_type)
+
+    #  calculate generalized Dice
+    intersect = (output * target * mask).sum(-1)
+    intersect_sum = (intersect * class_weights).sum()
+    denominator = ((output + target)* mask).sum(-1)
+    denominator_sum = (denominator * class_weights).sum() + eps
+
+    return 1 - 2 * intersect_sum / denominator_sum
 
 #===================================================
 #  function used to calculate the prediction scaore
@@ -91,6 +155,15 @@ def expand_target(condensed_data, n_class, mode="softmax"):
         target_expand[:, 1, :, :, :] = (condensed_data == 2).float()
     return target_expand.to(condensed_data.device)
 
+#  one hot encode
+def one_hot_encode(condensed_data, n_class):
+    target_size = list(condensed_data.size())
+    target_size.insert(1, n_class)
+    target_shape = tuple(target_size)
+    target_expand = torch.zeros(target_shape)
+    target_expand.scatter_(1, condensed_data.cpu().unsqueeze(1), 1)
+
+    return target_expand.to(condensed_data.device)
 
 def flatten(input):
     # has C channel
@@ -102,3 +175,21 @@ def flatten(input):
     else:
         C = 1
     return input.reshape(C, -1)
+
+def get_weight(target_sum, weight_type):
+    """
+    Get weights for classes
+    :param target_sum:  [C x N]  sum of pixels in each class
+    :param weight_type:
+    :return:
+    """
+    if weight_type == "square":
+        class_weights = 1. / (target_sum * target_sum + 1e-5)
+    elif weight_type == "identity":
+        class_weights = 1. / (target_sum + 1e-5)
+    elif weight_type == "sqrt":
+        class_weights = 1. / (torch.sqrt(target_sum) + 1e-5)
+    else:
+        raise ValueError("Unsupport weight type '{}' for generalized loss".format(weight_type))
+
+    return class_weights

@@ -8,6 +8,7 @@ import torch
 import numpy as np
 from scipy import ndimage
 from skimage.transform import resize
+from scipy.ndimage.morphology import distance_transform_edt
 
 #  import user defined library
 from .rand import Constant, Uniform, Gaussian
@@ -226,6 +227,22 @@ class GaussianBlur(Base):
 
     def __str__(self):
         return "GaussianBlur()"
+
+
+#   binary mask to distance
+class ContourEDT(Base):
+    def __init__(self, d_threshold=15):
+        self.d_threshold = d_threshold
+
+    def tf(self, img, k=0):
+        if k == 0:
+            return img
+        assert len(np.unique(img)) == 2, "DistanceTransform only works for binary image!"
+        background_edt = distance_transform_edt(img == 0)
+        background_edt[background_edt > self.d_threshold] = self.d_threshold
+        reversed_edt = (self.d_threshold - background_edt) / self.d_threshold
+
+        return reversed_edt.astype(np.float32)
 
 
 #   Normalization

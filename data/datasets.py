@@ -7,8 +7,8 @@ from torch.utils.data import Dataset
 
 # import user defined
 from .data_utils import get_all_stack, pkload
-from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation, Pad, Resize
-
+from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation, Pad, Resize, ContourEDT
+from .augmentations import contour_distance
 
 #=======================================
 #  Import membrane datasets
@@ -30,17 +30,17 @@ class Memb3DDataset(Dataset):
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         if self.return_target:
             raw, seg = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"]])
-            seg = seg[np.newaxis, ...].transpose([0, 3, 1, 2])  #[Batchsize, Depth, Height, Width]
+            seg = seg[np.newaxis, np.newaxis, ...].transpose([0, 1, 4, 2, 3])  #[Batchsize, Depth, Height, Width]
             seg = np.ascontiguousarray(seg)
         else:
             raw = self.transforms(load_dict["raw_memb"])
         raw = raw[np.newaxis, np.newaxis, :, :, :]  # [Batchsize, channels, Height, Width, Depth]
         raw = np.ascontiguousarray(raw.transpose([0, 1, 4, 2, 3]))  # [Batchsize, channels, Depth, Height, Width]
+        raw = torch.from_numpy(raw)
 
         #==================================== add time information =======================
-        raw = torch.from_numpy(raw)
-        tp = tp * torch.ones_like(raw) / 200.0
-        raw = torch.cat([raw, tp], dim=1)
+        # tp = tp * torch.ones_like(raw) / 200.0
+        # raw = torch.cat([raw, tp], dim=1)
         #==================================== add time information =======================
 
         if self.return_target:

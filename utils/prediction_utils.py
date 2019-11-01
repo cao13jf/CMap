@@ -15,7 +15,7 @@ from utils.data_io import nib_save, img_save
 from utils.ProcessLib import segment_membrane, get_largest_connected_region, get_eggshell
 
 def validate(valid_loader, model, savepath=None, names=None, scoring=False, verbose=False, save_format=".nii.gz",
-             snapsot=False, postprocess=False):
+             snapsot=None, postprocess=False):
     H, W, T = 205, 285, 134  # input size to the network
     model.eval()
     runtimes = []
@@ -27,14 +27,17 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             x = data[0]  # TODO: change collate in dataloader
         #  go through the network
         start_time = time.time()
-        log_predict = model(x)   # [1, 2, depth, width, height]
+        prediction = model(x)   # [1, 2, depth, width, height]
         elapsed_time = time.time() - start_time
         runtimes.append(elapsed_time)
-        prediction = F.softmax(log_predict, dim=1).squeeze()
-        #  get measurement
+        #  Regression only has one channel
+        if prediction.shape[1] > 1:
+            prediction = F.softmax(prediction, dim=1)
+            prediction = prediction.argmax(0) # [channel, height, width, depth]
+
         prediction = prediction.cpu().numpy()
-        prediction = prediction.argmax(0).transpose([1, 2, 0])  # [channel, height, width, depth]
-        prediction = resize(prediction.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True).astype(np.uint8)
+        prediction = prediction.squeeze().transpose([1, 2, 0])
+        prediction = resize(prediction.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
 
         #  post process
         if postprocess == True:
@@ -42,16 +45,16 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
 
         #  save volume and snapshot data
         # prediction = get_largest_connected_region(prediction)
+        if snapsot is not None:
+            time.sleep(2)
+            image_dict = dict(Raw=x[0, 0, :, :, 60], Prediction=prediction[120, :, :])
+            snapsot.show_current_images(image_dict)
         if savepath is not None:
             if "npy" in save_format.lower():
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "MembBin", names[i] + "_membBin"), prediction)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "MembBin",  names[i] + "_membBin.nii.gz")
                 nib_save(prediction, save_name)
-                #  save snapshot
-                if snapsot:
-                    file_name = os.path.join(savepath, "snapshot", names[i] + str(60) + ".png")
-                    img_save(prediction[:, :, 60], file_name)
 
 def membrane2cell(args):
         for embryo_name in args.test_embryos:
