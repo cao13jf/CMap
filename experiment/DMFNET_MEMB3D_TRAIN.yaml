@@ -39,7 +39,7 @@ train_transforms: # for training
     RandomIntensityChange([0.1, 0.1]),
     RandCrop((128,128,128)),
     RandomFlip(0),
-    NumpyType((np.float32, np.float32, np.float32))
+    NumpyType((np.float32, np.float32, np.float32, np.float32))
     ])
 test_transforms: # for testing
   Compose([

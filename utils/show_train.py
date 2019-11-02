@@ -34,10 +34,10 @@ class Visualizer():
         if not hasattr(self, 'plot_data'):
             self.plot_data = {'X': [], 'Y': [], 'legend': list(losses.keys())}
         self.plot_data['X'].append(progress_ratio)
-        self.plot_data['Y'].append(losses["Diceloss"])
+        self.plot_data['Y'].append([losses[k] for k in self.plot_data["legend"]])
         try:
             self.vis.line(
-                X=np.array(self.plot_data['X']),
+                X=np.stack([np.array(self.plot_data["X"])] * len(self.plot_data["legend"]), 1),
                 Y=np.array(self.plot_data['Y']),
                 opts={
                     'title': ' loss over time',

@@ -37,7 +37,7 @@ test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyT
 train_data_dir: dataset/train
 train_embryos: ('170614plc1p1', '170704plc1p1')
 train_transforms: Compose([ ContourEDT(15), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
-  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32)) ])
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
 valid_data_dir: dataset/validation
 valid_freq: 10
 workers: 8

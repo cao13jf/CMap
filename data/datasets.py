@@ -31,11 +31,8 @@ class Memb3DDataset(Dataset):
         if self.return_target:
             seg_nuc = load_dict["seg_nuc"]
             edt_nuc = contour_distance(seg_nuc, d_threshold=60)
-            raw, seg, edt_nuc = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"], edt_nuc])
-            seg = seg[np.newaxis, np.newaxis, ...].transpose([0, 1, 4, 2, 3])  #[Batchsize, Depth, Height, Width]
-            seg = np.ascontiguousarray(seg)
-            edt_nuc = edt_nuc[np.newaxis, np.newaxis, ...].transpose([0, 1, 4, 2, 3])  #[Batchsize, Depth, Height, Width]
-            edt_nuc = np.ascontiguousarray(edt_nuc)
+            raw, seg_dis, seg_bin, edt_nuc = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"], load_dict["seg_memb"], edt_nuc])
+            seg_dis, seg_bin, edt_nuc = self.volume2tensor([seg_dis, seg_bin, edt_nuc])
         else:
             raw = self.transforms(load_dict["raw_memb"])
         raw = raw[np.newaxis, np.newaxis, :, :, :]  # [Batchsize, channels, Height, Width, Depth]
@@ -44,14 +41,23 @@ class Memb3DDataset(Dataset):
 
         #==================================== add time information =======================
         tp = tp * torch.ones_like(raw) / 200.0
-        raw = torch.cat([raw, tp, torch.from_numpy(edt_nuc)], dim=1)
+        raw = torch.cat([raw, tp, edt_nuc], dim=1)
         #==================================== add time information =======================
         #==================================== add nucleus distance channel================
         if self.return_target:
-            seg = torch.from_numpy(seg)
-            return raw, seg
+            return raw, seg_dis, seg_bin
         else:
             return raw
+    def volume2tensor(self, volumes, dim_order = [2, 0, 1]):
+        volumes = volumes if isinstance(volumes, list) else [volumes]
+        outputs = []
+        for volume in volumes:
+            volume = volume.transpose(dim_order)[np.newaxis, np.newaxis, ...]
+            volume = np.ascontiguousarray(volume)
+            volume = torch.from_numpy(volume)
+            outputs.append(volume)
+
+        return outputs
 
     def __len__(self):
         return len(self.names)

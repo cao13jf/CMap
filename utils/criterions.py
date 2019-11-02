@@ -61,7 +61,8 @@ def dice(output, target, eps=1e-5):
 
 #  generalized dice
 def generalized_dice_loss(output, target, eps=1e-5, weight_type="square"):
-    if len(target.shape) == 4:  # multiple class are combined in on volume
+    if target.shape[1] == 1:  # multiple class are combined in on volume
+        target = target.squeeze(dim=1)
         n_class = output.shape[1]
         target = expand_target(target, n_class, "softmax")
 

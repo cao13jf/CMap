@@ -23,7 +23,8 @@ from utils.train_utils import adjust_learning_rate
 from data import datasets
 from data.data_utils import init_fn
 from data.sampler import CycleSampler
-
+#  loss
+from utils.criterions import mse_loss, generalized_dice_loss
 
 cudnn.benchmark = True  # let auto-tuner find the most efficient network (used in fixed network.)
 
@@ -123,16 +124,19 @@ def main():
 
         #  go through the network
         data = [t.cuda(non_blocking=True) for t in data]  # Set non_blocking for multiple GPUs
-        raw, target = data[:2]
-        output = model(raw)
+        raw, target_distance, target_bin= data[:3]
+        output_dis, output_bin = model(raw)
 
         #  get loss
         if not args.weight_type:
             args.weight_type = "square"
         if args.criterion_kwargs is not None:
-            loss = criterion(output, target, **args.criterion_kwargs)
+            loss_dis = 100 * mse_loss(output_dis, target_distance, weight_type="square")
+            loss_bin = generalized_dice_loss(output_bin, target_bin, )
+            loss = loss_bin + loss_dis
         else:
-            loss = criterion(output, target)
+            pass
+            # loss = criterion(output, target_distance)
 
         #  backward
         optimizer.zero_grad()
@@ -142,10 +146,11 @@ def main():
         #=============================================================
         #   Show mmiddle results
         if args.show_image_freq > 0 and (i % args.show_image_freq) == 0:
-            image_dict = dict(Raw=raw[0, 0, :, :, 60], Target=target[0, 0, :, :, 60].float(), Prediction=output[0, 0, :, :, 60].float())
+            image_dict = dict(Raw=raw[0, 0, :, :, 60].float(), target_dis=target_distance[0, 0, :, :, 60].float(), target_bin=target_bin[0, 0, :, :, 60].float(),
+                              Predis=output_dis[0, 0, :, :, 60].float(), output_bin=output_bin[0, 1, :, :, 60].float())
             visualizer.show_current_images(image_dict)
         if args.show_loss_freq > 0 and (i % args.show_loss_freq) == 0:
-            visualizer.plot_current_losses(progress_ratio=(i+1)/enum_batches, losses=dict(Diceloss=loss.item()))
+            visualizer.plot_current_losses(progress_ratio=(i+1)/enum_batches, losses=dict(loss_dis=loss_dis.item(), loss_bin=loss_bin.item(), loss=loss.item()))
         # =============================================================
 
         #  save trained model

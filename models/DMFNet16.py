@@ -167,22 +167,44 @@ class MFNet(nn.Module):
             MFUnit(num_in=3*conv_channels, num_out=2*conv_channels, groups=groups, stride=1, norm=norm)
         )
 
-        # decoder
-        self.upsample1 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block1 = MFUnit(2*conv_channels+2*conv_channels, 2*conv_channels, groups=groups, stride=1, norm=norm)
+        #==================================================================
+        #   decoder --- distance branch
+        #==================================================================
+        self.upsample1_1 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block1_1 = MFUnit(2*conv_channels+2*conv_channels, 2*conv_channels, groups=groups, stride=1, norm=norm)
 
-        self.upsample2 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block2 = MFUnit(2*conv_channels+conv_channels, conv_channels, groups=groups, stride=1, norm=norm)
+        self.upsample1_2 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block1_2 = MFUnit(2*conv_channels+conv_channels, conv_channels, groups=groups, stride=1, norm=norm)
 
-        self.upsample3 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block3 = MFUnit(conv_channels+n_first, n_first, groups=groups, stride=1, norm=norm)
-        self.upsample4 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.upsample1_3 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block1_3 = MFUnit(conv_channels+n_first, n_first, groups=groups, stride=1, norm=norm)
+        self.upsample1_4 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
 
         # num_in, num_out, kernel_size=1, stride=1, padding=None, groups=1, norm=Non
-        self.seg = Conv3dBlock(n_first, out_class, kernel_size=1, stride=1, norm=norm)
+        self.seg_dis = Conv3dBlock(n_first, 1, kernel_size=1, stride=1, norm=norm)
 
         # self.softmax = nn.Softmax(dim=1)
-        self.softmax = nn.Sigmoid()
+        self.sigmoid = nn.Sigmoid()
+
+
+        #===============================================================
+        #    decoder -- binary branch
+        #===============================================================
+        self.upsample2_1 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block2_1 = MFUnit(2*conv_channels+2*conv_channels, 2*conv_channels, groups=groups, stride=1, norm=norm)
+
+        self.upsample2_2 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block2_2 = MFUnit(2*conv_channels+conv_channels, conv_channels, groups=groups, stride=1, norm=norm)
+
+        self.upsample2_3 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block2_3 = MFUnit(conv_channels+n_first, n_first, groups=groups, stride=1, norm=norm)
+        self.upsample2_4 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+
+        # num_in, num_out, kernel_size=1, stride=1, padding=None, groups=1, norm=Non
+        self.seg_bin = Conv3dBlock(n_first, 2, kernel_size=1, stride=1, norm=norm)
+
+        # self.softmax = nn.Softmax(dim=1)
+        self.softmax = nn.Softmax(dim=1)
 
         #  further process on the distance
         #  Weights initlization
@@ -202,21 +224,35 @@ class MFNet(nn.Module):
         x2 = self.encoder_block2(x1)
         x3 = self.encoder_block3(x2)
 
-        #  decoder
-        y1 = self.upsample1(x3)
-        y1 = torch.cat([x2, y1], dim=1)
-        y1 = self.decoder_block1(y1)
-        y2 = self.upsample2(y1)
-        y2 = torch.cat([x1, y2], dim=1)
-        y2 = self.decoder_block2(y2)
-        y3 = self.upsample3(y2)
-        y3 = torch.cat([x0, y3], dim=1)
-        y3 = self.decoder_block3(y3)
-        y4 = self.upsample4(y3)
-        y4 = self.seg(y4)
-        if hasattr(self, "softmax"):
-            y4 = self.softmax(y4)
-        return y4
+        #  decoder -- distance branch
+        y1_1 = self.upsample1_1(x3)
+        y1_1 = torch.cat([x2, y1_1], dim=1)
+        y1_1 = self.decoder_block1_1(y1_1)
+        y1_2 = self.upsample1_2(y1_1)
+        y1_2 = torch.cat([x1, y1_2], dim=1)
+        y1_2 = self.decoder_block1_2(y1_2)
+        y1_3 = self.upsample1_3(y1_2)
+        y1_3 = torch.cat([x0, y1_3], dim=1)
+        y1_3 = self.decoder_block1_3(y1_3)
+        y1_4 = self.upsample1_4(y1_3)
+        y1_4 = self.seg_dis(y1_4)
+        seg_dis = self.sigmoid(y1_4)
+
+        #  decoder -- binary branch
+        y2_1 = self.upsample2_1(x3)
+        y2_1 = torch.cat([x2, y2_1], dim=1)
+        y2_1 = self.decoder_block2_1(y2_1)
+        y2_2 = self.upsample2_2(y2_1)
+        y2_2 = torch.cat([x1, y2_2], dim=1)
+        y2_2 = self.decoder_block2_2(y2_2)
+        y2_3 = self.upsample2_3(y2_2)
+        y2_3 = torch.cat([x0, y2_3], dim=1)
+        y2_3 = self.decoder_block2_3(y2_3)
+        y2_4 = self.upsample2_4(y2_3)
+        y2_4 = self.seg_bin(y2_4)
+        seg_bin = self.softmax(y2_4)
+
+        return seg_dis, seg_bin
 
 
 #   Define DMFNet based on MFNet
