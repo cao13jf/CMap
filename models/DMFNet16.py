@@ -183,6 +183,8 @@ class MFNet(nn.Module):
 
         # self.softmax = nn.Softmax(dim=1)
         self.softmax = nn.Sigmoid()
+
+        #  further process on the distance
         #  Weights initlization
         for m in self.modules():
             if isinstance(m, nn.Conv3d):

@@ -57,6 +57,7 @@ def segment_membrane(para):
     save_name = os.path.join("./output", embryo_name, "CellSeg", name_embryo_T+"_cellSeg.nii.gz")
     nib_save(cell_seg.astype(np.uint16), save_name)
 
+
 #================================================================================
 #       extra tools
 #================================================================================

@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 
 # import user defined
 from .data_utils import get_all_stack, pkload
-from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation, Pad, Resize, ContourEDT
+from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation, Pad, Resize, ContourEDT, RandomIntensityChange
 from .augmentations import contour_distance
 
 #=======================================
@@ -29,9 +29,13 @@ class Memb3DDataset(Dataset):
         tp = float(stack_name.split("_")[1][1:])
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         if self.return_target:
-            raw, seg = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"]])
+            seg_nuc = load_dict["seg_nuc"]
+            edt_nuc = contour_distance(seg_nuc, d_threshold=60)
+            raw, seg, edt_nuc = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"], edt_nuc])
             seg = seg[np.newaxis, np.newaxis, ...].transpose([0, 1, 4, 2, 3])  #[Batchsize, Depth, Height, Width]
             seg = np.ascontiguousarray(seg)
+            edt_nuc = edt_nuc[np.newaxis, np.newaxis, ...].transpose([0, 1, 4, 2, 3])  #[Batchsize, Depth, Height, Width]
+            edt_nuc = np.ascontiguousarray(edt_nuc)
         else:
             raw = self.transforms(load_dict["raw_memb"])
         raw = raw[np.newaxis, np.newaxis, :, :, :]  # [Batchsize, channels, Height, Width, Depth]
@@ -39,12 +43,12 @@ class Memb3DDataset(Dataset):
         raw = torch.from_numpy(raw)
 
         #==================================== add time information =======================
-        # tp = tp * torch.ones_like(raw) / 200.0
-        # raw = torch.cat([raw, tp], dim=1)
+        tp = tp * torch.ones_like(raw) / 200.0
+        raw = torch.cat([raw, tp, torch.from_numpy(edt_nuc)], dim=1)
         #==================================== add time information =======================
-
+        #==================================== add nucleus distance channel================
         if self.return_target:
-            seg= torch.from_numpy(seg)
+            seg = torch.from_numpy(seg)
             return raw, seg
         else:
             return raw

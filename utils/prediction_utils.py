@@ -54,7 +54,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "MembBin", names[i] + "_membBin"), prediction)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "MembBin",  names[i] + "_membBin.nii.gz")
-                nib_save(prediction, save_name)
+                nib_save((prediction > 0.9).astype(np.uint8), save_name)
 
 def membrane2cell(args):
         for embryo_name in args.test_embryos:

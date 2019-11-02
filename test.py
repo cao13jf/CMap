@@ -122,7 +122,7 @@ def main():
             validate(
                 valid_loader=test_loader,  # dataset loader
                 model=model,  # model
-                savepath= None, #"./output",  # output folder
+                savepath= "./output",  # output folder
                 names=test_set.names,  # stack name lists
                 scoring=False,  # whether keep accuracy
                 save_format=".nii.gz",  # save volume format

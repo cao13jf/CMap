@@ -186,11 +186,12 @@ class RandomIntensityChange(Base):
         self.scale = scale
 
     def tf(self, img, k=0):
-        if k==1:
+        if k==0:
+            shift_buffer = np.random.uniform(-self.shift, self.shift, size = list(img.shape))
+            scale_factor = np.random.uniform(1.0 - self.scale, 1.0 + self.scale, size=list(img.shape))
+            return img * scale_factor + shift_buffer
+        else:
             return img
-        shift_buffer = np.random.uniform(-self.shift, self.shift, size = list(img.shape))
-        scale_factor = np.random.uniform(1.0 - self.scale, 1.0 + self.scale, size=list(img.shape))
-        return img * scale_factor + shift_buffer
 
     def __str__(self):
         return "random intensity shift on the input image"
@@ -231,18 +232,19 @@ class GaussianBlur(Base):
 
 #   binary mask to distance
 class ContourEDT(Base):
+    #  only applicable to binary image
     def __init__(self, d_threshold=15):
         self.d_threshold = d_threshold
 
     def tf(self, img, k=0):
-        if k == 0:
-            return img
-        assert len(np.unique(img)) == 2, "DistanceTransform only works for binary image!"
-        background_edt = distance_transform_edt(img == 0)
-        background_edt[background_edt > self.d_threshold] = self.d_threshold
-        reversed_edt = (self.d_threshold - background_edt) / self.d_threshold
+        if len(np.unique(img)) == 2:
+            background_edt = distance_transform_edt(img == 0)
+            background_edt[background_edt > self.d_threshold] = self.d_threshold
+            reversed_edt = (self.d_threshold - background_edt) / self.d_threshold
 
-        return reversed_edt.astype(np.float32)
+            return reversed_edt.astype(np.float32)
+        else:
+            return img
 
 
 #   Normalization
