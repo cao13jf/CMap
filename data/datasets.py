@@ -28,20 +28,18 @@ class Memb3DDataset(Dataset):
         stack_name = self.names[item]
         tp = float(stack_name.split("_")[1][1:])
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
+        seg_nuc = load_dict["seg_nuc"]
+        edt_nuc = contour_distance(seg_nuc, d_threshold=60)
         if self.return_target:
-            seg_nuc = load_dict["seg_nuc"]
-            edt_nuc = contour_distance(seg_nuc, d_threshold=60)
             raw, seg_dis, seg_bin, edt_nuc = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"], load_dict["seg_memb"], edt_nuc])
-            seg_dis, seg_bin, edt_nuc = self.volume2tensor([seg_dis, seg_bin, edt_nuc])
+            raw, seg_dis, seg_bin, edt_nuc = self.volume2tensor([raw, seg_dis, seg_bin, edt_nuc])
         else:
-            raw = self.transforms(load_dict["raw_memb"])
-        raw = raw[np.newaxis, np.newaxis, :, :, :]  # [Batchsize, channels, Height, Width, Depth]
-        raw = np.ascontiguousarray(raw.transpose([0, 1, 4, 2, 3]))  # [Batchsize, channels, Depth, Height, Width]
-        raw = torch.from_numpy(raw)
+            raw, edt_nuc = self.transforms([load_dict["raw_memb"], edt_nuc])
+            raw, edt_nuc = self.volume2tensor([raw, edt_nuc])
 
         #==================================== add time information =======================
-        tp = tp * torch.ones_like(raw) / 200.0
-        raw = torch.cat([raw, tp, edt_nuc], dim=1)
+        # tp = tp * torch.ones_like(raw) / 200.0
+        # raw = torch.cat([raw, edt_nuc], dim=1)
         #==================================== add time information =======================
         #==================================== add nucleus distance channel================
         if self.return_target:

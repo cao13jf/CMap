@@ -1,6 +1,6 @@
 net: DMFNet #  Parameters used for training.
 net_params:
-  in_channels: 3
+  in_channels: 1
   n_first: 32
   conv_channels: 128
   groups: 16
@@ -28,7 +28,7 @@ opt_params:
 workers: 8
 
 get_memb_bin: ture
-show_snap: false
+show_snap: ture
 #  Postprocess
 get_cell: false
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.

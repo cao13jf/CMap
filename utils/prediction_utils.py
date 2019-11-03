@@ -27,17 +27,22 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             x = data[0]  # TODO: change collate in dataloader
         #  go through the network
         start_time = time.time()
-        prediction = model(x)   # [1, 2, depth, width, height]
+        pred_dis, pred_bin = model(x)   # [1, 2, depth, width, height]
         elapsed_time = time.time() - start_time
         runtimes.append(elapsed_time)
         #  Regression only has one channel
-        if prediction.shape[1] > 1:
-            prediction = F.softmax(prediction, dim=1)
-            prediction = prediction.argmax(0) # [channel, height, width, depth]
+        if pred_bin.shape[1] > 1:
+            # pred_bin = F.softmax(pred_bin, dim=1)
+            pred_bin = pred_bin.argmax(1) # [channel, height, width, depth]
 
-        prediction = prediction.cpu().numpy()
-        prediction = prediction.squeeze().transpose([1, 2, 0])
-        prediction = resize(prediction.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
+        #  binary prediction
+        pred_bin = pred_bin.cpu().numpy()
+        pred_bin = pred_bin.squeeze().transpose([1, 2, 0])
+        pred_bin = resize(pred_bin.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
+        #  distance prediction
+        pred_dis = pred_dis.cpu().numpy()
+        pred_dis = pred_dis.squeeze().transpose([1, 2, 0])
+        pred_dis = resize(pred_dis.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
 
         #  post process
         if postprocess == True:
@@ -47,14 +52,16 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
         # prediction = get_largest_connected_region(prediction)
         if snapsot is not None:
             time.sleep(2)
-            image_dict = dict(Raw=x[0, 0, :, :, 60], Prediction=prediction[120, :, :])
+            x =  x.cpu().numpy()
+            x = x.transpose([0, 1, 3, 4, 2])
+            image_dict = dict(Raw=x[0, 0, :, :, 60], bin=pred_bin[:, :, 60], dis=pred_dis[:, :, 60])
             snapsot.show_current_images(image_dict)
         if savepath is not None:
             if "npy" in save_format.lower():
-                np.save(os.path.join(savepath,  names[i].split("_")[0], "MembBin", names[i] + "_membBin"), prediction)
+                np.save(os.path.join(savepath,  names[i].split("_")[0], "MembBin", names[i] + "_membBin"), pred_bin)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "MembBin",  names[i] + "_membBin.nii.gz")
-                nib_save((prediction > 0.9).astype(np.uint8), save_name)
+                nib_save((pred_bin > 0.9).astype(np.uint8), save_name)
 
 def membrane2cell(args):
         for embryo_name in args.test_embryos:
