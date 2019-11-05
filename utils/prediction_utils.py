@@ -54,14 +54,14 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             time.sleep(2)
             x =  x.cpu().numpy()
             x = x.transpose([0, 1, 3, 4, 2])
-            image_dict = dict(Raw=x[0, 0, :, :, 60], bin=pred_bin[:, :, 60], dis=pred_dis[:, :, 60])
+            image_dict = dict(Raw=x[0, 0, :, 100, :], bin=pred_bin[:, 100, :], dis=pred_dis[:, 100, :])
             snapsot.show_current_images(image_dict)
         if savepath is not None:
             if "npy" in save_format.lower():
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "MembBin", names[i] + "_membBin"), pred_bin)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "MembBin",  names[i] + "_membBin.nii.gz")
-                nib_save((pred_bin > 0.9).astype(np.uint8), save_name)
+                nib_save(pred_bin.astype(np.uint8), save_name)
 
 def membrane2cell(args):
         for embryo_name in args.test_embryos:

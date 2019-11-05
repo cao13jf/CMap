@@ -5,9 +5,12 @@
     * --> In coporate time with MLP and **reshape and concatenate the time features as a channel layer**.
     [Temporal consistency objectives regularize the learning of disentangled representations](https://arxiv.org/abs/1908.11330?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+arxiv%2FQSXk+%28ExcitingAds%21+cs+updates+on+arXiv.org%29)
 * [ ] How to constrain the width of the predicted membrane mask to get more precise results; 
-* [ ] Use nucleus voroni segmentation as as constrain;
-* [ ] Loss function on rays distance from the center to the membrane surface --> universe;
-* [ ] Augmentation on weak boundary;
+* [x] Use nucleus voroni segmentation as as constrain --> Distanc between *membrane* and *voroni*
+might mislead the network. Combine nucleus points as a separate **binary** channel (large error
+ when combine as Gaussian distance map, especialy when t>100). 
+* [ ] Loss function on rays distance from the center to the membrane surface --> **PolarIoU loss**
+[PolarMask Single shot instance segmentation with polar representation](https://www.evernote.com/l/AoJhyTxvDUpHB4W3c0I_mFJ53vH6_kb0zYQ/);
+* [ ] Augmentation on weak boundary --> [A weakly supervised method for instance segmentation of biological cells](https://www.evernote.com/l/AoJWPvj9qcJNBa3uJVKN3qZZpMBn1q210QY/);
 * [ ] Few-shot training with only a few slices annotation cross the nucleus center. For each
 cell we only annotate two vertical plans cross the nucleus. Then use distance constrained 
 learning to learn the **overall volumetric distance transformation** and **further 

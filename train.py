@@ -131,7 +131,7 @@ def main():
         if not args.weight_type:
             args.weight_type = "square"
         if args.criterion_kwargs is not None:
-            loss_dis = 100 * mse_loss(output_dis, target_distance, weight_type="square")
+            loss_dis = 20 * mse_loss(output_dis, target_distance, weight_type="square")
             loss_bin = generalized_dice_loss(output_bin, target_bin, )
             loss = loss_bin + loss_dis
         else:

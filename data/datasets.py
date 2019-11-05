@@ -29,8 +29,9 @@ class Memb3DDataset(Dataset):
         tp = float(stack_name.split("_")[1][1:])
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
         seg_nuc = load_dict["seg_nuc"]
-        edt_nuc = contour_distance(seg_nuc, d_threshold=60)
+        edt_nuc = contour_distance(seg_nuc, d_threshold=2)
         if self.return_target:
+            # bin_to_dis = np.logical_or(load_dict["seg_memb"], load_dict["seg_nuc"]).astype(np.uin)
             raw, seg_dis, seg_bin, edt_nuc = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"], load_dict["seg_memb"], edt_nuc])
             raw, seg_dis, seg_bin, edt_nuc = self.volume2tensor([raw, seg_dis, seg_bin, edt_nuc])
         else:
@@ -39,7 +40,7 @@ class Memb3DDataset(Dataset):
 
         #==================================== add time information =======================
         # tp = tp * torch.ones_like(raw) / 200.0
-        # raw = torch.cat([raw, edt_nuc], dim=1)
+        raw = torch.cat([raw, edt_nuc], dim=1)
         #==================================== add time information =======================
         #==================================== add nucleus distance channel================
         if self.return_target:
