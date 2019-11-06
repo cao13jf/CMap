@@ -237,7 +237,7 @@ class ContourEDT(Base):
         self.d_threshold = d_threshold
 
     def tf(self, img, k=0):
-        if k==1:
+        if k==1 and len(np.unique(img)) == 2:
             background_edt = distance_transform_edt(img == 0)
             background_edt[background_edt > self.d_threshold] = self.d_threshold
             reversed_edt = (self.d_threshold - background_edt) / self.d_threshold

@@ -184,7 +184,7 @@ class MFNet(nn.Module):
         self.seg_dis = Conv3dBlock(n_first, 1, kernel_size=1, stride=1, norm=norm)
 
         # self.softmax = nn.Softmax(dim=1)
-        self.sigmoid = nn.Sigmoid()
+        self.tanh = nn.Tanh()
 
 
         #===============================================================
@@ -236,7 +236,7 @@ class MFNet(nn.Module):
         y1_3 = self.decoder_block1_3(y1_3)
         y1_4_toadd = self.upsample1_4(y1_3)
         y1_4 = self.seg_dis(y1_4_toadd)
-        seg_dis = self.sigmoid(y1_4)
+        seg_dis = self.tanh(y1_4)
 
         #  decoder -- binary branch
         y2_1 = torch.add(self.upsample2_1(x3), y1_1_toadd)

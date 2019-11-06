@@ -28,7 +28,8 @@ def mse_loss(output, target, weight_type):
     #     weight = weight0 * instance_weights[i]
     #     weight[weight0 == 0] = 1
     #     weights.append(weight)
-    loss = 0.5 * ((0.2 * target + target.mean()) * (target - output)**2).mean()
+    weights = (0.2 * (target - target.min()) + (target - target.min()).mean())
+    loss = 0.5 * (weights * (target - output)**2).mean()
 
     return loss
 

@@ -54,7 +54,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             time.sleep(2)
             x =  x.cpu().numpy()
             x = x.transpose([0, 1, 3, 4, 2])
-            image_dict = dict(Raw=x[0, 0, :, 100, :], bin=pred_bin[:, 100, :], dis=pred_dis[:, 100, :])
+            image_dict = dict(Raw=x[0, 0, :, 100, :], output_bin=pred_bin[:, 100, :])
             snapsot.show_current_images(image_dict)
         if savepath is not None:
             if "npy" in save_format.lower():

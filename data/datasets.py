@@ -8,7 +8,7 @@ from torch.utils.data import Dataset
 # import user defined
 from .data_utils import get_all_stack, pkload
 from .transforms import Compose, RandCrop, RandomFlip, NumpyType, RandomRotation, Pad, Resize, ContourEDT, RandomIntensityChange
-from .augmentations import contour_distance
+from .augmentations import contour_distance, contour_distance_outside_negative
 
 #=======================================
 #  Import membrane datasets
@@ -31,8 +31,8 @@ class Memb3DDataset(Dataset):
         seg_nuc = load_dict["seg_nuc"]
         edt_nuc = contour_distance(seg_nuc, d_threshold=2)
         if self.return_target:
-            # bin_to_dis = np.logical_or(load_dict["seg_memb"], load_dict["seg_nuc"]).astype(np.uin)
-            raw, seg_dis, seg_bin, edt_nuc = self.transforms([load_dict["raw_memb"], load_dict["seg_memb"], load_dict["seg_memb"], edt_nuc])
+            target_distance = contour_distance_outside_negative(load_dict["seg_memb"], load_dict["seg_cell"], d_threshold=15)
+            raw, seg_dis, seg_bin, edt_nuc = self.transforms([load_dict["raw_memb"], target_distance, load_dict["seg_memb"], edt_nuc])
             raw, seg_dis, seg_bin, edt_nuc = self.volume2tensor([raw, seg_dis, seg_bin, edt_nuc])
         else:
             raw, edt_nuc = self.transforms([load_dict["raw_memb"], edt_nuc])

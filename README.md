@@ -18,6 +18,7 @@ postprocessing**. Only loss at the **annotated** and **background away from the 
 be counted. 
 * [ ] Show let network choose **which slices can make more contribution** and **aollow different
 weights on neighboring slices** 
+* [ ] Embryo outside <0, inside >0, membrane =0.
 * [ ] For <u>*boundary pixels*</u>, the distance to the centers of neighboring pixels should be
 embeded with smooth changes. From the prediction results, pixels from the same class **is grouped
 together**. So only boundary pixels are needed to be counted into the distance constrain.

@@ -4,7 +4,7 @@ net_params:
   n_first: 32
   conv_channels: 128
   groups: 16
-  norm: in #sync_bn
+  norm: sync_bn #sync_bn
   out_class: 1
 
 criterion: mse_loss
@@ -27,15 +27,15 @@ opt_params:
 
 workers: 8
 
-get_memb_bin: ture
+get_memb_bin: false
 show_snap: false
 #  Postprocess
-get_cell: false
+get_cell: ture
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
 test_embryos: [181210plc1p2]  # embryos used for testing.
 train_transforms: # for training
   Compose([
-    ContourEDT(15),
+    ContourEDT(9),
     RandomIntensityChange([0.1, 0.1]),
     RandCrop((128,128,128)),
     RandomFlip(0),

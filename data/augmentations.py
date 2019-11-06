@@ -27,6 +27,29 @@ def contour_distance(contour_label, d_threshold=15):
 
     return vertical_slice_edt.astype(np.float32)
 
+def contour_distance_outside_negative(contour_label, inside_mask, d_threshold=15):
+    '''Distance transform with positive d inside and negative outside
+    :param contour_label: contour boundary of each region
+    :param inside_mask: inside regions mask (without contour mask)
+    :param d_threshold: distance threshold which should be cut off
+    :return distance: distance map with positive inside, negative outside and zero height membrane
+    '''
+
+    #background normalized distance
+    inside_region_and_contour = np.logical_or(contour_label, inside_mask)
+    background_edt = distance_transform_edt(~inside_region_and_contour)
+    background_edt[background_edt > d_threshold] = d_threshold
+    background_edt_normalized = background_edt / d_threshold
+
+    #inside normalized distance based on membrane contour
+    inside_edt = distance_transform_edt(contour_label == 0)
+    inside_edt[inside_edt > d_threshold] = d_threshold
+    inside_edt_normalized = inside_edt / d_threshold
+
+    #combine inside and outside distance with positive and negative difference
+    inside_edt_normalized[~inside_region_and_contour] = 0 - background_edt_normalized[~inside_region_and_contour]
+    return inside_edt_normalized.astype(np.float32)
+
 #  cell centered distance transform
 def cell_sliced_distance(seg_cell, seg_nuc, sampled=True, d_threshold=15):
     # sampled cell labels
