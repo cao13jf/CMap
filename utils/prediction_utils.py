@@ -16,7 +16,7 @@ from utils.ProcessLib import segment_membrane, get_largest_connected_region, get
 
 def validate(valid_loader, model, savepath=None, names=None, scoring=False, verbose=False, save_format=".nii.gz",
              snapsot=None, postprocess=False):
-    H, W, T = 205, 285, 134  # input size to the network
+    H, W, T = 128, 178, 80  # input size to the network
     model.eval()
     runtimes = []
     for i, data in enumerate(tqdm(valid_loader, desc="Getting binary membrane:")):
@@ -51,7 +51,6 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
         #  save volume and snapshot data
         # prediction = get_largest_connected_region(prediction)
         if snapsot is not None:
-            time.sleep(2)
             x =  x.cpu().numpy()
             x = x.transpose([0, 1, 3, 4, 2])
             image_dict = dict(Raw=x[0, 0, :, 100, :], output_bin=pred_bin[:, 100, :])

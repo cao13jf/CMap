@@ -2,9 +2,9 @@ net: DMFNet #  Parameters used for training.
 net_params:
   in_channels: 2
   n_first: 32
-  conv_channels: 128
+  conv_channels: 64
   groups: 16
-  norm: sync_bn #sync_bn
+  norm: in #sync_bn
   out_class: 1
 
 criterion: mse_loss
@@ -27,12 +27,12 @@ opt_params:
 
 workers: 8
 
-get_memb_bin: false
+get_memb_bin: ture
 show_snap: false
 #  Postprocess
 get_cell: ture
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
-test_embryos: [181210plc1p2]  # embryos used for testing.
+test_embryos: [191022plc1pop1ip1]  # embryos used for testing.
 train_transforms: # for training
   Compose([
     ContourEDT(9),
@@ -43,7 +43,6 @@ train_transforms: # for training
     ])
 test_transforms: # for testing
   Compose([
-    Pad([205, 285, 144]),
-    Resize((208, 288, 144)),
+    Resize((128, 176, 80)),
     NumpyType((np.float32, np.float32)),
     ])

@@ -51,6 +51,6 @@ def doit(target, embryo_names=None):
         nii_to_pkl(os.path.join(root, embryo_name), has_label)
 
 if __name__ == "__main__":
-    embryo_names = None
-    doit(train_folder, embryo_names)
+    embryo_names = ["191022plc1pop1ip1"]
+    # doit(train_folder, embryo_names)
     doit(test_folder, embryo_names)
