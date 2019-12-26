@@ -1,0 +1,178 @@
+2019-12-19 10:17:29,831 Loaded checkpoint './ckpts/VNet_MEMB3D/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: VNet_MEMB3D
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: ture
+get_memb_bin: ture
+gpu: '0'
+mode: 2
+name: VNet_MEMB3D
+net: VNet
+net_params:
+  elu: ture
+  in_channels: 1
+  nll: false
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/VNet_MEMB3D/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*5.pkl'
+test_data_dir: dataset/test
+test_embryos: ('191022plc1pop1ip1',)
+test_transforms: Compose([ Resize((128, 176, 80)), NumpyType((np.float32, np.float32)),
+  ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,80)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-12-19 10:17:29,938 --------------------------------------------------
+2019-12-19 10:17:29,938 Loaded checkpoint './ckpts/VNet_MEMB3D/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: VNet_MEMB3D
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: ture
+get_memb_bin: ture
+gpu: '0'
+mode: 2
+name: VNet_MEMB3D
+net: VNet
+net_params:
+  elu: ture
+  in_channels: 1
+  nll: false
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/VNet_MEMB3D/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*5.pkl'
+test_data_dir: dataset/test
+test_embryos: ('191022plc1pop1ip1',)
+test_transforms: Compose([ Resize((128, 176, 80)), NumpyType((np.float32, np.float32)),
+  ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,80)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-12-19 10:21:53,153 Loaded checkpoint './ckpts/VNet_MEMB3D/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: VNet_MEMB3D
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: ture
+get_memb_bin: ture
+gpu: '0'
+mode: 2
+name: VNet_MEMB3D
+net: VNet
+net_params:
+  elu: ture
+  in_channels: 1
+  nll: false
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/VNet_MEMB3D/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*5.pkl'
+test_data_dir: dataset/test
+test_embryos: ('191022plc1pop1ip1',)
+test_transforms: Compose([ Resize((128, 176, 80)), NumpyType((np.float32, np.float32)),
+  ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,80)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2019-12-19 10:21:53,156 --------------------------------------------------
+2019-12-19 10:21:53,156 Loaded checkpoint './ckpts/VNet_MEMB3D/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: VNet_MEMB3D
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: ture
+get_memb_bin: ture
+gpu: '0'
+mode: 2
+name: VNet_MEMB3D
+net: VNet
+net_params:
+  elu: ture
+  in_channels: 1
+  nll: false
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/VNet_MEMB3D/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*5.pkl'
+test_data_dir: dataset/test
+test_embryos: ('191022plc1pop1ip1',)
+test_transforms: Compose([ Resize((128, 176, 80)), NumpyType((np.float32, np.float32)),
+  ])
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,80)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+

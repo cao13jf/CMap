@@ -27,12 +27,12 @@ def nii_to_pkl(embryo_path, has_label=True):
         seg_cell_list = glob.glob(os.path.join(embryo_path, "SegCell", "*.gz"))
     #  read nii and save data as pkl
     for i, raw_memb_file in enumerate(tqdm(raw_memb_list, desc="saving"+embryo_path)):
-        base_name = os.path.basename(raw_memb_file).split(".")[0].split("_")
+        base_name = os.path.basename(raw_memb_file).split("_")
         base_name = base_name[0] + "_" + base_name[1]
         raw_memb = nib_load(raw_memb_file)  # TODO: how to normalize
         raw_nuc = nib_load(raw_nuc_list[i])
-        seg_nuc = nib_load(seg_nuc_list[i])
         if has_label:
+            seg_nuc = nib_load(seg_nuc_list[i])
             seg_memb = nib_load(seg_memb_list[i])
             seg_cell = nib_load(seg_cell_list[i])
 
@@ -40,7 +40,7 @@ def nii_to_pkl(embryo_path, has_label=True):
         if has_label:
             pkl_save(dict(raw_memb=raw_memb, raw_nuc=raw_nuc, seg_nuc=seg_nuc, seg_memb=seg_memb, seg_cell=seg_cell), pickle_file)
         else:
-            pkl_save(dict(raw_memb=raw_memb, raw_nuc=raw_nuc, seg_nuc=seg_nuc), pickle_file)
+            pkl_save(dict(raw_memb=raw_memb, raw_nuc=raw_nuc), pickle_file)
 
 def doit(target, embryo_names=None):
     #  get embryo list
@@ -51,6 +51,6 @@ def doit(target, embryo_names=None):
         nii_to_pkl(os.path.join(root, embryo_name), has_label)
 
 if __name__ == "__main__":
-    embryo_names = ["191022plc1pop1ip1"]
-    # doit(train_folder, embryo_names)
-    doit(test_folder, embryo_names)
+    embryo_names = ["170704plc1p1", "170614plc1p1"]
+    doit(train_folder, embryo_names)
+    # doit(test_folder, embryo_names)

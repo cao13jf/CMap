@@ -28,41 +28,45 @@ class Memb3DDataset(Dataset):
         stack_name = self.names[item]
         tp = float(stack_name.split("_")[1][1:])
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
-        seg_nuc = load_dict["seg_nuc"]
-        edt_nuc = contour_distance(seg_nuc, d_threshold=2)
+
         if self.return_target:
+            seg_nuc = load_dict["seg_nuc"]
+            edt_nuc = contour_distance(seg_nuc, d_threshold=2)
             target_distance = contour_distance_outside_negative(load_dict["seg_memb"], load_dict["seg_cell"], d_threshold=15)
             raw, seg_dis, seg_bin, edt_nuc = self.transforms([load_dict["raw_memb"], target_distance, load_dict["seg_memb"], edt_nuc])
             raw, seg_dis, seg_bin, edt_nuc = self.volume2tensor([raw, seg_dis, seg_bin, edt_nuc])
         else:
-            raw, edt_nuc = self.transforms([load_dict["raw_memb"], edt_nuc])
-            raw, edt_nuc = self.volume2tensor([raw, edt_nuc])
+            raw = self.transforms(load_dict["raw_memb"])
+            raw = self.volume2tensor(raw)
 
         #==================================== add time information =======================
         # tp = tp * torch.ones_like(raw) / 200.0
-        raw = torch.cat([raw, edt_nuc], dim=1)
+        # raw = torch.cat([raw, edt_nuc], dim=1)
         #==================================== add time information =======================
         #==================================== add nucleus distance channel================
         if self.return_target:
-            return raw, seg_dis, seg_bin
+            return raw, seg_bin
         else:
             return raw
-    def volume2tensor(self, volumes, dim_order = [2, 0, 1]):
-        volumes = volumes if isinstance(volumes, list) else [volumes]
+    def volume2tensor(self, volumes0, dim_order = [2, 0, 1]):
+        volumes = volumes0 if isinstance(volumes0, list) else [volumes0]
         outputs = []
         for volume in volumes:
-            volume = volume.transpose(dim_order)[np.newaxis, np.newaxis, ...]
+            volume = volume.transpose(dim_order)[np.newaxis, ...]
             volume = np.ascontiguousarray(volume)
             volume = torch.from_numpy(volume)
             outputs.append(volume)
 
-        return outputs
+        return outputs if isinstance(volumes0, list) else outputs[0]
 
     def __len__(self):
         return len(self.names)
 
     def collate(self, batch):
-        out_batch =  [torch.cat(v) for v in zip(*batch)]
         if len(batch) == 1:
+            out_batch = [v for v in batch]
             out_batch = [x.unsqueeze(0) for x in out_batch]
+        else:
+            out_batch = [torch.cat(tuple(v)) for v in zip(*batch)]
+
         return out_batch

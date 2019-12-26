@@ -1,11 +1,8 @@
-net: DMFNet #  Parameters used for training.
+net: VNet #  Parameters used for training.
 net_params:
   in_channels: 1
-  n_first: 32
-  conv_channels: 64
-  groups: 16
-  norm: in #sync_bn
-  out_class: 1
+  elu: ture
+  nll: false
 
 criterion: mse_loss
 criterion_kwargs:
@@ -32,10 +29,9 @@ show_snap: false
 #  Postprocess
 get_cell: ture
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
-test_embryos: [191108plc1p2]  # embryos used for testing.
+test_embryos: [191022plc1pop1ip1]  # embryos used for testing.
 train_transforms: # for training
   Compose([
-    ContourEDT(9),
     RandomIntensityChange([0.1, 0.1]),
     RandCrop((128,128,128)),
     RandomFlip(0),
@@ -43,8 +39,6 @@ train_transforms: # for training
     ])
 test_transforms: # for testing
   Compose([
-    Pad([256, 356, 224]),
-    Resize((256, 352, 144)),
+    Resize((128, 176, 80)),
     NumpyType((np.float32, np.float32)),
     ])
-

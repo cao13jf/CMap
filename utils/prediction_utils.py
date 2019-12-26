@@ -16,7 +16,7 @@ from utils.ProcessLib import segment_membrane, get_largest_connected_region, get
 
 def validate(valid_loader, model, savepath=None, names=None, scoring=False, verbose=False, save_format=".nii.gz",
              snapsot=None, postprocess=False):
-    H, W, T = 128, 178, 80  # input size to the network
+    H, W, T = 256, 356, 214  # input size to the network
     model.eval()
     runtimes = []
     for i, data in enumerate(tqdm(valid_loader, desc="Getting binary membrane:")):
@@ -27,7 +27,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             x = data[0]  # TODO: change collate in dataloader
         #  go through the network
         start_time = time.time()
-        pred_dis, pred_bin = model(x)   # [1, 2, depth, width, height]
+        pred_bin = model(x)   # [1, 2, depth, width, height]
         elapsed_time = time.time() - start_time
         runtimes.append(elapsed_time)
         #  Regression only has one channel
@@ -39,10 +39,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
         pred_bin = pred_bin.cpu().numpy()
         pred_bin = pred_bin.squeeze().transpose([1, 2, 0])
         pred_bin = resize(pred_bin.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
-        #  distance prediction
-        pred_dis = pred_dis.cpu().numpy()
-        pred_dis = pred_dis.squeeze().transpose([1, 2, 0])
-        pred_dis = resize(pred_dis.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
+
 
         #  post process
         if postprocess == True:
@@ -57,16 +54,16 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             snapsot.show_current_images(image_dict)
         if savepath is not None:
             if "npy" in save_format.lower():
-                np.save(os.path.join(savepath,  names[i].split("_")[0], "MembBin", names[i] + "_membBin"), pred_bin)
+                np.save(os.path.join(savepath,  names[i].split("_")[0], "SegMemb", names[i] + "_segMemb"), pred_bin)
             elif "nii.gz" in save_format.lower():
-                save_name = os.path.join(savepath, names[i].split("_")[0],  "MembBin",  names[i] + "_membBin.nii.gz")
+                save_name = os.path.join(savepath, names[i].split("_")[0],  "SegMemb",  names[i] + "_segMemb.nii.gz")
                 nib_save(pred_bin.astype(np.uint8), save_name)
 
 def membrane2cell(args):
         for embryo_name in args.test_embryos:
             embryo_mask = get_eggshell(embryo_name)
 
-            file_names = glob.glob(os.path.join("./output",embryo_name, "MembBin",'*.nii.gz'))
+            file_names = glob.glob(os.path.join("./output",embryo_name, "SegMemb",'*.nii.gz'))
             parameters = []
             for file_name in file_names:
                 parameters.append([embryo_name, file_name, embryo_mask])

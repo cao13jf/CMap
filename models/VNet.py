@@ -14,6 +14,7 @@ def ELUCons(elu, nchan):
     else:
         return nn.PReLU(nchan)
 
+
 # normalization between sub-volumes is necessary
 # for good performance
 class ContBatchNorm3d(nn.modules.batchnorm._BatchNorm):
@@ -21,7 +22,6 @@ class ContBatchNorm3d(nn.modules.batchnorm._BatchNorm):
         if input.dim() != 5:
             raise ValueError('expected 5D input (got {}D input)'
                              .format(input.dim()))
-        super(ContBatchNorm3d, self)._check_input_dim(input)
 
     def forward(self, input):
         self._check_input_dim(input)
@@ -53,9 +53,9 @@ def _make_nConv(nchan, depth, elu):
 ##             input translation layers
 ##===============================================================
 class InputTransition(nn.Module):
-    def __init__(self, outChans, elu):
+    def __init__(self, input_channel, outChans, elu):
         super(InputTransition, self).__init__()
-        self.conv1 = nn.Conv3d(1, 16, kernel_size=5, padding=2)
+        self.conv1 = nn.Conv3d(input_channel, 16, kernel_size=5, padding=2)
         self.bn1 = ContBatchNorm3d(16)
         self.relu1 = ELUCons(elu, 16)
 
@@ -64,7 +64,7 @@ class InputTransition(nn.Module):
         out = self.bn1(self.conv1(x))
         # split input in to 16 channels
         x16 = torch.cat((x, x, x, x, x, x, x, x,
-                         x, x, x, x, x, x, x, x), 0)  # input channel should match the output size
+                         x, x, x, x, x, x, x, x), 1)  # input channel should match the output size
         out = self.relu1(torch.add(out, x16))  # Input to convolution after the concatenation
         return out
 
@@ -138,10 +138,10 @@ class OutputTransition(nn.Module):
         out = self.conv2(out)
 
         # make channels the last axis
-        out = out.permute(0, 2, 3, 4, 1).contiguous()
+        # out = out.permute(0, 2, 3, 4, 1).contiguous()
         # flatten
-        out = out.view(out.numel() // 2, 2)
-        out = self.softmax(out)
+        # out = out.view(out.numel() // 2, 2)
+        out = self.softmax(out, dim=1)
         # treat channel 0 as the predicted output
         return out
 
@@ -151,15 +151,15 @@ class OutputTransition(nn.Module):
 class VNet(nn.Module):
     # the number of convolutions in each layer corresponds
     # to what is in the actual prototxt, not the intent
-    def __init__(self, elu=True, nll=False):
+    def __init__(self, in_channels=1, elu=True, nll=False):
         super(VNet, self).__init__()
-        self.in_tr = InputTransition(16, elu)
+        self.in_tr = InputTransition(in_channels, 16, elu)
         self.down_tr32 = DownTransition(16, 1, elu)
         self.down_tr64 = DownTransition(32, 2, elu)
         self.down_tr128 = DownTransition(64, 3, elu, dropout=True)
-        self.down_tr256 = DownTransition(128, 2, elu, dropout=True)
-        self.up_tr256 = UpTransition(256, 256, 2, elu, dropout=True)
-        self.up_tr128 = UpTransition(256, 128, 2, elu, dropout=True)
+        # self.down_tr256 = DownTransition(128, 2, elu, dropout=True)
+        # self.up_tr256 = UpTransition(256, 256, 2, elu, dropout=True)
+        self.up_tr128 = UpTransition(128, 128, 2, elu, dropout=True)
         self.up_tr64 = UpTransition(128, 64, 1, elu)
         self.up_tr32 = UpTransition(64, 32, 1, elu)
         self.out_tr = OutputTransition(32, elu, nll)
@@ -185,9 +185,9 @@ class VNet(nn.Module):
         out32 = self.down_tr32(out16)
         out64 = self.down_tr64(out32)
         out128 = self.down_tr128(out64)
-        out256 = self.down_tr256(out128)
-        out = self.up_tr256(out256, out128)
-        out = self.up_tr128(out, out64)
+        # out256 = self.down_tr256(out128)
+        # out = self.up_tr256(out256, out128)
+        out = self.up_tr128(out128, out64)
         out = self.up_tr64(out, out32)
         out = self.up_tr32(out, out16)
         out = self.out_tr(out)

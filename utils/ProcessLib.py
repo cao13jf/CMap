@@ -49,12 +49,13 @@ def segment_membrane(para):
     merged_seg[merged_seg == background_label] = 0
     merged_seg = set_boundary_zero(merged_seg)
 
-    #  filter with nucleus stack
-    nuc_seg = nib_load(os.path.join("./dataset/test", embryo_name, "SegNuc", name_embryo_T + "_segNuc.nii.gz"))
-    cell_seg = cell_filter_with_nucleus(merged_seg, nuc_seg) #TODO: some nucleus are lost in the nucleus stack, so acetree is used to filter gaps when naming each segmented region
+    # #  filter with nucleus stack
+    # nuc_seg = nib_load(os.path.join("./dataset/test", embryo_name, "SegNuc", name_embryo_T + "_segNuc.nii.gz"))
+    # cell_seg = cell_filter_with_nucleus(merged_seg, nuc_seg) #TODO: some nucleus are lost in the nucleus stack, so acetree is used to filter gaps when naming each segmented region
+    cell_seg = merged_seg
 
     # save result
-    save_name = os.path.join("./output", embryo_name, "CellSeg", name_embryo_T+"_cellSeg.nii.gz")
+    save_name = os.path.join("./output", embryo_name, "SegCell", name_embryo_T+"_segCell.nii.gz")
     nib_save(cell_seg.astype(np.uint16), save_name)
 
 
