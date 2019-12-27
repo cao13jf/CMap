@@ -131,7 +131,7 @@ def main():
         if not args.weight_type:
             args.weight_type = "square"
         if args.criterion_kwargs is not None:
-            loss_bin = generalized_dice_loss(output_bin, target_bin, )
+            loss_bin = mse_loss(output_bin, target_bin)
             loss = loss_bin
         else:
             pass
@@ -146,7 +146,7 @@ def main():
         #   Show mmiddle results
         if args.show_image_freq > 0 and (i % args.show_image_freq) == 0:
             image_dict = dict(Raw=raw[0, 0, :, :, 60].float(), target_bin=target_bin[0, 0, :, :, 60].float(),
-                              output_bin=output_bin[0, 1, :, :, 60].float())
+                              output_bin=output_bin[0, 0, :, :, 60].detach().float())
             visualizer.show_current_images(image_dict)
         if args.show_loss_freq > 0 and (i % args.show_loss_freq) == 0:
             visualizer.plot_current_losses(progress_ratio=(i+1)/enum_batches, losses=dict(loss_bin=loss_bin.item(), loss=loss.item()))

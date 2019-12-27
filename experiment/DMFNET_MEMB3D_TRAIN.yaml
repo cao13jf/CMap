@@ -27,12 +27,12 @@ opt_params:
 
 workers: 8
 
-get_memb_bin: ture
+get_memb_bin: false
 show_snap: false
 #  Postprocess
-get_cell: ture
+get_cell: true
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
-test_embryos: [191108plc1p2]  # embryos used for testing.
+test_embryos: [181210plc1p2]  # embryos used for testing.
 train_transforms: # for training
   Compose([
     ContourEDT(9),
@@ -43,8 +43,8 @@ train_transforms: # for training
     ])
 test_transforms: # for testing
   Compose([
-    Pad([256, 356, 224]),
-    Resize((256, 352, 144)),
+    Pad([205, 285, 144]),
+    Resize((208, 288, 144)),
     NumpyType((np.float32, np.float32)),
     ])
 

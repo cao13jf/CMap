@@ -201,10 +201,10 @@ class MFNet(nn.Module):
         self.upsample2_4 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
 
         # num_in, num_out, kernel_size=1, stride=1, padding=None, groups=1, norm=Non
-        self.seg_bin = Conv3dBlock(n_first, 2, kernel_size=1, stride=1, norm=norm)
+        self.seg_bin = Conv3dBlock(n_first, 1, kernel_size=1, stride=1, norm=norm)
 
         # self.softmax = nn.Softmax(dim=1)
-        self.softmax = nn.Softmax(dim=1)
+        self.softmax = nn.Sigmoid()
 
         #  further process on the distance
         #  Weights initlization

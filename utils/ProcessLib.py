@@ -21,38 +21,42 @@ def segment_membrane(para):
     egg_shell = para[2]
     name_embryo_T = "_".join(os.path.basename(file_name).split("_")[0:2])
 
-    binary_embryo = nib_load(file_name) * egg_shell
-    assert len(np.unique(binary_embryo)) == 2, "Post process can only process binary image"
-    binary_cell = (binary_embryo == 0).astype(np.uint8)
+    # binary_embryo = nib_load(file_name) * egg_shell
+    # assert len(np.unique(binary_embryo)) == 2, "Post process can only process binary image"
+    # binary_cell = (binary_embryo == 0).astype(np.uint8)
+    #
+    # #  get local maximum graph
+    # point_list, edge_list, edge_weight_list = construct_weighted_graph(binary_cell, local_max_h=1)
+    # valid_edge_list = [edge_list[i] for i in range(len(edge_weight_list)) if edge_weight_list[i] < 10]
+    # #  combine background points
+    # point_tomerge_list = combine_background_maximum(valid_edge_list)
+    # merged_list = combine_inside_maximum(point_tomerge_list, point_tomerge_list)
 
-    #  get local maximum graph
-    point_list, edge_list, edge_weight_list = construct_weighted_graph(binary_cell, local_max_h=1)
-    valid_edge_list = [edge_list[i] for i in range(len(edge_weight_list)) if edge_weight_list[i] < 10]
-    #  combine background points
-    point_tomerge_list = combine_background_maximum(valid_edge_list)
-    merged_list = combine_inside_maximum(point_tomerge_list, point_tomerge_list)
-
-    #  seeded watershed segmentation
-    marker_volume = np.zeros_like(binary_embryo, dtype=np.uint8)
-    marker_point_list = np.transpose(np.array(point_list), [1, 0]).tolist()
-    marker_volume[marker_point_list[0], marker_point_list[1], marker_point_list[2]] = 1
+    # #  seeded watershed segmentation
+    # marker_volume = np.zeros_like(binary_embryo, dtype=np.uint8)
+    # marker_point_list = np.transpose(np.array(point_list), [1, 0]).tolist()
+    # marker_volume[marker_point_list[0], marker_point_list[1], marker_point_list[2]] = 1
+    marker_volume = nib_load(os.path.join("./dataset/test", embryo_name, "SegNuc", name_embryo_T+"_segNuc.nii.gz"))
+    marker_volume[:, :, 0:2] = 1; marker_volume[:, 0:2, :] = 1; marker_volume[0:2, :, :] = 1;
+    marker_volume[:, :, -3:-1] = 1; marker_volume[:, -3:-1, :] = 1; marker_volume[-3:-1, :, :] = 1;
     marker_volume = ndimage.morphology.binary_dilation(marker_volume, structure=np.ones((3, 3, 3), dtype=bool))
     marker_volume = ndimage.label(marker_volume)[0]  # each markers should be labeled with different values.
-    memb_edt = ndimage.morphology.distance_transform_edt(binary_cell)
-    memb_edt_reversed = memb_edt.max() - memb_edt
+    # memb_edt = ndimage.morphology.distance_transform_edt(binary_cell)
+    # memb_edt_reversed = memb_edt.max() - memb_edt
+    memb_edt_reversed = nib_load(file_name)
     watershed_seg = watershed(memb_edt_reversed, marker_volume.astype(np.uint16), watershed_line=True)
 
     #  reverse initial segmentation with previous merged point list.
-    merged_seg = reverse_seg_with_max_cluster(watershed_seg, point_list, merged_list)
-    #  set background label as zero
-    background_label = mode(merged_seg, axis=None)[0][0]
-    merged_seg[merged_seg == background_label] = 0
-    merged_seg = set_boundary_zero(merged_seg)
+    # # merged_seg = reverse_seg_with_max_cluster(watershed_seg, point_list, merged_list)
+    # #  set background label as zero
+    # background_label = mode(merged_seg, axis=None)[0][0]
+    # merged_seg[merged_seg == background_label] = 0
+    # merged_seg = set_boundary_zero(merged_seg)
 
     # #  filter with nucleus stack
     # nuc_seg = nib_load(os.path.join("./dataset/test", embryo_name, "SegNuc", name_embryo_T + "_segNuc.nii.gz"))
     # cell_seg = cell_filter_with_nucleus(merged_seg, nuc_seg) #TODO: some nucleus are lost in the nucleus stack, so acetree is used to filter gaps when naming each segmented region
-    cell_seg = merged_seg
+    cell_seg = watershed_seg
 
     # save result
     save_name = os.path.join("./output", embryo_name, "SegCell", name_embryo_T+"_segCell.nii.gz")

@@ -16,7 +16,7 @@ from utils.ProcessLib import segment_membrane, get_largest_connected_region, get
 
 def validate(valid_loader, model, savepath=None, names=None, scoring=False, verbose=False, save_format=".nii.gz",
              snapsot=None, postprocess=False):
-    H, W, T = 256, 356, 214  # input size to the network
+    H, W, T = 205, 285, 134 # input size to the network
     model.eval()
     runtimes = []
     for i, data in enumerate(tqdm(valid_loader, desc="Getting binary membrane:")):
@@ -36,9 +36,13 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             pred_bin = pred_bin.argmax(1) # [channel, height, width, depth]
 
         #  binary prediction
-        pred_bin = pred_bin.cpu().numpy()
-        pred_bin = pred_bin.squeeze().transpose([1, 2, 0])
-        pred_bin = resize(pred_bin.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
+            pred_bin = pred_bin.cpu().numpy()
+            pred_bin = pred_bin.squeeze().transpose([1, 2, 0])
+            pred_bin = resize(pred_bin.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
+        else:
+            pred_bin = pred_bin.cpu().numpy()
+            pred_bin = pred_bin.squeeze().transpose([1, 2, 0])
+            pred_bin = resize(pred_bin.astype(np.float), (H, W, T), mode='constant', cval=0, order=1, anti_aliasing=True)
 
 
         #  post process
@@ -57,7 +61,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "SegMemb", names[i] + "_segMemb"), pred_bin)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "SegMemb",  names[i] + "_segMemb.nii.gz")
-                nib_save(pred_bin.astype(np.uint8), save_name)
+                nib_save((pred_bin*256).astype(np.uint8), save_name)
 
 def membrane2cell(args):
         for embryo_name in args.test_embryos:

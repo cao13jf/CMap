@@ -4,7 +4,7 @@ For rename
 import os
 import glob
 
-target_folder = "dataset/train/170704plc1p1/SegNuc"
+target_folder = "dataset/test/170704plc1p1/SegNuc"
 files = glob.glob(os.path.join(target_folder, "*.nii.gz"))
 for file in files:
     base_name = os.path.basename(file)
