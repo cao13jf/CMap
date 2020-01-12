@@ -102,7 +102,7 @@ def main():
             dataset=test_set,
             batch_size=1,
             shuffle=False,
-            collate_fn=test_set.collate, # control how data is stacked
+            # collate_fn=test_set.collate, # control how data is stacked
             num_workers=10,
             pin_memory=True
         )

@@ -29,15 +29,14 @@ class Memb3DDataset(Dataset):
         tp = float(stack_name.split("_")[1][1:])
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
 
+        edt_nuc = contour_distance(load_dict["seg_nuc"], d_threshold=10)
         if self.return_target:
-            seg_nuc = load_dict["seg_nuc"]
-            edt_nuc = contour_distance(seg_nuc, d_threshold=2)
-            target_distance = contour_distance_outside_negative(load_dict["seg_memb"], load_dict["seg_cell"], d_threshold=15)
-            raw, seg_dis, seg_bin, edt_nuc = self.transforms([load_dict["raw_memb"], target_distance, load_dict["seg_memb"], edt_nuc])
-            raw, seg_dis, seg_bin, edt_nuc = self.volume2tensor([raw, seg_dis, seg_bin, edt_nuc])
+            target_distance = contour_distance(load_dict["seg_memb"], d_threshold=15)
+            raw, seg_nuc, seg_dis = self.transforms([load_dict["raw_memb"], edt_nuc, target_distance])
+            raw, seg_nuc, seg_dis = self.volume2tensor([raw, seg_nuc, seg_dis], dim_order = [2, 0, 1])
         else:
-            raw = self.transforms(load_dict["raw_memb"])
-            raw = self.volume2tensor(raw)
+            raw, seg_nuc = self.transforms([load_dict["raw_memb"], edt_nuc])
+            raw, seg_nuc = self.volume2tensor([raw, seg_nuc], dim_order = [2, 0, 1])
 
         #==================================== add time information =======================
         # tp = tp * torch.ones_like(raw) / 200.0
@@ -45,10 +44,10 @@ class Memb3DDataset(Dataset):
         #==================================== add time information =======================
         #==================================== add nucleus distance channel================
         if self.return_target:
-            return raw, seg_bin
+            return raw, seg_nuc, seg_dis
         else:
-            return raw
-    def volume2tensor(self, volumes0, dim_order = [2, 0, 1]):
+            return raw, seg_nuc
+    def volume2tensor(self, volumes0, dim_order = None):
         volumes = volumes0 if isinstance(volumes0, list) else [volumes0]
         outputs = []
         for volume in volumes:
@@ -62,11 +61,11 @@ class Memb3DDataset(Dataset):
     def __len__(self):
         return len(self.names)
 
-    def collate(self, batch):
-        if len(batch) == 1:
-            out_batch = [v for v in batch]
-            out_batch = [x.unsqueeze(0) for x in out_batch]
-        else:
-            out_batch = [torch.cat(tuple(v)) for v in zip(*batch)]
-
-        return out_batch
+    # def collate(self, batch):
+    #     if len(batch) == 1:
+    #         out_batch = [v for v in batch]
+    #         out_batch = [x.unsqueeze(0) for x in out_batch]
+    #     else:
+    #         out_batch = [torch.stack(tuple(v)) for v in zip(*batch)]
+    #
+    #     return out_batch

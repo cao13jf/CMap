@@ -24,10 +24,10 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             target_cpu = data["seg_memb"][0, 0, :, :, :].numpy() if scoring else None
             x, target = data["raw_memb"], data["seg_memb"]  # TODO: batch = in prediction
         else:
-            x = data[0]  # TODO: change collate in dataloader
+            x, nuc = data[0:2]  # TODO: change collate in dataloader
         #  go through the network
         start_time = time.time()
-        pred_bin = model(x)   # [1, 2, depth, width, height]
+        pred_bin = model(x, nuc)   # [1, 2, depth, width, height]
         elapsed_time = time.time() - start_time
         runtimes.append(elapsed_time)
         #  Regression only has one channel
@@ -38,7 +38,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
         #  binary prediction
         pred_bin = pred_bin.cpu().numpy()
         pred_bin = pred_bin.squeeze().transpose([1, 2, 0])
-        pred_bin = resize(pred_bin.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=True)
+        pred_bin = resize(pred_bin.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=False)
 
 
         #  post process
@@ -57,7 +57,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "SegMemb", names[i] + "_segMemb"), pred_bin)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "SegMemb",  names[i] + "_segMemb.nii.gz")
-                nib_save(pred_bin.astype(np.uint8), save_name)
+                nib_save((pred_bin*256).astype(np.int8), save_name)
 
 def membrane2cell(args):
         for embryo_name in args.test_embryos:

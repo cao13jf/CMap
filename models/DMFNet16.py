@@ -1,3 +1,4 @@
+import copy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -146,138 +147,11 @@ class DMFUnit(nn.Module):
 #   Define classes based on pre-defined units
 #===================================================
 #   define MFNet
-class MFNet(nn.Module):
-    def __init__(self, in_channels=1, n_first=32, conv_channels=128, groups=16, norm="bn", out_class=2):
-        super(MFNet, self).__init__()
+class DMFNet(nn.Module):
+    def __init__(self, in_channels=1, n_first=32, conv_channels=128, groups=8, norm="bn", out_class=2):
+        super(DMFNet, self).__init__()
 
         self.first_conv = nn.Conv3d(in_channels, n_first, kernel_size=3, padding=1, stride=2, bias=False)
-        self.encoder_block1 = nn.Sequential(
-            MFUnit(num_in=n_first, num_out=conv_channels, groups=groups, stride=2, norm=norm),
-            MFUnit(num_in=conv_channels, num_out=conv_channels, groups=groups, stride=1, norm=norm),
-            MFUnit(num_in=conv_channels, num_out=conv_channels, groups=groups, stride=1, norm=norm)
-        )
-        self.encoder_block2 = nn.Sequential(
-            MFUnit(num_in=conv_channels, num_out=2*conv_channels, groups=groups, stride=2, norm=norm),
-            MFUnit(num_in=2*conv_channels, num_out=2*conv_channels, groups=groups, stride=1, norm=norm),
-            MFUnit(num_in=2*conv_channels, num_out=2*conv_channels, groups=groups, stride=1, norm=norm)
-        )
-        self.encoder_block3 = nn.Sequential(
-            MFUnit(num_in=2*conv_channels, num_out=3*conv_channels, groups=groups, stride=2, norm=norm),
-            MFUnit(num_in=3*conv_channels, num_out=3*conv_channels, groups=groups, stride=1, norm=norm),
-            MFUnit(num_in=3*conv_channels, num_out=2*conv_channels, groups=groups, stride=1, norm=norm)
-        )
-
-        #==================================================================
-        #   decoder --- distance branch
-        #==================================================================
-        self.upsample1_1 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block1_1 = MFUnit(2*conv_channels+2*conv_channels, 2*conv_channels, groups=groups, stride=1, norm=norm)
-
-        self.upsample1_2 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block1_2 = MFUnit(2*conv_channels+conv_channels, conv_channels, groups=groups, stride=1, norm=norm)
-
-        self.upsample1_3 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block1_3 = MFUnit(conv_channels+n_first, n_first, groups=groups, stride=1, norm=norm)
-        self.upsample1_4 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-
-        # num_in, num_out, kernel_size=1, stride=1, padding=None, groups=1, norm=Non
-        self.seg_dis = Conv3dBlock(n_first, 1, kernel_size=1, stride=1, norm=norm)
-
-        # self.softmax = nn.Softmax(dim=1)
-        self.tanh = nn.Tanh()
-
-
-        #===============================================================
-        #    decoder -- binary branch
-        #===============================================================
-        self.upsample2_1 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block2_1 = MFUnit(2*conv_channels+2*conv_channels, 2*conv_channels, groups=groups, stride=1, norm=norm)
-
-        self.upsample2_2 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block2_2 = MFUnit(2*conv_channels+conv_channels, conv_channels, groups=groups, stride=1, norm=norm)
-
-        self.upsample2_3 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-        self.decoder_block2_3 = MFUnit(conv_channels+n_first, n_first, groups=groups, stride=1, norm=norm)
-        self.upsample2_4 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
-
-        # num_in, num_out, kernel_size=1, stride=1, padding=None, groups=1, norm=Non
-        self.seg_bin = Conv3dBlock(n_first, 2, kernel_size=1, stride=1, norm=norm)
-
-        # self.softmax = nn.Softmax(dim=1)
-        self.softmax = nn.Softmax(dim=1)
-
-        #  further process on the distance
-        #  Weights initlization
-        for m in self.modules():
-            if isinstance(m, nn.Conv3d):
-                torch.nn.init.torch.nn.init.kaiming_normal_(m.weight)  #TODO: different between method and method_
-            elif isinstance(m, nn.BatchNorm3d) or isinstance(m, nn.GroupNorm) or isinstance(m, SynchronizedBatchNorm3d):
-                nn.init.constant_(m.weight, 1.)
-                nn.init.constant(m.bias, 0.0)
-
-    def forward(self, x):
-
-        x0 = self.first_conv(x)
-
-        #  encoder
-        x1 = self.encoder_block1(x0)
-        x2 = self.encoder_block2(x1)
-        x3 = self.encoder_block3(x2)
-
-        #============================================
-        #     Binary and distance
-        #============================================
-        # #  decoder -- distance branch
-        # y1_1_toadd = self.upsample1_1(x3)
-        # y1_1 = torch.cat([x2, y1_1_toadd], dim=1)
-        # y1_1 = self.decoder_block1_1(y1_1)
-        # y1_2_toadd = self.upsample1_2(y1_1)
-        # y1_2 = torch.cat([x1, y1_2_toadd], dim=1)
-        # y1_2 = self.decoder_block1_2(y1_2)
-        # y1_3_toadd = self.upsample1_3(y1_2)
-        # y1_3 = torch.cat([x0, y1_3_toadd], dim=1)
-        # y1_3 = self.decoder_block1_3(y1_3)
-        # y1_4_toadd = self.upsample1_4(y1_3)
-        # y1_4 = self.seg_dis(y1_4_toadd)
-        # seg_dis = self.tanh(y1_4)
-        #
-        # #  decoder -- binary branch
-        # y2_1 = torch.add(self.upsample2_1(x3), y1_1_toadd)
-        # y2_1 = torch.cat([x2, y2_1], dim=1)
-        # y2_1 = self.decoder_block2_1(y2_1)
-        # y2_2 = torch.add(self.upsample2_2(y2_1), y1_2_toadd)
-        # y2_2 = torch.cat([x1, y2_2], dim=1)
-        # y2_2 = self.decoder_block2_2(y2_2)
-        # y2_3 = torch.add(self.upsample2_3(y2_2), y1_3_toadd)
-        # y2_3 = torch.cat([x0, y2_3], dim=1)
-        # y2_3 = self.decoder_block2_3(y2_3)
-        # y2_4 = torch.add(self.upsample2_4(y2_3), y1_4_toadd)
-        # y2_4 = self.seg_bin(y2_4)
-        # seg_bin = self.softmax(y2_4)
-
-        #  decoder -- binary branch
-        y2_1 = self.upsample2_1(x3)
-        y2_1 = torch.cat([x2, y2_1], dim=1)
-        y2_1 = self.decoder_block2_1(y2_1)
-        y2_2 = self.upsample2_2(y2_1)
-        y2_2 = torch.cat([x1, y2_2], dim=1)
-        y2_2 = self.decoder_block2_2(y2_2)
-        y2_3 = self.upsample2_3(y2_2)
-        y2_3 = torch.cat([x0, y2_3], dim=1)
-        y2_3 = self.decoder_block2_3(y2_3)
-        y2_4 = self.upsample2_4(y2_3)
-        y2_4 = self.seg_bin(y2_4)
-        seg_bin = self.softmax(y2_4)
-
-        return seg_bin
-
-
-#   Define DMFNet based on MFNet
-class DMFNet(MFNet):
-    def __init__(self, in_channels=1, n_first=32, conv_channels=32, groups=16, norm="bn", out_class=2):
-        super(DMFNet, self).__init__(in_channels, n_first, conv_channels, groups, norm, out_class)
-
-        #  overwrite the first two encoder blocks of MFNet with DMFNet units.
         self.encoder_block1 = nn.Sequential(
             DMFUnit(n_first, conv_channels, groups=groups, stride=2, norm=norm, dilation=[1, 2, 3]),
             DMFUnit(conv_channels, conv_channels, groups=groups, stride=1, norm=norm, dilation=[1, 2, 3]),
@@ -289,3 +163,120 @@ class DMFNet(MFNet):
             DMFUnit(2*conv_channels, 2*conv_channels, groups=groups, stride=1, norm=norm, dilation=[1, 2, 3])
 
         )
+        self.encoder_block3 = nn.Sequential(
+            MFUnit(num_in=2*conv_channels, num_out=3*conv_channels, groups=groups, stride=2, norm=norm),
+            MFUnit(num_in=3*conv_channels, num_out=3*conv_channels, groups=groups, stride=1, norm=norm),
+            MFUnit(num_in=3*conv_channels, num_out=2*conv_channels, groups=groups, stride=1, norm=norm)
+        )
+
+        #===============================================================
+        #    decoder -- binary branch
+        #===============================================================
+        self.upsample1 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block1 = MFUnit(2*conv_channels+2*conv_channels, 2*conv_channels, groups=groups, stride=1, norm=norm)
+
+        self.upsample2 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block2 = MFUnit(2*conv_channels+conv_channels, conv_channels, groups=groups, stride=1, norm=norm)
+
+        self.upsample3 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block3 = MFUnit(conv_channels+n_first, n_first, groups=groups, stride=1, norm=norm)
+        self.upsample4 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+
+        # num_in, num_out, kernel_size=1, stride=1, padding=None, groups=1, norm=Non
+        self.out_conv = Conv3dBlock(n_first, out_class, kernel_size=1, stride=1, norm=norm)
+
+        # self.softmax = nn.Softmax(dim=1)
+        if out_class > 1:
+            self.out = nn.Softmax(dim=1)
+        else:
+            self.out = nn.Sigmoid()
+
+        #  further process on the distance
+        #  Weights initlization
+        for m in self.modules():
+            if isinstance(m, nn.Conv3d):
+                torch.nn.init.torch.nn.init.kaiming_normal_(m.weight)  #TODO: different between method and method_
+            elif isinstance(m, nn.BatchNorm3d) or isinstance(m, nn.GroupNorm) or isinstance(m, SynchronizedBatchNorm3d):
+                nn.init.constant_(m.weight, 1.)
+                nn.init.constant(m.bias, 0.0)
+
+    def forward(self, x, y):
+
+        x0 = self.first_conv(x)
+
+        #  encoder
+        x1 = self.encoder_block1(x0)
+        x2 = self.encoder_block2(x1)
+        x3 = self.encoder_block3(x2)
+
+        #  decoder -- binary branch
+        y1 = self.upsample1(x3)
+        y1 = torch.cat([x2, y1], dim=1)
+        y1 = self.decoder_block1(y1)
+        y2 = self.upsample2(y1)
+        y2 = torch.cat([x1, y2], dim=1)
+        y2 = self.decoder_block2(y2)
+        y3 = self.upsample3(y2)
+        y3 = torch.cat([x0, y3], dim=1)
+        y3 = self.decoder_block3(y3)
+        y4 = self.upsample4(y3)
+        y4 = self.out_conv(y4)
+        out = self.out(y4)
+
+        return out
+
+
+class MDFNetBin(DMFNet):
+    def __init__(self, in_channels=1, n_first=32, conv_channels=128, groups=8, norm="bn", out_class=2):
+        super().__init__(in_channels, n_first, conv_channels, groups, norm, out_class)
+        self.first_conv_nuc = copy.deepcopy(self.first_conv)
+        self.encoder_block1_nuc = copy.deepcopy(self.encoder_block1)
+        self.encoder_block2_nuc = copy.deepcopy(self.encoder_block2)
+        self.encoder_block3_nuc = copy.deepcopy(self.encoder_block3)
+
+        #===============================================================
+        #    decoder -- binary branch
+        #===============================================================
+        self.upsample1 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block1 = MFUnit(2*conv_channels+2*conv_channels, 2*conv_channels, groups=groups, stride=1, norm=norm)
+
+        self.upsample2 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block2 = MFUnit(2*conv_channels+conv_channels, conv_channels, groups=groups, stride=1, norm=norm)
+
+        self.upsample3 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+        self.decoder_block3 = MFUnit(conv_channels+n_first, n_first, groups=groups, stride=1, norm=norm)
+        self.upsample4 = nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False)
+
+        # num_in, num_out, kernel_size=1, stride=1, padding=None, groups=1, norm=Non
+        self.out_conv = Conv3dBlock(n_first, out_class, kernel_size=1, stride=1, norm=norm)
+
+    def forward(self, memb, nuc):
+
+        #  encoder -- memb
+        x0 = self.first_conv(memb)
+        x1 = self.encoder_block1(x0)
+        x2 = self.encoder_block2(x1)
+        x3 = self.encoder_block3(x2)
+
+        #  encoder -- memb
+        x0_nuc = self.first_conv_nuc(memb)
+        x1_nuc = self.encoder_block1_nuc(x0_nuc)
+        x2_nuc = self.encoder_block2_nuc(x1_nuc)
+        x3_nuc = self.encoder_block3_nuc(x2_nuc)
+
+        #  decoder
+        y1 = self.upsample1(x3 + x3_nuc)
+        y1 = torch.cat([x2 + x2_nuc, y1], dim=1)
+        y1 = self.decoder_block1(y1)
+        y2 = self.upsample2(y1)
+        y2 = torch.cat([x1 + x1_nuc, y2], dim=1)
+        y2 = self.decoder_block2(y2)
+        y3 = self.upsample3(y2)
+        y3 = torch.cat([x0 + x0_nuc, y3], dim=1)
+        y3 = self.decoder_block3(y3)
+        y4 = self.upsample4(y3)
+        y4 = self.out_conv(y4)
+        out = self.out(y4)
+
+        return out
+

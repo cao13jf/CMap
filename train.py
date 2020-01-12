@@ -100,7 +100,7 @@ def main():
     train_loader = DataLoader(
         dataset=train_set,
         batch_size=args.batch_size,
-        collate_fn=train_set.collate,
+        # collate_fn=train_set.collate,
         sampler=train_sampler,
         num_workers=args.workers,
         pin_memory=True,
@@ -110,7 +110,6 @@ def main():
     #====================================================
     #  start training
     #====================================================
-    start = time.time()
     torch.set_grad_enabled(True)
     enum_batches = len(train_set) / float(args.batch_size)  # number of epoches in each iteration
     for i, data in enumerate(train_loader, args.start_iter):
@@ -124,14 +123,14 @@ def main():
 
         #  go through the network
         data = [t.cuda(non_blocking=True) for t in data]  # Set non_blocking for multiple GPUs
-        raw, target_bin= data[:3]
-        output_bin = model(raw)
+        raw, seg_nuc, target_bin= data[:3]
+        output_bin = model(raw, seg_nuc)
 
         #  get loss
         if not args.weight_type:
             args.weight_type = "square"
         if args.criterion_kwargs is not None:
-            loss_bin = generalized_dice_loss(output_bin, target_bin, )
+            loss_bin = mse_loss(output_bin, target_bin, )
             loss = loss_bin
         else:
             pass
@@ -146,7 +145,7 @@ def main():
         #   Show mmiddle results
         if args.show_image_freq > 0 and (i % args.show_image_freq) == 0:
             image_dict = dict(Raw=raw[0, 0, :, :, 60].float(), target_bin=target_bin[0, 0, :, :, 60].float(),
-                              output_bin=output_bin[0, 1, :, :, 60].float())
+                              output_bin=output_bin[0, 0, :, :, 60].float())
             visualizer.show_current_images(image_dict)
         if args.show_loss_freq > 0 and (i % args.show_loss_freq) == 0:
             visualizer.plot_current_losses(progress_ratio=(i+1)/enum_batches, losses=dict(loss_bin=loss_bin.item(), loss=loss.item()))

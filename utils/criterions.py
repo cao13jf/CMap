@@ -9,7 +9,7 @@ import torch.nn.functional as F
 #==================================================
 
 #  MSE loss
-def mse_loss(output, target, weight_type):
+def mse_loss(output, target, *args):
     # bk_sum = (target == 0).sum([1, 2, 3]).float()
     # ft_sum = (target != 0).sum([1, 2, 3]).float()
 
