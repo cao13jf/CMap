@@ -1,5 +1,9 @@
 .idea/
 dataset/
+ResultCell
+src
+statistics
+venv
 data/__pycache__/
 models/__pycache__/
 utils/__pycache__/

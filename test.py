@@ -19,7 +19,7 @@ import models
 from data import datasets
 from utils import ParserUse, str2bool
 from utils.show_train import Visualizer
-from utils.prediction_utils import validate, membrane2cell
+from utils.prediction_utils import validate, membrane2cell, combine_cells
 
 cudnn.benchmark = True
 path = os.path.dirname(__file__)
@@ -79,9 +79,9 @@ def main():
         msg = msg + "\n" + str(args)
         logging.info(msg)
 
-        #=============================================================
-        #  set data loader
-        #=============================================================
+        # =============================================================
+        #    set data loader
+        # =============================================================
         if args.mode == 0:
             root_path = args.train_data_dir
             is_scoring = True
@@ -128,10 +128,16 @@ def main():
                 save_format=".nii.gz",  # save volume format
                 snapsot=visualizer,  # whether keep snap
                 postprocess=False,
+                size=test_set.size
             )
     #  Post process on binary segmentation.
     if args.get_cell:
         membrane2cell(args)
+
+    #  Combine labels based on dividing cells
+    if args.tp_combine:
+        print("Begin combine division based on TP...\n")
+        combine_cells(args)
 
 if __name__ == "__main__":
     main()

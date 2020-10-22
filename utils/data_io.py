@@ -13,7 +13,7 @@ import nibabel as nib
 #  load *.nii.gz volume
 def nib_load(file_name):
     if not os.path.exists(file_name):
-        raise IOError("Cannot file {}".format(file_name))
+        raise IOError("Cannot find file {}".format(file_name))
     return nib.load(file_name).get_data()
 
 
@@ -30,7 +30,7 @@ def nib_save(data, file_name):
     check_folder(file_name)
     return nib.save(nib.Nifti1Image(data, None), file_name)
 
-#  write image
+#  write MembAndNuc
 def img_save(image, file_name):
     check_folder(file_name)
     imageio.imwrite(file_name, image)

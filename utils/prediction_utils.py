@@ -12,11 +12,10 @@ from skimage.transform import resize
 
 #  import user defined library
 from utils.data_io import nib_save, img_save
-from utils.ProcessLib import segment_membrane, get_largest_connected_region, get_eggshell
+from utils.ProcessLib import segment_membrane, get_largest_connected_region, get_eggshell, combine_division,delete_isolate_labels
 
 def validate(valid_loader, model, savepath=None, names=None, scoring=False, verbose=False, save_format=".nii.gz",
-             snapsot=None, postprocess=False):
-    H, W, T = 256, 356, 214  # input size to the network
+             snapsot=None, postprocess=False, size=None):
     model.eval()
     runtimes = []
     for i, data in enumerate(tqdm(valid_loader, desc="Getting binary membrane:")):
@@ -33,12 +32,13 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
         #  Regression only has one channel
         if pred_bin.shape[1] > 1:
             # pred_bin = F.softmax(pred_bin, dim=1)
+            pred_bin = delete_isolate_labels(pred_bin)
             pred_bin = pred_bin.argmax(1) # [channel, height, width, depth]
 
         #  binary prediction
         pred_bin = pred_bin.cpu().numpy()
         pred_bin = pred_bin.squeeze().transpose([1, 2, 0])
-        pred_bin = resize(pred_bin.astype(np.float), (H, W, T), mode='constant', cval=0, order=0, anti_aliasing=False)
+        pred_bin = resize(pred_bin.astype(np.float), size, mode='constant', cval=0, order=0, anti_aliasing=False)
 
 
         #  post process
@@ -57,18 +57,22 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "SegMemb", names[i] + "_segMemb"), pred_bin)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "SegMemb",  names[i] + "_segMemb.nii.gz")
-                nib_save((pred_bin*256).astype(np.int8), save_name)
+                nib_save((pred_bin*256).astype(np.int16), save_name)
 
 def membrane2cell(args):
-        for embryo_name in args.test_embryos:
-            embryo_mask = get_eggshell(embryo_name)
+    for embryo_name in args.test_embryos:
+        embryo_mask = get_eggshell(embryo_name)
 
-            file_names = glob.glob(os.path.join("./output",embryo_name, "SegMemb",'*.nii.gz'))
-            parameters = []
-            for file_name in file_names:
-                parameters.append([embryo_name, file_name, embryo_mask])
-                # segment_membrane(parameters)  # test without parallel compu
-        mpPool = mp.Pool(mp.cpu_count() - 1)
-        for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters), desc="membrane --> cell"):
-            pass
+        file_names = glob.glob(os.path.join("./output",embryo_name, "SegMemb",'*.nii.gz'))
+        parameters = []
+        for file_name in file_names:
+            parameters.append([embryo_name, file_name, embryo_mask])
+            # segment_membrane([embryo_name, file_name, embryo_mask])
+    mpPool = mp.Pool(mp.cpu_count() - 1)
+    for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters), desc="membrane --> cell"):
+        pass
+
+def combine_cells(args):
+    combine_division(args.test_embryos, args.max_time, overwrite=False)
+
 

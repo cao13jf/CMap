@@ -23,10 +23,10 @@ class Memb3DDataset(Dataset):
         self.for_train = for_train
         self.return_target = return_target
         self.transforms = eval(transforms or "Identity()")  # TODO: define transformation library
+        self.size = self.get_size()
 
     def __getitem__(self, item):
         stack_name = self.names[item]
-        tp = float(stack_name.split("_")[1][1:])
         load_dict = pkload(self.paths[item])  # Choose whether to need nucleus stack
 
         edt_nuc = contour_distance(load_dict["seg_nuc"], d_threshold=10)
@@ -57,6 +57,12 @@ class Memb3DDataset(Dataset):
             outputs.append(volume)
 
         return outputs if isinstance(volumes0, list) else outputs[0]
+
+    def get_size(self):
+
+        raw_memb = pkload(self.paths[0])["raw_memb"]
+
+        return raw_memb.shape
 
     def __len__(self):
         return len(self.names)

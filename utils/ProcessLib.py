@@ -3,14 +3,20 @@
 import os
 import glob
 import random
+from tqdm import tqdm
 import numpy as np
-from scipy import ndimage
+import multiprocessing as mp
+from scipy import ndimage, stats
+import pickle
 from skimage.morphology import h_maxima, watershed, binary_opening
+from scipy.ndimage.morphology import binary_closing, distance_transform_edt
+from skimage.measure import marching_cubes_lewiner, mesh_surface_area
 from scipy.spatial import Delaunay
 from scipy.stats import mode
 
 # import user defined library
 from utils.data_io import nib_load, nib_save
+from utils.data_structure import construct_celltree
 
 #=========================================================================
 #   main function for post process
@@ -20,24 +26,38 @@ def segment_membrane(para):
     file_name = para[1]
     egg_shell = para[2]
     name_embryo_T = "_".join(os.path.basename(file_name).split("_")[0:2])
+    segNuc_file = os.path.join("./dataset/test", embryo_name, "SegNuc", name_embryo_T + "_segNuc.nii.gz")
 
-    memb_edt = nib_load(file_name) * egg_shell
+    memb_edt = nib_load(file_name) # * egg_shell
+    # =============== change to binary front distance ========================
+    # center_mask = memb_edt > (memb_edt.max() * 0.90)
+    # center_mask = get_largest_connected_region(center_mask)
+    # center_distance = distance_transform_edt(~center_mask)
+    # memb_edt = center_distance.max() - center_distance
 
-    marker_volume = nib_load("191108plc1p1_200_nucSeg.nii.gz")
+    marker_volume = nib_load(segNuc_file)
 
-    marker_volume[memb_edt > 250] = 0  # delete died cells
-    marker_volume = ndimage.morphology.binary_dilation(marker_volume, structure=np.ones((3, 3, 3), dtype=bool))
+    # marker_volume[memb_edt > 250] = 0  # delete died cells
+    marker_volume = ndimage.morphology.grey_dilation(marker_volume, structure=np.ones((7, 7, 7))) - 1
+    # Combine sisters
+
     # add background seeds
-    marker_volume[0:2, :, :] = 1; marker_volume[:, 0:2, :] = 1; marker_volume[:, :, 0:2] = 1
-    marker_volume[-3:-1, :, ] = 1; marker_volume[:, -3:-1, :] = 1; marker_volume[:, :, -3:-1] = 1
+    memb_edt[0:3, :, :] = 0; memb_edt[:, 0:3, :] = 0; memb_edt[:, :, 0:3] = 0
+    memb_edt[-4:-1, :, :] = 0; memb_edt[:, -4:-1, :] = 0; memb_edt[:, :, -4:-1] = 0
+    marker_volume[0:2, :, :] = 10000; marker_volume[:, 0:2, :] = 10000; marker_volume[:, :, 0:2] = 10000
+    marker_volume[-3:-1, :, ] = 10000; marker_volume[:, -3:-1, :] = 10000; marker_volume[:, :, -3:-1] = 10000
 
-    marker_volume = ndimage.label(marker_volume)[0]  # each markers should be labeled with different values.
     watershed_seg = watershed(memb_edt, marker_volume.astype(np.uint16), watershed_line=True)
-
     #  set background label as zero
-    background_label = mode(watershed_seg, axis=None)[0][0]
-    watershed_seg[watershed_seg == background_label] = 0
+    watershed_seg[watershed_seg == 10000] = 0
     # merged_seg = set_boundary_zero(merged_seg)
+
+    # ======== delete small objects ================
+    # labels = np.unique(watershed_seg).tolist()
+    # labels.remove(0)
+    # for i in labels:
+    #     if (watershed_seg == i).sum() < 506:
+    #         watershed_seg[watershed_seg == i] = 0
 
     # save result
     save_name = os.path.join("./output", embryo_name, "SegCell", name_embryo_T+"_segCell.nii.gz")
@@ -50,8 +70,8 @@ def segment_membrane(para):
 #  construct local maximum graph
 def construct_weighted_graph(bin_image, local_max_h = 2):
     '''
-    Construct edge weight graph from binary image.
-    :param bin_image: cell binary image
+    Construct edge weight graph from binary MembAndNuc.
+    :param bin_image: cell binary MembAndNuc
     :return point_list: all points embedded in the triangulation, used for location query
     :return edge_list: list of edges in the triangulation
     :return edge_weight_list: edge weight corresponds to the edge list.
@@ -209,7 +229,6 @@ def cell_filter_with_nucleus(cell_seg, nuc_seg):
 
     return cell_seg
 
-
 def get_largest_connected_region(embryo_mask):
     label_structure = np.ones((3, 3, 3))
     embryo_mask = ndimage.morphology.binary_closing(embryo_mask, structure=label_structure)
@@ -221,7 +240,71 @@ def get_largest_connected_region(embryo_mask):
 
     return valid_edt_mask0.astype(np.uint8)
 
+def get_contact_area(volume):
+    '''
+    Get the contact volume surface of the segmentation. The segmentation results should be watershed segmentation results
+    with a ***watershed line***.
+    :param volume: segmentation result
+    :return boundary_elements_uni: pairs of SegCell which contacts with each other
+    :return contact_area: the contact surface area corresponding to that in the the boundary_elements.
+    '''
 
+    cell_mask = volume != 0
+    boundary_mask = (cell_mask == 0) & ndimage.binary_dilation(cell_mask)
+    [x_bound, y_bound, z_bound] = np.nonzero(boundary_mask)
+    boundary_elements = []
+    for (x, y, z) in zip(x_bound, y_bound, z_bound):
+        neighbors = volume[np.ix_(range(x-1, x+2),
+                                         range(y-1, y+2),
+                                         range(z-1, z+2))]
+        neighbor_labels = list(np.unique(neighbors))
+        neighbor_labels.remove(0)
+        if len(neighbor_labels)==2:
+            boundary_elements.append(neighbor_labels)
+    boundary_elements_uni = list(np.unique(np.array(boundary_elements), axis=0))
+    contact_area = []
+    boundary_elements_uni_new = []
+    for (label1, label2) in boundary_elements_uni:
+        contact_mask = np.logical_and(ndimage.binary_dilation(volume == label1), ndimage.binary_dilation(volume == label2))
+        contact_mask = np.logical_and(contact_mask, boundary_mask)
+        if contact_mask.sum() > 4:
+            verts, faces, _, _ = marching_cubes_lewiner(contact_mask)
+            area = mesh_surface_area(verts, faces) / 2
+            contact_area.append(area)
+            boundary_elements_uni_new.append((label1, label2))
+    return boundary_elements_uni_new, contact_area
+
+def get_surface_area(cell_mask):
+    '''
+    get cell surface area
+    :param cell_mask: single cell mask
+    :return surface_are: cell's surface are
+    '''
+    # ball_structure = morphology.cube(3) # TODO
+    # erased_mask = ndimage.binary_erosion(cell_mask, ball_structure, iterations=1)
+    # surface_area = np.logical_and(~erased_mask, cell_mask).sum()
+    verts, faces, _, _ = marching_cubes_lewiner(cell_mask)
+    surface = mesh_surface_area(verts, faces)
+
+    return surface
+
+def delete_isolate_labels(discrete_edt):
+    '''
+    delete all unconnected binary SegMemb
+    '''
+    label_structure = np.ones((3, 3, 3))
+    [labelled_edt, _]= ndimage.label(discrete_edt, label_structure)
+
+    # get the largest connected label
+    [most_label, _] = stats.mode(labelled_edt[discrete_edt == discrete_edt.max()], axis=None)
+
+    valid_edt_mask0 = (labelled_edt == most_label[0])
+    valid_edt_mask = ndimage.morphology.binary_closing(valid_edt_mask0, iterations=2)
+    filtered_edt = np.copy(discrete_edt)
+    filtered_edt[valid_edt_mask == 0] = 0
+
+
+    return filtered_edt
 #================================================================
 #   get egg shell
 #================================================================
@@ -275,3 +358,159 @@ def otsu3d(gray):
     final_img[gray > final_thresh] = 1
     final_img[gray < final_thresh] = 0
     return final_img
+
+
+'''
+Based on the division summary, all cells should be seperated at 4th TP
+'''
+def combine_division(embryos, max_time, overwrite=False):
+
+    embryos = embryos if isinstance(embryos, list) else [embryos]
+    with open(os.path.join("./dataset/number_dictionary.txt"), "rb") as f:
+        number_dict = pickle.load(f)
+    with open(os.path.join("./dataset/name_dictionary.txt"), "rb") as f:
+        name_dict = pickle.load(f)
+    for embryo in embryos:
+        ace_file = os.path.join("./dataset/test", embryo, "CD"+embryo+".csv")
+        cell_tree = construct_celltree(ace_file, max_time=max_time)
+
+        memb_files = glob.glob(os.path.join("./output", embryo, "SegMemb", '*.nii.gz'))
+        cell_files = glob.glob(os.path.join("./output", embryo, "SegCell", '*.nii.gz'))
+        nuc_files = glob.glob(os.path.join("./dataset/test", embryo, "SegNuc", '*.nii.gz'))
+        memb_files.sort()
+        nuc_files.sort()
+        cell_files.sort()
+
+        # =============== single test =================================
+        for tp in tqdm(range(len(nuc_files)), desc="Combining {}".format(embryo)):
+            embryo = embryo
+            memb_file = memb_files[tp]
+            nuc_file = nuc_files[tp]
+            cell_file = cell_files[tp]
+
+            t = int(filename2t(memb_file))
+
+            seg_map = nib_load(memb_file)
+            seg_bin = (seg_map > 0.93 * seg_map.max()).astype(np.float)
+            seg_nuc = nib_load(nuc_file)
+            seg_cell = nib_load(cell_file)
+
+            labels = np.unique(seg_nuc).tolist()
+            labels.pop(0)
+            processed_labels = []
+            output_seg_cell = seg_cell.copy()
+            cell_labels = np.unique(seg_cell).tolist()
+            for one_label in labels:
+                one_times = cell_tree[name_dict[one_label]].data.get_time()
+                if any(time < t for time in one_times): # if previous division exist
+                    continue
+                if (one_label in processed_labels):
+                    continue
+                parent_label = cell_tree.parent(name_dict[one_label])
+                if parent_label is None:
+                    continue
+                another_label = [number_dict[a.tag] for a in cell_tree.children(parent_label.tag)]
+                another_label.remove(one_label)
+                another_label = another_label[0]
+
+                if (one_label not in cell_labels) or (another_label not in cell_labels):
+                    continue
+                x0 = np.stack(np.where(seg_nuc == one_label)).squeeze().tolist()
+                x1 = np.stack(np.where(seg_nuc == another_label)).squeeze().tolist()
+                edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_bin)
+                if edge_weight == 0:
+                    mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)
+                    mask = binary_closing(mask, structure=np.ones((3, 3, 3)))
+                    output_seg_cell[mask] = number_dict[parent_label.tag]
+                    one_times.remove(t)
+                    another_times = cell_tree[name_dict[another_label]].data.get_time()
+                    another_times.remove(t)
+                    cell_tree[name_dict[one_label]].data.set_time(one_times)
+                    cell_tree[name_dict[another_label]].data.set_time(another_times)
+                processed_labels += [one_label, another_label]
+
+            if not overwrite:
+                seg_save_file = os.path.join("./output", embryo, "SegCellTimeCombined",
+                                             embryo + "_" + str(t).zfill(3) + "_segCell.nii.gz")
+            else:
+                seg_save_file = cell_file
+            nib_save(output_seg_cell, seg_save_file)
+        # =============== single test =================================
+
+        # parameters = []
+        # for i, file_name in enumerate(memb_files):
+        #     parameters.append([embryo, file_name, nuc_files[i], cell_files[i], cell_tree, overwrite, number_dict, name_dict])
+        #
+        # mpPool = mp.Pool(mp.cpu_count() - 1)
+        # for _ in tqdm(mpPool.imap_unordered(combine_division_mp, parameters), total=len(parameters), desc=embryo):
+        #     pass
+
+def combine_division_mp(para):
+    embryo = para[0]
+    memb_file = para[1]
+    nuc_file = para[2]
+    cell_file = para[3]
+    cell_tree = para[4]
+    overwrite = para[5]
+    number_dict = para[6]
+    name_dict = para[7]
+
+    t = filename2t(memb_file)
+
+    seg_map = nib_load(memb_file)
+    seg_bin = (seg_map > 0.93 * seg_map.max()).astype(np.float)
+    seg_nuc = nib_load(nuc_file)
+    seg_cell = nib_load(cell_file)
+
+    labels = np.unique(seg_nuc).tolist()
+    labels.pop(0)
+    processed_labels = []
+    output_seg_cell = seg_cell.copy()
+    cell_labels = np.unique(seg_cell).tolist()
+    for one_label in labels:
+        times = cell_tree[name_dict[one_label]].get_time()
+        if (one_label in processed_labels):
+            continue
+        parent_label = cell_tree.parent(name_dict[one_label])
+        if parent_label is None:
+            continue
+        another_label = [number_dict[a.tag] for a in cell_tree.children(parent_label.tag)]
+        another_label.remove(one_label)
+        another_label = another_label[0]
+
+        if (one_label not in cell_labels) or (another_label not in cell_labels):
+            continue
+        x0 = np.stack(np.where(seg_nuc == one_label)).squeeze().tolist()
+        x1 = np.stack(np.where(seg_nuc == another_label)).squeeze().tolist()
+        edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_bin)
+        if edge_weight == 0:
+            mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)
+            mask = binary_closing(mask, structure=np.ones((3, 3, 3)))
+            output_seg_cell[mask] = number_dict[parent_label.tag]
+        processed_labels += [one_label, another_label]
+
+    if not overwrite:
+        seg_save_file = os.path.join("./output", embryo, "SegCellTimeCombined",
+                                     embryo + "_" + str(t).zfill(3) + "_segCell.nii.gz")
+    else:
+        seg_save_file = cell_file
+    nib_save(output_seg_cell, seg_save_file)
+
+# get t from file name
+def filename2t(filename):
+    base_name = os.path.basename(filename)
+
+    return int(base_name.split("_")[1])
+
+
+def line_weight_integral(x0, x1, weight_volume):
+    # find all points between start and end
+    inline_points = all_points_inline(x0, x1).astype(np.uint16)
+    points_num = inline_points.shape[0]
+    line_weight = 0
+    for i in range(points_num):
+        point_weight = weight_volume[inline_points[i][0],
+                                    inline_points[i][1],
+                                    inline_points[i][2]]
+        line_weight = line_weight + point_weight
+    return line_weight

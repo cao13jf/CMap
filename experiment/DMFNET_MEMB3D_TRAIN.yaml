@@ -27,12 +27,14 @@ opt_params:
 
 workers: 8
 
-get_memb_bin: True
-show_snap: false
+max_time: 220
+get_memb_bin: False
+show_snap: False
 #  Postprocess
-get_cell: True
+get_cell: False
+tp_combine: True
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
-test_embryos: [191108plc1p1]  # embryos used for testing.
+test_embryos: [200326plc1p3] # embryos used for testing.
 train_transforms: # for training
   Compose([
     ContourEDT(9),

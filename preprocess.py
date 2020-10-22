@@ -31,10 +31,7 @@ def nii_to_pkl(embryo_path, has_label=True):
         base_name = base_name[0] + "_" + base_name[1]
         raw_memb = nib_load(raw_memb_file)  # TODO: how to normalize
         raw_nuc = nib_load(raw_nuc_list[i])
-        seg_nuc = None
-        if "200" in raw_memb_list[i]:
-            seg_nuc = nib_load(seg_nuc_list[0])
-            print(seg_nuc_list[0])
+        seg_nuc = nib_load(seg_nuc_list[i])
         if has_label:
             seg_memb = nib_load(seg_memb_list[i])
             seg_cell = nib_load(seg_cell_list[i])
@@ -54,6 +51,6 @@ def doit(target, embryo_names=None):
         nii_to_pkl(os.path.join(root, embryo_name), has_label)
 
 if __name__ == "__main__":
-    embryo_names = ["191108plc1p1"]
+    embryo_names = ["200326plc1p3"]
     # doit(train_folder, embryo_names)
     doit(test_folder, embryo_names)

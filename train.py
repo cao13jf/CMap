@@ -35,7 +35,7 @@ parser.add_argument('-cfg', '--cfg', default='DMFNet_MEMB3D_TRAIN', required=Tru
 parser.add_argument('-gpu', '--gpu', default='0', type=str, required=True, help='Supprot one GPU & multiple GPUs.')
 parser.add_argument('-batch_size', '--batch_size', default=1, type=int, help='Batch size')
 parser.add_argument('-restore', '--restore', default='', type=str)
-parser.add_argument('--show_image_freq', default=20, type=int, help="frequency of showing image")
+parser.add_argument('--show_image_freq', default=20, type=int, help="frequency of showing MembAndNuc")
 parser.add_argument('--show_loss_freq', default=5, type=int, help="frequency of showing loss")
 
 path = os.path.dirname(__file__)

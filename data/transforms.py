@@ -194,7 +194,7 @@ class RandomIntensityChange(Base):
             return img
 
     def __str__(self):
-        return "random intensity shift on the input image"
+        return "random intensity shift on the input MembAndNuc"
 
 
 #   add noise
@@ -232,7 +232,7 @@ class GaussianBlur(Base):
 
 #   binary mask to distance
 class ContourEDT(Base):
-    #  only applicable to binary image
+    #  only applicable to binary MembAndNuc
     def __init__(self, d_threshold=15):
         self.d_threshold = d_threshold
 
