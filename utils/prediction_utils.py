@@ -12,7 +12,7 @@ from skimage.transform import resize
 
 #  import user defined library
 from utils.data_io import nib_save, img_save
-from utils.ProcessLib import segment_membrane, get_largest_connected_region, get_eggshell, combine_division,delete_isolate_labels
+from utils.ProcessLib import segment_membrane, get_largest_connected_region, get_eggshell, combine_division, delete_isolate_labels
 
 def validate(valid_loader, model, savepath=None, names=None, scoring=False, verbose=False, save_format=".nii.gz",
              snapsot=None, postprocess=False, size=None):
@@ -68,11 +68,11 @@ def membrane2cell(args):
         for file_name in file_names:
             parameters.append([embryo_name, file_name, embryo_mask])
             # segment_membrane([embryo_name, file_name, embryo_mask])
-    mpPool = mp.Pool(mp.cpu_count() - 1)
-    for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters), desc="membrane --> cell"):
-        pass
+        mpPool = mp.Pool(mp.cpu_count() - 1)
+        for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters), desc="{} membrane --> cell".format(embryo_name)):
+            pass
 
 def combine_cells(args):
-    combine_division(args.test_embryos, args.max_time, overwrite=False)
+    combine_division(args.test_embryos, args.max_times, overwrite=False)
 
 

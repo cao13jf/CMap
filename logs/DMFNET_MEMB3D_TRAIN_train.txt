@@ -48818,3 +48818,67 @@ workers: 8
 2020-01-11 11:09:31,958 Iter 1348, Epoch 49.9259, Loss 0.0007514
 2020-01-11 11:09:32,487 Iter 1349, Epoch 49.9630, Loss 0.0010891
 2020-01-11 11:09:34,209 Iter 1350, Epoch 50.0000, Loss 0.0008713
+2020-11-28 09:38:01,867 Setting up a new session...
+2020-11-28 09:38:01,876 Socket refused connection, running socketless
+2020-11-28 09:38:01,876 [Errno 111] Connection refused
+2020-11-28 09:38:04,501 ==>!!! Cannot find checkpoint at ./ckpts/DMFNET_MEMB3D_TRAIN/
+batch_size: 1
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: false
+get_memb_bin: false
+gpu: '0'
+max_time: 195
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+restore: ''
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/
+save_freq: 10
+seed: 1024
+show_image_freq: 10
+show_loss_freq: 5
+show_snap: false
+start_iter: 0
+test_data_dir: dataset/test
+test_embryos: ('200326plc1p4',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-28 09:38:12,879 Iter 1, Epoch 0.0185, Loss 0.0510163
+2020-11-28 09:38:13,172 Iter 2, Epoch 0.0370, Loss 0.0251486
+2020-11-28 09:38:13,465 Iter 3, Epoch 0.0556, Loss 0.0198627
+2020-11-28 09:38:13,760 Iter 4, Epoch 0.0741, Loss 0.0150059
+2020-11-28 09:38:14,057 Iter 5, Epoch 0.0926, Loss 0.0134013
+2020-11-28 09:38:14,359 Iter 6, Epoch 0.1111, Loss 0.0106063
+2020-11-28 09:38:14,657 Iter 7, Epoch 0.1296, Loss 0.0105833
+2020-11-28 09:38:14,955 Iter 8, Epoch 0.1481, Loss 0.0080305
+2020-11-28 09:38:15,284 Iter 9, Epoch 0.1667, Loss 0.0104589
+2020-11-28 09:38:15,578 Iter 10, Epoch 0.1852, Loss 0.0109748
+2020-11-28 09:38:15,896 Iter 11, Epoch 0.2037, Loss 0.0073277
+2020-11-28 09:38:16,192 Iter 12, Epoch 0.2222, Loss 0.0066064
+2020-11-28 09:38:16,486 Iter 13, Epoch 0.2407, Loss 0.0100597

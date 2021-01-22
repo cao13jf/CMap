@@ -5,6 +5,7 @@ import glob
 import random
 from tqdm import tqdm
 import numpy as np
+import pandas as pd
 import multiprocessing as mp
 from scipy import ndimage, stats
 import pickle
@@ -363,16 +364,21 @@ def otsu3d(gray):
 '''
 Based on the division summary, all cells should be seperated at 4th TP
 '''
-def combine_division(embryos, max_time, overwrite=False):
+def combine_division(embryos, max_times, overwrite=False):
 
     embryos = embryos if isinstance(embryos, list) else [embryos]
-    with open(os.path.join("./dataset/number_dictionary.txt"), "rb") as f:
-        number_dict = pickle.load(f)
-    with open(os.path.join("./dataset/name_dictionary.txt"), "rb") as f:
-        name_dict = pickle.load(f)
-    for embryo in embryos:
+
+    for i_embryo, embryo in enumerate(embryos):
+        max_time = max_times[i_embryo]
         ace_file = os.path.join("./dataset/test", embryo, "CD"+embryo+".csv")
-        cell_tree = construct_celltree(ace_file, max_time=max_time)
+        cell_tree, max_time = construct_celltree(ace_file, max_time=max_time)
+
+        try:
+            pd_number = pd.read_csv('./dataset/number_dictionary.csv', names=["name", "label"])
+            number_dict = pd.Series(pd_number.label.values, index=pd_number.name).to_dict()
+        except:
+            raise Exception("Not find number dictionary at ./dataset")
+        name_dict = dict((v, k) for k, v in number_dict.items())
 
         memb_files = glob.glob(os.path.join("./output", embryo, "SegMemb", '*.nii.gz'))
         cell_files = glob.glob(os.path.join("./output", embryo, "SegCell", '*.nii.gz'))
@@ -382,68 +388,69 @@ def combine_division(embryos, max_time, overwrite=False):
         cell_files.sort()
 
         # =============== single test =================================
-        for tp in tqdm(range(len(nuc_files)), desc="Combining {}".format(embryo)):
-            embryo = embryo
-            memb_file = memb_files[tp]
-            nuc_file = nuc_files[tp]
-            cell_file = cell_files[tp]
-
-            t = int(filename2t(memb_file))
-
-            seg_map = nib_load(memb_file)
-            seg_bin = (seg_map > 0.93 * seg_map.max()).astype(np.float)
-            seg_nuc = nib_load(nuc_file)
-            seg_cell = nib_load(cell_file)
-
-            labels = np.unique(seg_nuc).tolist()
-            labels.pop(0)
-            processed_labels = []
-            output_seg_cell = seg_cell.copy()
-            cell_labels = np.unique(seg_cell).tolist()
-            for one_label in labels:
-                one_times = cell_tree[name_dict[one_label]].data.get_time()
-                if any(time < t for time in one_times): # if previous division exist
-                    continue
-                if (one_label in processed_labels):
-                    continue
-                parent_label = cell_tree.parent(name_dict[one_label])
-                if parent_label is None:
-                    continue
-                another_label = [number_dict[a.tag] for a in cell_tree.children(parent_label.tag)]
-                another_label.remove(one_label)
-                another_label = another_label[0]
-
-                if (one_label not in cell_labels) or (another_label not in cell_labels):
-                    continue
-                x0 = np.stack(np.where(seg_nuc == one_label)).squeeze().tolist()
-                x1 = np.stack(np.where(seg_nuc == another_label)).squeeze().tolist()
-                edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_bin)
-                if edge_weight == 0:
-                    mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)
-                    mask = binary_closing(mask, structure=np.ones((3, 3, 3)))
-                    output_seg_cell[mask] = number_dict[parent_label.tag]
-                    one_times.remove(t)
-                    another_times = cell_tree[name_dict[another_label]].data.get_time()
-                    another_times.remove(t)
-                    cell_tree[name_dict[one_label]].data.set_time(one_times)
-                    cell_tree[name_dict[another_label]].data.set_time(another_times)
-                processed_labels += [one_label, another_label]
-
-            if not overwrite:
-                seg_save_file = os.path.join("./output", embryo, "SegCellTimeCombined",
-                                             embryo + "_" + str(t).zfill(3) + "_segCell.nii.gz")
-            else:
-                seg_save_file = cell_file
-            nib_save(output_seg_cell, seg_save_file)
+        # for tp in tqdm(range(len(nuc_files)), desc="Combining {}".format(embryo)):
+        #     embryo = embryo
+        #     memb_file = memb_files[tp]
+        #     nuc_file = nuc_files[tp]
+        #     cell_file = cell_files[tp]
+        #
+        #     t = int(filename2t(memb_file))
+        #
+        #     seg_map = nib_load(memb_file)
+        #     seg_bin = (seg_map > 0.93 * seg_map.max()).astype(np.float)
+        #     seg_nuc = nib_load(nuc_file)
+        #     seg_cell = nib_load(cell_file)
+        #
+        #     labels = np.unique(seg_nuc).tolist()
+        #     labels.pop(0)
+        #     processed_labels = []
+        #     output_seg_cell = seg_cell.copy()
+        #     cell_labels = np.unique(seg_cell).tolist()
+        #     for one_label in labels:
+        #         one_times = cell_tree[name_dict[one_label]].data.get_time()
+        #         if any(time < t for time in one_times): # if previous division exist
+        #             continue
+        #         if (one_label in processed_labels):
+        #             continue
+        #         parent_label = cell_tree.parent(name_dict[one_label])
+        #         if parent_label is None:
+        #             continue
+        #         another_label = [number_dict[a.tag] for a in cell_tree.children(parent_label.tag)]
+        #         another_label.remove(one_label)
+        #         another_label = another_label[0]
+        #
+        #         if (one_label not in cell_labels) or (another_label not in cell_labels):
+        #             continue
+        #         x0 = np.stack(np.where(seg_nuc == one_label)).squeeze().tolist()
+        #         x1 = np.stack(np.where(seg_nuc == another_label)).squeeze().tolist()
+        #         edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_bin)
+        #         if edge_weight == 0:
+        #             mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)
+        #             mask = binary_closing(mask, structure=np.ones((3, 3, 3)))
+        #             output_seg_cell[mask] = number_dict[parent_label.tag]
+        #             one_times.remove(t)
+        #             another_times = cell_tree[name_dict[another_label]].data.get_time()
+        #             another_times.remove(t)
+        #             cell_tree[name_dict[one_label]].data.set_time(one_times)
+        #             cell_tree[name_dict[another_label]].data.set_time(another_times)
+        #         processed_labels += [one_label, another_label]
+        #
+        #     if not overwrite:
+        #         seg_save_file = os.path.join("./output", embryo, "SegCellTimeCombined",
+        #                                      embryo + "_" + str(t).zfill(3) + "_segCell.nii.gz")
+        #     else:
+        #         seg_save_file = cell_file
+        #     nib_save(output_seg_cell, seg_save_file)
         # =============== single test =================================
 
-        # parameters = []
-        # for i, file_name in enumerate(memb_files):
-        #     parameters.append([embryo, file_name, nuc_files[i], cell_files[i], cell_tree, overwrite, number_dict, name_dict])
-        #
-        # mpPool = mp.Pool(mp.cpu_count() - 1)
-        # for _ in tqdm(mpPool.imap_unordered(combine_division_mp, parameters), total=len(parameters), desc=embryo):
-        #     pass
+        parameters = []
+        for i, file_name in enumerate(memb_files):
+            parameters.append([embryo, file_name, nuc_files[i], cell_files[i], cell_tree, overwrite, number_dict, name_dict])
+
+            # combine_division_mp([embryo, file_name, nuc_files[i], cell_files[i], cell_tree, overwrite, number_dict, name_dict])
+        mpPool = mp.Pool(mp.cpu_count() - 1)
+        for _ in tqdm(mpPool.imap_unordered(combine_division_mp, parameters), total=len(parameters), desc=embryo):
+            pass
 
 def combine_division_mp(para):
     embryo = para[0]
@@ -455,7 +462,7 @@ def combine_division_mp(para):
     number_dict = para[6]
     name_dict = para[7]
 
-    t = filename2t(memb_file)
+    t = int(filename2t(memb_file))
 
     seg_map = nib_load(memb_file)
     seg_bin = (seg_map > 0.93 * seg_map.max()).astype(np.float)
@@ -468,7 +475,9 @@ def combine_division_mp(para):
     output_seg_cell = seg_cell.copy()
     cell_labels = np.unique(seg_cell).tolist()
     for one_label in labels:
-        times = cell_tree[name_dict[one_label]].get_time()
+        one_times = cell_tree[name_dict[one_label]].data.get_time()
+        if any(time < t for time in one_times): # if previous division exist
+            continue
         if (one_label in processed_labels):
             continue
         parent_label = cell_tree.parent(name_dict[one_label])
@@ -487,6 +496,11 @@ def combine_division_mp(para):
             mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)
             mask = binary_closing(mask, structure=np.ones((3, 3, 3)))
             output_seg_cell[mask] = number_dict[parent_label.tag]
+            one_times.remove(t)
+            another_times = cell_tree[name_dict[another_label]].data.get_time()
+            another_times.remove(t)
+            cell_tree[name_dict[one_label]].data.set_time(one_times)
+            cell_tree[name_dict[another_label]].data.set_time(another_times)
         processed_labels += [one_label, another_label]
 
     if not overwrite:

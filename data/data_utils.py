@@ -8,10 +8,12 @@ import numpy as np
 
 M = 2**32 -1
 
-def get_all_stack(root, membrane_list, suffix):
+def get_all_stack(root, membrane_list, suffix, max_times):
     file_list = []
-    for membrane in membrane_list:
+    for idx, membrane in enumerate(membrane_list):
+        max_time = max_times[idx]
         stacks = glob.glob(os.path.join(root, membrane, "PklFile", suffix))
+        stacks = sorted(stacks)[:max_time]
         file_list = file_list + stacks
     return file_list
 

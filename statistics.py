@@ -43,8 +43,8 @@ def analysis_shape_single_tp(para):
 
 if __name__ == "__main__":
 
-    embryo_name = "200326plc1p3"
-    max_time = 220
+    embryo_name = "200326plc1p4"
+    max_time = 195
     save_folder = os.path.join("./statistics", embryo_name)
     if not os.path.isdir(save_folder):
         os.makedirs(save_folder)

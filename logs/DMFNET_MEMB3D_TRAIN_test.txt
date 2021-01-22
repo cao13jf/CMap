@@ -10656,3 +10656,2245 @@ valid_data_dir: dataset/validation
 valid_freq: 10
 workers: 8
 
+2020-10-29 15:20:25,524 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 255
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200113plc1p2',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-10-29 15:20:25,673 --------------------------------------------------
+2020-10-29 15:20:25,673 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 255
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200113plc1p2',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-10-30 20:24:05,436 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 220
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200326plc1p32',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-10-30 20:52:13,183 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 220
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200326plc1p3',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-10-30 20:52:13,619 --------------------------------------------------
+2020-10-30 20:52:13,619 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 220
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200326plc1p3',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-06 20:54:46,817 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: false
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 256)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-06 21:01:32,019 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: false
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 256)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-06 21:01:32,041 --------------------------------------------------
+2020-11-06 21:01:32,041 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: false
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 256)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-06 23:56:01,148 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: false
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 256)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-06 23:56:01,169 --------------------------------------------------
+2020-11-06 23:56:01,169 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: false
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 256)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-07 00:01:14,278 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: false
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-07 00:01:14,300 --------------------------------------------------
+2020-11-07 00:01:14,301 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: false
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-12 21:47:42,949 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-12 21:47:43,020 --------------------------------------------------
+2020-11-12 21:47:43,020 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-12 21:48:20,230 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-12 21:48:20,251 --------------------------------------------------
+2020-11-12 21:48:20,252 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-12 21:50:48,953 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-12 21:50:48,976 --------------------------------------------------
+2020-11-12 21:50:48,976 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-13 10:00:20,295 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-13 10:00:20,319 --------------------------------------------------
+2020-11-13 10:00:20,320 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-28 00:09:41,230 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-28 00:09:41,281 --------------------------------------------------
+2020-11-28 00:09:41,282 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 60
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-28 00:21:19,500 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 195
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200322plc1p2', '200326plc1p4')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-28 00:21:20,000 --------------------------------------------------
+2020-11-28 00:21:20,001 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 195
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200322plc1p2', '200326plc1p4')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-30 11:56:20,931 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 1
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-30 11:56:52,839 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 1
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-30 11:56:52,863 --------------------------------------------------
+2020-11-30 11:56:52,863 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 1
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-30 13:11:34,054 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 1
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-30 13:11:34,181 --------------------------------------------------
+2020-11-30 13:11:34,181 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 1
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-30 13:40:55,569 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 1
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-11-30 13:40:55,652 --------------------------------------------------
+2020-11-30 13:40:55,652 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 1
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('201105plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-08 00:21:29,469 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 1
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200326plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-08 00:28:48,081 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 185
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200326plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-08 00:28:48,447 --------------------------------------------------
+2020-12-08 00:28:48,447 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 185
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200326plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: false
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-10 00:51:38,514 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 185
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200323plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-10 00:57:16,192 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 185
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200323plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-10 00:57:16,348 --------------------------------------------------
+2020-12-10 00:57:16,348 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_time: 185
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200323plc1p1',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-20 09:45:20,937 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_times: (205, 205, 195, 185, 220, 195)
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+raw_size: (92, 712, 512)
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('191108plc1p1', '200109plc1p1', '200322plc1p2', '200323plc1p1', '200326plc1p3',
+  '200326plc1p4')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-20 10:12:14,122 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_times: (205, 205, 195, 185, 220, 195)
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+raw_size: (92, 712, 512)
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+shape_analysis: true
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('191108plc1p1', '200109plc1p1', '200322plc1p2', '200323plc1p1', '200326plc1p3',
+  '200326plc1p4')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-20 10:12:14,737 --------------------------------------------------
+2020-12-20 10:12:14,737 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_times: (205, 205, 195, 185, 220, 195)
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+raw_size: (92, 712, 512)
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+shape_analysis: true
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('191108plc1p1', '200109plc1p1', '200322plc1p2', '200323plc1p1', '200326plc1p3',
+  '200326plc1p4')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-21 21:21:45,558 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_times: (255, 195)
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+raw_size: (92, 712, 512)
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+shape_analysis: true
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200113plc1p2', '200113plc1p3')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-22 00:52:18,123 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_times: (255, 195)
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+raw_size: (92, 712, 512)
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+shape_analysis: true
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200113plc1p2', '200113plc1p3')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-22 00:52:18,284 --------------------------------------------------
+2020-12-22 00:52:18,284 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_times: (255, 195)
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+raw_size: (92, 712, 512)
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+shape_analysis: true
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200113plc1p2', '200113plc1p3')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-22 00:59:58,569 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_times: (255, 195)
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+raw_size: (92, 712, 512)
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+shape_analysis: true
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200113plc1p2', '200113plc1p3')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+
+2020-12-22 00:59:58,728 --------------------------------------------------
+2020-12-22 00:59:58,728 Loaded checkpoint './ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth' (iter 1350)
+batch_size: 8
+cfg: DMFNET_MEMB3D_TRAIN
+ckpt_dir: ./ckpts
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+get_cell: true
+get_memb_bin: true
+gpu: '0'
+max_times: (255, 195)
+mode: 2
+name: DMFNET_MEMB3D_TRAIN
+net: MDFNetBin
+net_params:
+  conv_channels: 64
+  groups: 16
+  in_channels: 1
+  n_first: 32
+  norm: in
+  out_class: 1
+num_epochs: 50
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.005
+  weight_decay: 1.0e-05
+raw_size: (92, 712, 512)
+resume: ./ckpts/DMFNET_MEMB3D_TRAIN/model_last.pth
+save_format: nii.gz
+save_freq: 10
+seed: 1024
+shape_analysis: true
+show_snap: false
+start_iter: 1350
+suffix: '*.pkl'
+test_data_dir: dataset/test
+test_embryos: ('200113plc1p2', '200113plc1p3')
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
+train_data_dir: dataset/train
+train_embryos: ('170614plc1p1', '170704plc1p1')
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+  RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
+trained_model: model_last.pth
+valid_data_dir: dataset/validation
+valid_freq: 10
+workers: 8
+

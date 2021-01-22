@@ -15,10 +15,11 @@ from .augmentations import contour_distance, contour_distance_outside_negative
 #=======================================
 #   data format: dict([raw_memb, raw_nuc, seg_nuc, 'seg_memb, seg_cell'])
 class Memb3DDataset(Dataset):
-    def __init__(self, root="dataset/train", membrane_names=None, for_train=True, return_target=True, transforms=None, suffix="*.pkl"):
+    def __init__(self, root="dataset/train", membrane_names=None, for_train=True, return_target=True,
+                 transforms=None, suffix="*.pkl", max_times=None):
         if membrane_names is None:
             membrane_names = [name for name in os.listdir(root) if os.path.isdir(os.path.join(root, name))]
-        self.paths = get_all_stack(root, membrane_names, suffix=suffix)
+        self.paths = get_all_stack(root, membrane_names, suffix=suffix, max_times=max_times)
         self.names = [os.path.basename(path).split(".")[0] for path in self.paths]
         self.for_train = for_train
         self.return_target = return_target

@@ -8,5 +8,6 @@
 #SBATCH
 
 set -ex
+
 srun bash -c "python test.py --gpu=0,1,2,3 --cfg DMFNET_MEMB3D_TRAIN --batch_size 6 --show_image_freq -1 --show_loss_freq -1"
 wait

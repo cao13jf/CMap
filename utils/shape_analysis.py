@@ -73,9 +73,9 @@ def run_shape_analysis(config):
     # ========================================================
     #       Combine previous TPs
     # ========================================================
-    # ## In order to make use of parallel computing, the global vairable stat_embryo cannot be shared between different processor,
-    # #  so we need to store all one-embryo reults as temporary files, which will be assembled finally. After that, these temporary
-    # #  Data can be deleted.
+    ## In order to make use of parallel computing, the global vairable stat_embryo cannot be shared between different processor,
+    #  so we need to store all one-embryo reults as temporary files, which will be assembled finally. After that, these temporary
+    #  Data can be deleted.
     construct_stat_embryo(cell_tree, max_time)  # initilize the shape matrix which is use to store the shape series information
     for itime in tqdm(range(1, max_time+1), desc='assembling {} result'.format(embryo_name)):
         file_name = os.path.join(config["project_folder"], 'TemCellGraph', config['embryo_name'], config['embryo_name']+'_T'+str(itime)+'.txt')
@@ -177,7 +177,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     name_dict = {value: key for key, value in number_dict.items()}
     cell_tree = config["cell_tree"]
 
-    df = pd.read_csv(config['acetree_file'])
+    df = read_new_cd(config['acetree_file'])
     df_t = df[df.time==time_point]
     nucleus_names = list(df_t.cell)  # all names based on nucleus location
     nucleus_number = [number_dict[cell_name] for cell_name in nucleus_names]
@@ -496,13 +496,51 @@ def update_daughter_info(nucleus_loc_info, ch1, ch2, mother):
 
     return nucleus_loc_info
 
+def shape_analysis_func(args):
+
+    max_times = args.max_times
+    embryo_names = args.test_embryos
+    raw_size = args.raw_size
+
+    for i_embryo, embryo_name in enumerate(embryo_names):
+        max_time = max_times[i_embryo]
+        # Construct folder
+        para_config = {}
+        para_config["xy_resolution"] = 0.09
+        para_config["max_time"] = max_time
+        para_config["embryo_name"] = embryo_name
+        para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
+        para_config["save_nucleus_folder"] = "ResultCell/NucleusLoc"
+        para_config["seg_folder"] = os.path.join("output", embryo_name, "SegCellTimeCombined")
+        para_config["stat_folder"] = os.path.join("statistics", embryo_name)
+        para_config["delete_tem_file"] = False
+        para_config["num_slice"] = raw_size[0]
+        para_config["acetree_file"] = os.path.join("./dataset/test", embryo_name, "".join(["CD", embryo_name, ".csv"]))
+        para_config["project_folder"] = "./statistics"
+        para_config["number_dictionary"] = "dataset/number_dictionary.csv"
+
+        if not os.path.isdir(para_config['stat_folder']):
+            os.makedirs(para_config['stat_folder'])
+
+        # Get the size of the figure
+        # example_embryo_folder = os.path.join(para_config["raw_folder"], para_config["embryo_name"], "tif")
+        # example_img_file = glob.glob(os.path.join(example_embryo_folder, "*.tif"))
+        # raw_size = [para_config["num_slice"]] + list(np.asarray(Image.open(example_img_file[0])).shape)
+        para_config["image_size"] = raw_size
+
+        if not os.path.isdir(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name'])):
+            os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
+        else:
+            shutil.rmtree(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
+            os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
+        run_shape_analysis(para_config)
 
 if __name__ == '__main__':
     '''
     argv[1]: the config file
     '''
-    max_time = 220
-    embryo_name = "200326plc1p3"
+    max_time = 185
+    embryo_name = "200323plc1p1"
     raw_size = [92, 712, 512]
 
     # Construct folder

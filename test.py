@@ -20,6 +20,7 @@ from data import datasets
 from utils import ParserUse, str2bool
 from utils.show_train import Visualizer
 from utils.prediction_utils import validate, membrane2cell, combine_cells
+from utils.shape_analysis import shape_analysis_func
 
 cudnn.benchmark = True
 path = os.path.dirname(__file__)
@@ -39,33 +40,33 @@ args.gpu = str(args.gpu)
 ckpts = args.makedir()
 args.resume = os.path.join(ckpts, args.trained_model)
 
-#===========================================
+# ===========================================
 # Snap visualizer
-#===========================================
+# ===========================================
 visualizer = None
 if args.show_snap:
     visualizer = Visualizer(1)
 
-#=========================================================
+# =========================================================
 #  main program for prediction
-#=========================================================
+# =========================================================
 def main():
     setproctitle.setproctitle(args.cfg)
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     assert torch.cuda.is_available(), "CPU is needed for prediction"
 
-    #=============================================================
+    # =============================================================
     #  set seeds for randomlization
-    #=============================================================
+    # =============================================================
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed(args.seed)
     random.seed(args.seed)
     np.random.seed(args.seed)
 
     if args.get_memb_bin:
-        #=============================================================
+        # =============================================================
         #  construct network model
-        #=============================================================
+        # =============================================================
         Network = getattr(models, args.net)
         model = Network(**args.net_params)
         model = torch.nn.DataParallel(model).cuda()
@@ -97,7 +98,8 @@ def main():
             if args.test_embryos is None:
                 args.test_embryos = [name for name in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, name))]
         Dataset = getattr(datasets, args.dataset)
-        test_set = Dataset(root=root_path, membrane_names=args.test_embryos, for_train=False, transforms=args.test_transforms, return_target=is_scoring, suffix=args.suffix)
+        test_set = Dataset(root=root_path, membrane_names=args.test_embryos, for_train=False, transforms=args.test_transforms,
+                           return_target=is_scoring, suffix=args.suffix, max_times=args.max_times)
         test_loader = DataLoader(
             dataset=test_set,
             batch_size=1,
@@ -138,6 +140,10 @@ def main():
     if args.tp_combine:
         print("Begin combine division based on TP...\n")
         combine_cells(args)
+
+    if args.shape_analysis:
+        print("Begin collect cell shape information...\n")
+        shape_analysis_func(args)
 
 if __name__ == "__main__":
     main()

@@ -21,7 +21,7 @@ nucleus_folder = "/home/jeff/ProjectCode/LearningCell/MembProjectCode/ResultCell
 
 # get all embryos names
 # embryos = [os.path.join(nucleus_folder, embryo_name) for embryo_name in os.listdir(nucleus_folder) if "plc" in embryo_name]
-embryos =[os.path.join(nucleus_folder, embryo_name) for embryo_name in ["200113plc1p2"]]  # <-- use this to specify the embryo
+embryos =[os.path.join(nucleus_folder, embryo_name) for embryo_name in ["200326plc1p4"]]  # <-- use this to specify the embryo
 with open("/home/jeff/ProjectCode/LearningCell/MembProjectCode/dataset/number_dictionary.txt", "rb") as f:
     number_dict = pickle.load(f)
 
