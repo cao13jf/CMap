@@ -15,8 +15,9 @@ from skimage.measure import marching_cubes_lewiner, mesh_surface_area
 from utils.draw_lib import *
 from utils.data_structure import *
 from utils.post_lib import check_folder_exist
-from utils.post_lib import save_nii
+from utils.post_lib import save_nii, get_boundafry, get_contact_pairs
 from utils.parse_config import parse_config
+from utils.data_io import read_new_cd
 
 warnings.filterwarnings("ignore")
 
@@ -64,7 +65,11 @@ def run_shape_analysis(config):
     for itime in tqdm(range(1, max_time+1), desc="Compose configs"):
         config['time_point'] = itime
         configs.append(config.copy())
+
+        # -------------------- single test ---------------------------------
+        # config['time_point'] = 179
         # cell_graph_network(file_lock, config)
+        # -------------------- single test ---------------------------------
     embryo_name = config["embryo_name"]
     for idx, _ in enumerate(tqdm(mpPool.imap_unordered(cell_graph_network, configs), total=len(configs), desc="Naming {} segmentations".format(embryo_name))):
         # TODO: Process name: `Naming segmentations`; Current state: idx; Final state: `max_time`
@@ -73,9 +78,9 @@ def run_shape_analysis(config):
     # ========================================================
     #       Combine previous TPs
     # ========================================================
-    ## In order to make use of parallel computing, the global vairable stat_embryo cannot be shared between different processor,
-    #  so we need to store all one-embryo reults as temporary files, which will be assembled finally. After that, these temporary
-    #  Data can be deleted.
+    # ## In order to make use of parallel computing, the global vairable stat_embryo cannot be shared between different processor,
+    # #  so we need to store all one-embryo reults as temporary files, which will be assembled finally. After that, these temporary
+    # #  Data can be deleted.
     construct_stat_embryo(cell_tree, max_time)  # initilize the shape matrix which is use to store the shape series information
     for itime in tqdm(range(1, max_time+1), desc='assembling {} result'.format(embryo_name)):
         file_name = os.path.join(config["project_folder"], 'TemCellGraph', config['embryo_name'], config['embryo_name']+'_T'+str(itime)+'.txt')
@@ -219,7 +224,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
         if raw_label != 0:
             if not update_flag:
                 unify_seg[seg == raw_label] = target_label
-                changed_flag[seg==raw_label] = 1
+                changed_flag[seg == raw_label] = 1
                 # add volume and surface information
                 surface_area = get_surface_area(seg == raw_label)
                 nucleus_loc_to_save.loc[nucleus_loc_to_save.nucleus_label == target_label, "volume"] = (seg == raw_label).sum() * (config["res"] ** 3)
@@ -311,6 +316,37 @@ def add_relation(point_graph, division_seg, name_dict):
     return point_graph
 
 
+def get_contact_area_fast(volume):
+    '''
+    Get the contact volume surface of the segmentation. The segmentation results should be watershed segmentation results
+    with a ***watershed line***.
+    :param volume: segmentation result
+    :return boundary_elements_uni: pairs of SegCell which contacts with each other
+    :return contact_area: the contact surface area corresponding to that in the the boundary_elements.
+    '''
+
+    labels = np.unique(volume).tolist()
+    labels.remove(0)
+
+    contact_area = []
+    boundary_elements_uni_new = []
+    for label1 in tqdm(labels):
+        label1_mask = get_boundafry(volume==label1, b_width=2)
+        label2s = get_contact_pairs(volume, label1, b_width=2)
+        for label2 in label2s:
+            if (label1, label2) in boundary_elements_uni_new or (label2, label1) in boundary_elements_uni_new:
+                continue
+            label2_mask = get_boundafry(volume==label2, b_width=2)
+            contact_mask = np.logical_and(label1_mask, label2_mask)
+            if contact_mask.sum() > 4:
+                verts, faces, _, _ = marching_cubes_lewiner(contact_mask)
+                area = mesh_surface_area(verts, faces) / 2
+                contact_area.append(area)
+                boundary_elements_uni_new.append((label1, label2))
+
+    return boundary_elements_uni_new, contact_area
+
+
 def get_contact_area(volume):
     '''
     Get the contact volume surface of the segmentation. The segmentation results should be watershed segmentation results
@@ -321,7 +357,7 @@ def get_contact_area(volume):
     '''
 
     cell_mask = volume != 0
-    boundary_mask = (cell_mask == 0) & ndimage.binary_dilation(cell_mask)
+    boundary_mask = get_boundafry(cell_mask)
     [x_bound, y_bound, z_bound] = np.nonzero(boundary_mask)
     boundary_elements = []
     for (x, y, z) in zip(x_bound, y_bound, z_bound):
@@ -342,7 +378,6 @@ def get_contact_area(volume):
             contact_area.append(area)
             boundary_elements_uni_new.append((label1, label2))
     return boundary_elements_uni_new, contact_area
-
 
 def construct_stat_embryo(cell_tree, max_time):
     '''
@@ -535,41 +570,41 @@ def shape_analysis_func(args):
             os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
         run_shape_analysis(para_config)
 
-if __name__ == '__main__':
-    '''
-    argv[1]: the config file
-    '''
-    max_time = 185
-    embryo_name = "200323plc1p1"
-    raw_size = [92, 712, 512]
-
-    # Construct folder
-    para_config = {}
-    para_config["xy_resolution"] = 0.09
-    para_config["max_time"] = max_time
-    para_config["embryo_name"] = embryo_name
-    para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
-    para_config["save_nucleus_folder"] = "ResultCell/NucleusLoc"
-    para_config["seg_folder"] = os.path.join("output", embryo_name, "SegCellTimeCombined")
-    para_config["stat_folder"] = os.path.join("statistics", embryo_name)
-    para_config["delete_tem_file"] = False
-    para_config["num_slice"] = raw_size[0]
-    para_config["acetree_file"] = os.path.join("./dataset/test", embryo_name, "".join(["CD", embryo_name, ".csv"]))
-    para_config["project_folder"] = "./statistics"
-    para_config["number_dictionary"] = "dataset/number_dictionary.csv"
-
-    if not os.path.isdir(para_config['stat_folder']):
-        os.makedirs(para_config['stat_folder'])
-
-    # Get the size of the figure
-    # example_embryo_folder = os.path.join(para_config["raw_folder"], para_config["embryo_name"], "tif")
-    # example_img_file = glob.glob(os.path.join(example_embryo_folder, "*.tif"))
-    # raw_size = [para_config["num_slice"]] + list(np.asarray(Image.open(example_img_file[0])).shape)
-    para_config["image_size"] = raw_size
-
-    if not os.path.isdir(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name'])):
-        os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
-    else:
-        shutil.rmtree(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
-        os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
-    run_shape_analysis(para_config)
+# if __name__ == '__main__':
+#     '''
+#     argv[1]: the config file
+#     '''
+#     max_time = 195
+#     embryo_name = "191108plc1p1"
+#     raw_size = [92, 712, 512]
+#
+#     # Construct folder
+#     para_config = {}
+#     para_config["xy_resolution"] = 0.09
+#     para_config["max_time"] = max_time
+#     para_config["embryo_name"] = embryo_name
+#     para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
+#     para_config["save_nucleus_folder"] = "ResultCell/NucleusLoc"
+#     para_config["seg_folder"] = os.path.join("output", embryo_name, "SegCellTimeCombined")
+#     para_config["stat_folder"] = os.path.join("statistics", embryo_name)
+#     para_config["delete_tem_file"] = False
+#     para_config["num_slice"] = raw_size[0]
+#     para_config["acetree_file"] = os.path.join("./dataset/test", embryo_name, "".join(["CD", embryo_name, ".csv"]))
+#     para_config["project_folder"] = "./statistics"
+#     para_config["number_dictionary"] = "dataset/number_dictionary.csv"
+#
+#     if not os.path.isdir(para_config['stat_folder']):
+#         os.makedirs(para_config['stat_folder'])
+#
+#     # Get the size of the figure
+#     # example_embryo_folder = os.path.join(para_config["raw_folder"], para_config["embryo_name"], "tif")
+#     # example_img_file = glob.glob(os.path.join(example_embryo_folder, "*.tif"))
+#     # raw_size = [para_config["num_slice"]] + list(np.asarray(Image.open(example_img_file[0])).shape)
+#     para_config["image_size"] = raw_size
+#
+#     if not os.path.isdir(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name'])):
+#         os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
+#     else:
+#         shutil.rmtree(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
+#         os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
+#     run_shape_analysis(para_config)

@@ -23,7 +23,8 @@ from utils.train_utils import adjust_learning_rate
 from data import datasets
 from data.data_utils import init_fn
 from data.sampler import CycleSampler
-#  loss
+#  loss85/+
+';l'
 from utils.criterions import mse_loss, generalized_dice_loss
 
 cudnn.benchmark = True  # let auto-tuner find the most efficient network (used in fixed network.)
@@ -37,8 +38,6 @@ parser.add_argument('-batch_size', '--batch_size', default=1, type=int, help='Ba
 parser.add_argument('-restore', '--restore', default='', type=str)
 parser.add_argument('--show_image_freq', default=20, type=int, help="frequency of showing MembAndNuc")
 parser.add_argument('--show_loss_freq', default=5, type=int, help="frequency of showing loss")
-
-path = os.path.dirname(__file__)
 
 ## parse arguments
 args = parser.parse_args()
@@ -74,7 +73,7 @@ def main():
     #  resume network
     #=====================================================
     msg = ""  # msg to log
-    if args.resume:
+    if args.resume is not None:
         if os.path.isfile(args.resume):
             print("==>Loading checking point '{}'".format(args.resume))
             checkpoint = torch.load(args.resume)

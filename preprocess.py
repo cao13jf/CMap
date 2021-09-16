@@ -51,7 +51,9 @@ def doit(target, embryo_names=None, max_times=None):
         nii_to_pkl(os.path.join(root, embryo_name), has_label, max_times[i_embryo])
 
 if __name__ == "__main__":
-    embryo_names = ["200113plc1p2", "200113plc1p3"]
-    max_times = [255, 195]
+    # embryo_names = ["191108plc1p1", "200109plc1p1", "200113plc1p2", "200113plc1p3", "200322plc1p2", "200323plc1p1", "200326plc1p3", "200326plc1p4"]
+    # max_times = [205, 205, 255, 195, 195, 185, 220, 195]
+    embryo_names = ["200122plc1lag1ip2", "200122plc1lag1ip2"]
+    max_times = [195, 195]
     # doit(train_folder, embryo_names)
     doit(test_folder, embryo_names, max_times=max_times)

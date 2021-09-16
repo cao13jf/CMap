@@ -15,8 +15,9 @@ from skimage.measure import marching_cubes_lewiner, mesh_surface_area
 from utils.draw_lib import *
 from utils.data_structure import *
 from utils.post_lib import check_folder_exist
-from utils.post_lib import save_nii
+from utils.post_lib import save_nii, get_boundafry, get_contact_pairs
 from utils.parse_config import parse_config
+from utils.data_io import read_new_cd
 
 warnings.filterwarnings("ignore")
 
@@ -64,7 +65,11 @@ def run_shape_analysis(config):
     for itime in tqdm(range(1, max_time+1), desc="Compose configs"):
         config['time_point'] = itime
         configs.append(config.copy())
+
+        # -------------------- single test ---------------------------------
+        # config['time_point'] = 179
         # cell_graph_network(file_lock, config)
+        # -------------------- single test ---------------------------------
     embryo_name = config["embryo_name"]
     for idx, _ in enumerate(tqdm(mpPool.imap_unordered(cell_graph_network, configs), total=len(configs), desc="Naming {} segmentations".format(embryo_name))):
         # TODO: Process name: `Naming segmentations`; Current state: idx; Final state: `max_time`
@@ -177,7 +182,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     name_dict = {value: key for key, value in number_dict.items()}
     cell_tree = config["cell_tree"]
 
-    df = pd.read_csv(config['acetree_file'])
+    df = read_new_cd(config['acetree_file'])
     df_t = df[df.time==time_point]
     nucleus_names = list(df_t.cell)  # all names based on nucleus location
     nucleus_number = [number_dict[cell_name] for cell_name in nucleus_names]
@@ -320,29 +325,57 @@ def get_contact_area(volume):
     :return contact_area: the contact surface area corresponding to that in the the boundary_elements.
     '''
 
-    cell_mask = volume != 0
-    boundary_mask = (cell_mask == 0) & ndimage.binary_dilation(cell_mask)
-    [x_bound, y_bound, z_bound] = np.nonzero(boundary_mask)
-    boundary_elements = []
-    for (x, y, z) in zip(x_bound, y_bound, z_bound):
-        neighbors = volume[np.ix_(range(x-1, x+2), range(y-1, y+2), range(z-1, z+2))]
-        neighbor_labels = list(np.unique(neighbors))
-        neighbor_labels.remove(0)
-        if len(neighbor_labels) == 2:
-            boundary_elements.append(neighbor_labels)
-    boundary_elements_uni = list(np.unique(np.array(boundary_elements), axis=0))
+    labels = np.unique(volume)
+
     contact_area = []
     boundary_elements_uni_new = []
-    for (label1, label2) in boundary_elements_uni:
-        contact_mask = np.logical_and(ndimage.binary_dilation(volume == label1), ndimage.binary_dilation(volume == label2))
-        contact_mask = np.logical_and(contact_mask, boundary_mask)
-        if contact_mask.sum() > 4:
-            verts, faces, _, _ = marching_cubes_lewiner(contact_mask)
-            area = mesh_surface_area(verts, faces) / 2
-            contact_area.append(area)
-            boundary_elements_uni_new.append((label1, label2))
+    for label1 in labels:
+        label1_mask = get_boundafry(volume==label1, b_width=2)
+        label2s = get_contact_pairs(volume, label1, b_width=2)
+        for label2 in label2s:
+            if (label1, label2) in boundary_elements_uni_new or (label2, label1) in boundary_elements_uni_new:
+                continue
+            label2_mask = get_boundafry(volume==label2, b_width=2)
+            contact_mask = np.logical_and(label1_mask, label2_mask)
+            if contact_mask.sum() > 4:
+                verts, faces, _, _ = marching_cubes_lewiner(contact_mask)
+                area = mesh_surface_area(verts, faces) / 2
+                contact_area.append(area)
+                boundary_elements_uni_new.append((label1, label2))
     return boundary_elements_uni_new, contact_area
 
+
+# def get_contact_area(volume):
+#     '''
+#     Get the contact volume surface of the segmentation. The segmentation results should be watershed segmentation results
+#     with a ***watershed line***.
+#     :param volume: segmentation result
+#     :return boundary_elements_uni: pairs of SegCell which contacts with each other
+#     :return contact_area: the contact surface area corresponding to that in the the boundary_elements.
+#     '''
+#
+#     cell_mask = volume != 0
+#     boundary_mask = get_boundafry(cell_mask)
+#     [x_bound, y_bound, z_bound] = np.nonzero(boundary_mask)
+#     boundary_elements = []
+#     for (x, y, z) in zip(x_bound, y_bound, z_bound):
+#         neighbors = volume[np.ix_(range(x-1, x+2), range(y-1, y+2), range(z-1, z+2))]
+#         neighbor_labels = list(np.unique(neighbors))
+#         neighbor_labels.remove(0)
+#         if len(neighbor_labels) == 2:
+#             boundary_elements.append(neighbor_labels)
+#     boundary_elements_uni = list(np.unique(np.array(boundary_elements), axis=0))
+#     contact_area = []
+#     boundary_elements_uni_new = []
+#     for (label1, label2) in boundary_elements_uni:
+#         contact_mask = np.logical_and(ndimage.binary_dilation(volume == label1), ndimage.binary_dilation(volume == label2))
+#         contact_mask = np.logical_and(contact_mask, boundary_mask)
+#         if contact_mask.sum() > 4:
+#             verts, faces, _, _ = marching_cubes_lewiner(contact_mask)
+#             area = mesh_surface_area(verts, faces) / 2
+#             contact_area.append(area)
+#             boundary_elements_uni_new.append((label1, label2))
+#     return boundary_elements_uni_new, contact_area
 
 def construct_stat_embryo(cell_tree, max_time):
     '''
@@ -539,8 +572,8 @@ if __name__ == '__main__':
     '''
     argv[1]: the config file
     '''
-    max_time = 185
-    embryo_name = "200323plc1p1"
+    max_time = 195
+    embryo_name = "191108plc1p1"
     raw_size = [92, 712, 512]
 
     # Construct folder

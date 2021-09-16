@@ -282,6 +282,35 @@ def otsu3d(gray):
 
     return final_img
 
+def get_boundafry(seg, b_width=1):
+    """
+    Get boundary of instance segmentation as white front pixels
+    """
+    padded = np.pad(seg, b_width, mode='edge')
+
+    border_pixels = np.logical_and(
+        np.logical_and(seg == padded[:-(2*b_width), b_width:-b_width, b_width:-b_width],
+                      seg == padded[(2*b_width):, b_width:-b_width, b_width:-b_width]),
+        np.logical_and(seg == padded[b_width:-b_width, :-2*b_width, b_width:-b_width],
+                      seg == padded[b_width:-b_width, 2*b_width:, b_width:-b_width])
+    )
+    border_pixels = np.logical_and(
+        border_pixels,
+        np.logical_and(seg == padded[b_width:-b_width, b_width:-b_width, :-2 * b_width],
+                      seg == padded[b_width:-b_width, b_width:-b_width, 2 * b_width:])
+    )
+
+    # border_pixels = np.logical_not(border_pixels).astype(np.uint8)
+    border_pixels = np.logical_and(border_pixels == 0, seg == 0).astype(np.uint8)
+
+    return border_pixels * 255
+
+def get_contact_pairs(seg, cell_label, b_width=2):
+    cell_bound = get_boundafry(seg==cell_label, b_width=b_width)
+    cell_neighbors =np.unique(seg[cell_bound!=0]).tolist()
+    cell_neighbors.remove(0)
+
+    return cell_neighbors
 
 def get_largest_connected_region(embryo_mask):
     embryo_mask = ndimage.morphology.binary_opening(embryo_mask)
@@ -292,3 +321,4 @@ def get_largest_connected_region(embryo_mask):
     valid_edt_mask0 = ndimage.morphology.binary_closing(valid_edt_mask0)
 
     return valid_edt_mask0
+

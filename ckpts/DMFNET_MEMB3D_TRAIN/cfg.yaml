@@ -5,10 +5,10 @@ criterion: mse_loss
 criterion_kwargs:
   weight_type: square
 dataset: Memb3DDataset
-get_cell: false
+get_cell: true
 get_memb_bin: false
 gpu: '0'
-max_times: (195, 195, 185, 220, 195)
+max_times: (195, 195)
 mode: 2
 name: DMFNET_MEMB3D_TRAIN
 net: MDFNetBin
@@ -34,7 +34,7 @@ show_snap: false
 start_iter: 0
 suffix: '*.pkl'
 test_data_dir: dataset/test
-test_embryos: ('200113plc1p3', '200322plc1p2', '200323plc1p1', '200326plc1p3', '200326plc1p4')
+test_embryos: ('200122plc1lag1ip1', '200122plc1lag1ip2')
 test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
   ])
 tp_combine: true

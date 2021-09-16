@@ -28,17 +28,17 @@ opt_params:
 workers: 8
 
 raw_size: [92, 712, 512]
-# [205, 205, 255, 195, 195, 185, 220, 195]
-max_times: [195, 195, 185, 220, 195]
+# [205, 205, 255, 195, 195, 185, 220, 195, 195, 195]
+max_times: [195, 195]
 get_memb_bin: False
 show_snap: False
 #  Postprocess
-get_cell: False
-tp_combine:  True
+get_cell: True
+tp_combine: True
 shape_analysis: True
 train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
-# [191108plc1p1, 200109plc1p1, 200113plc1p2] #, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4]
-test_embryos: [200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4] # embryos used for testing.
+# [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2]
+test_embryos: [200122plc1lag1ip1, 200122plc1lag1ip2] # embryos used for testing.
 train_transforms: # for training
   Compose([
     ContourEDT(9),

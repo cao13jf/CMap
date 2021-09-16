@@ -5,6 +5,7 @@ This llibrary defines all structures that will be used in the shape analysis
 import os
 import glob
 import pickle
+from termcolor import colored
 import pandas as pd
 from treelib import Tree, Node
 
@@ -64,16 +65,17 @@ def construct_celltree(nucleus_file, max_time):
     cell_list = list(ace_pd.cell.unique())
     add_cell_list = list(set(cell_list) - set(cell_in_dictionary))
 
-    assert len(add_cell_list) == 0, "Name dictionary should be updated"
+    if len(add_cell_list) != 0:
+        assert len(add_cell_list) == 0, "Name dictionary should be updated"
+        print(colored("Name dictionary updated", "red"))
 
-    # ================================= cancel dynamic updating ============
-    # add_cell_list.sort()
-    # if len(add_cell_list) > 0:
-    #     print("Name dictionary updated !!!")
-    #     add_number_dictionary = dict(zip(add_cell_list, range(len(cell_in_dictionary) + 1, len(cell_in_dictionary) + len(add_cell_list) + 1)))
-    #     number_dictionary.update(add_number_dictionary)
-    #     pd_number_dictionary = pd.DataFrame.from_dict(number_dictionary, orient="index")
-    #     pd_number_dictionary.to_csv('./dataset/number_dictionary.csv', header=False)
+        # ================================= cancel dynamic updating ============
+        add_cell_list.sort()
+        print("Name dictionary updated !!!")
+        add_number_dictionary = dict(zip(add_cell_list, range(len(cell_in_dictionary) + 1, len(cell_in_dictionary) + len(add_cell_list) + 1)))
+        number_dictionary.update(add_number_dictionary)
+        pd_number_dictionary = pd.DataFrame.from_dict(number_dictionary, orient="index")
+        pd_number_dictionary.to_csv('./dataset/number_dictionary.csv', header=False)
 
     df_time = df_time[df_time.time <= max_time]
     all_cell_names = list(df_time.cell.unique())
