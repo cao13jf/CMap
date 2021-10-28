@@ -92,8 +92,6 @@ def run_shape_analysis(config):
     # Combine all surfaces and volumes in one single file
     # =======================================================
     # combien all volume and surface informace
-    if not os.path.isdir(os.path.join(config['stat_folder'], embryo_name)):
-        os.makedirs(os.path.join(config['stat_folder'], embryo_name))
     volume_lists = []
     surface_lists = []
     for t in tqdm(range(1, max_time + 1), desc="Generate surface and volume {}".format(embryo_name.split('/')[-1])):
@@ -105,19 +103,15 @@ def run_shape_analysis(config):
         surface_lists.append(cell_volume_surface["surface"].to_frame().T.dropna(axis=1))
     volume_stat = pd.concat(volume_lists, keys=range(1, max_time+1), ignore_index=True, axis=0, sort=False, join="outer")
     surface_stat = pd.concat(surface_lists, keys=range(1, max_time+1), ignore_index=True, axis=0, sort=False, join="outer")
-    volume_stat.to_csv(os.path.join(config["stat_folder"], embryo_name, embryo_name.split('/')[-1] + "_volume"+'.csv'))
-    surface_stat.to_csv(os.path.join(config["stat_folder"], embryo_name, embryo_name.split('/')[-1] + "_surface"+'.csv'))
+    volume_stat.to_csv(os.path.join(config["stat_folder"], embryo_name.split('/')[-1] + "_volume"+'.csv'))
+    surface_stat.to_csv(os.path.join(config["stat_folder"], embryo_name.split('/')[-1] + "_surface"+'.csv'))
 
 
     if config['delete_tem_file']:  # If need to delete temporary files.
         shutil.rmtree(os.path.join(config["project_folder"], 'TemCellGraph'))
-    # save statistical embryonic files
-    # delete columns with all zeros for efficiency
+
     stat_embryo = stat_embryo.loc[:, ((stat_embryo != 0)&(~np.isnan(stat_embryo))).any(axis=0)]
-    save_file_name = os.path.join(config['stat_folder'], embryo_name, config['embryo_name']+'_contact.txt')
-    save_file_name_csv = os.path.join(config['stat_folder'], embryo_name, config['embryo_name']+'_contact.csv')
-    # with open(save_file_name, 'wb') as f:
-        # pickle.dump(stat_embryo, f)
+    save_file_name_csv = os.path.join(config['stat_folder'], config['embryo_name']+'_contact.csv')
     stat_embryo.to_csv(save_file_name_csv)
 
 
@@ -541,11 +535,11 @@ def shape_analysis_func(args):
         max_time = max_times[i_embryo]
         # Construct folder
         para_config = {}
-        para_config["xy_resolution"] = 0.09
+        para_config["xy_resolution"] = 0.09  # TODO: Default xy resolution 0.09
         para_config["max_time"] = max_time
         para_config["embryo_name"] = embryo_name
         para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
-        para_config["save_nucleus_folder"] = "ResultCell/NucleusLoc"
+        para_config["save_nucleus_folder"] = "output/NucleusLoc"
         para_config["seg_folder"] = os.path.join("output", embryo_name, "SegCellTimeCombined")
         para_config["stat_folder"] = os.path.join("statistics", embryo_name)
         para_config["delete_tem_file"] = False

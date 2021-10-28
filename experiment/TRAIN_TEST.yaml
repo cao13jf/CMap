@@ -1,3 +1,8 @@
+# =================================
+# Parameters for training
+# =================================
+train_data_dir: ./dataset/train
+train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
 net: MDFNetBin #  Parameters used for training.
 net_params:
   in_channels: 1
@@ -6,11 +11,9 @@ net_params:
   groups: 16
   norm: in #sync_bn
   out_class: 1
-
 criterion: mse_loss
 criterion_kwargs:
   weight_type: square
-
 dataset: Memb3DDataset
 seed: 1024
 batch_size: 8
@@ -18,27 +21,34 @@ num_epochs: 50
 save_freq: 10     # save every 50 epochs
 valid_freq: 10   # validate every 10 epochs
 start_iter: 0
-
 opt: Adam
 opt_params:
   lr: 5e-3
   weight_decay: 1e-5
   amsgrad: true
-
 workers: 8
 
-raw_size: [92, 712, 512]
-# [205, 205, 255, 195, 195, 185, 220, 195, 195, 195]
-max_times: [140, 155]
-get_memb_bin: True
-show_snap: False
+
 #  Postprocess
 get_cell: True
-tp_combine: True
-shape_analysis: True
-train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
+tp_combine: False
+shape_analysis: False
+get_volume_var: False
+gui_data: True
+trained_model: ./ckpts/model_last.pth
+
+
+# =================================
+# Parameters for prediction (Paras for training will be preserved)
+# =================================
+raw_size: [92, 712, 512]
+# [205, 205, 255, 195, 195, 185, 220, 195, 195, 195]
+max_times: [140]
+get_memb_bin: False
+show_snap: False
 # [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2]
-test_embryos: [200117plc1pop1ip2, 200117plc1pop1ip3] # embryos used for testing.
+test_data_dir: dataset/test
+test_embryos: [200117plc1pop1ip2] # embryos used for testing.
 train_transforms: # for training
   Compose([
     ContourEDT(9),
@@ -55,3 +65,8 @@ test_transforms: # for testing
     NumpyType((np.float32, np.float32)),
     ])
 
+# =================================
+# Parameters for GUI data
+# =================================
+z_resolutions: [0.18]
+gui_folder: ./gui

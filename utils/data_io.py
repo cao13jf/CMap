@@ -3,6 +3,7 @@
 import os
 import pickle
 import imageio
+import shutil
 import numpy as np
 import pandas as pd
 import nibabel as nib
@@ -57,10 +58,18 @@ def normalize3d(image, mask=None):
     image[mask] = (image[mask] - mean) / std
     return image
 
+def move_file(src_file, dst_file):
+    assert os.path.isfile(src_file), "src_file not exist"
+    dir_name = os.path.dirname(dst_file)
+    check_folder(dir_name)
+
+    shutil.copyfile(src_file, dst_file)
 
 #===============================================
-#  other utils
 def check_folder(file_name):
-    dir_name = os.path.dirname(file_name)
+    if "." in os.path.basename(file_name):
+        dir_name = os.path.dirname(file_name)
+    else:
+        dir_name = file_name
     if not os.path.isdir(dir_name):
         os.makedirs(dir_name)

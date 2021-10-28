@@ -94,7 +94,7 @@ def setup(args, log):
 
 class ParserUse(AttrDict):
     def __init__(self, cfg_name='', log=''):
-        self.add_cfg('PATH')
+        self.ckpt_dir = "./ckpts"
         if cfg_name:
             self.add_cfg(cfg_name)
             setup(self, log)

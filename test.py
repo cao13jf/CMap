@@ -1,14 +1,11 @@
 #  import dependency library
 import os
-import glob
 import argparse
-import time
 import logging
 import random
 import shutil
 import numpy as np
 import torch
-import multiprocessing as mp
 import setproctitle
 import torch.optim
 import torch.backends.cudnn as cudnn
@@ -17,28 +14,31 @@ from torch.utils.data import DataLoader
 #  import user's library
 import models
 from data import datasets
-from utils import ParserUse, str2bool
+from utils import ParserUse
+from utils.preprocess import doit
 from utils.show_train import Visualizer
 from utils.prediction_utils import validate, membrane2cell, combine_cells
 from utils.shape_analysis import shape_analysis_func
+from utils.qc import generate_qc
+from utils.generate_gui_data import generate_gui_data
 
 cudnn.benchmark = True
 path = os.path.dirname(__file__)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--cfg", default="DMFNET_MEMB3D_TEST", type=str, help="Specify experiment parameter file")
-parser.add_argument("--trained_model", default="model_last.pth", type=str, help="Specified the trained model")
 parser.add_argument("--mode", default=2, type=int, help="0 -- cross-validation on the training set;"
                                                                        "1 -- validing on the validation set"
                                                                        "2 -- testing on the testing set")
 parser.add_argument("--gpu", default="0", type=str, help="GPUs used for training")
+parser.add_argument("--ckpts", default="./ckpts", type=str, help="GPUs used for training")
 parser.add_argument("--suffix", default="*.pkl", type=str, help="Suffix used fo filter data")
 parser.add_argument("--save_format", default="nii", type=str, help="Format of saved file")
 args = parser.parse_args()
 args = ParserUse(args.cfg, log="test").add_args(args)
 args.gpu = str(args.gpu)
 ckpts = args.makedir()
-args.resume = os.path.join(ckpts, args.trained_model)
+args.resume = args.trained_model
 
 # ===========================================
 # Snap visualizer
@@ -64,6 +64,8 @@ def main():
     np.random.seed(args.seed)
 
     if args.get_memb_bin:
+        test_folder = dict(root="dataset/test", has_label=False)
+        doit(test_folder, embryo_names=args.test_embryos, max_times=args.max_times)
         # =============================================================
         #  construct network model
         # =============================================================
@@ -145,6 +147,13 @@ def main():
         print("Begin collect cell shape information...\n")
         shape_analysis_func(args)
 
+    if args.get_volume_var:
+        print("Begin collect variations of volume and surface")
+        generate_qc(args)
+
+    if args.gui_data:
+        print("Begin generate GUI data")
+        generate_gui_data(args)
+
 if __name__ == "__main__":
     main()
-

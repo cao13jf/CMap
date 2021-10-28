@@ -9,9 +9,6 @@ from tqdm import tqdm
 #  import user defined library
 from utils.data_io import nib_load, normalize3d, pkl_save
 
-# dataset folder
-train_folder = dict(root="dataset/train", has_label=True)
-test_folder = dict(root="dataset/test", has_label=False)
 
 def nii_to_pkl(embryo_path, has_label=True, max_time=None):
     #  build pkl folder
@@ -56,4 +53,7 @@ if __name__ == "__main__":
     embryo_names = ["200117plc1pop1ip2", "200117plc1pop1ip3"]
     max_times = [140, 155]
     # doit(train_folder, embryo_names)
+    # dataset folder
+    # train_folder = dict(root="dataset/train", has_label=True)
+    test_folder = dict(root="dataset/test", has_label=False)
     doit(test_folder, embryo_names, max_times=max_times)
