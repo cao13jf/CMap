@@ -576,9 +576,11 @@ if __name__ == '__main__':
     embryo_name = "191108plc1p1"
     raw_size = [92, 712, 512]
 
-    # Construct folder
+    # Construct folder1
+#
     para_config = {}
-    para_config["xy_resolution"] = 0.09
+    para_config["xy_resolution"] = 0.091
+#
     para_config["max_time"] = max_time
     para_config["embryo_name"] = embryo_name
     para_config["data_folder"] = os.path.join("dataset/test", embryo_name)

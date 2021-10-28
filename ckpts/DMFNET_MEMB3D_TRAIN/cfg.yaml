@@ -6,9 +6,9 @@ criterion_kwargs:
   weight_type: square
 dataset: Memb3DDataset
 get_cell: true
-get_memb_bin: false
+get_memb_bin: true
 gpu: '0'
-max_times: (195, 195)
+max_times: (140, 155)
 mode: 2
 name: DMFNET_MEMB3D_TRAIN
 net: MDFNetBin
@@ -34,7 +34,7 @@ show_snap: false
 start_iter: 0
 suffix: '*.pkl'
 test_data_dir: dataset/test
-test_embryos: ('200122plc1lag1ip1', '200122plc1lag1ip2')
+test_embryos: ('200117plc1pop1ip2', '200117plc1pop1ip3')
 test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
   ])
 tp_combine: true

@@ -10,7 +10,7 @@ from utils.stat_tools import generate_name_series
 
 # embryo_names = ["191108plc1p1","200109plc1p1", "200113plc1p2", "200113plc1p3", "200322plc1p2", "200323plc1p1",
 #                 "200326plc1p3", "200326plc1p4"]
-embryo_names = ["200122plc1lag1ip1", "200122plc1lag1ip2"]
+embryo_names = ["200117plc1pop1ip2", "200117plc1pop1ip3"]
 volume_folder = "./statistics"
 save_folder = "./statistics/QC"
 
