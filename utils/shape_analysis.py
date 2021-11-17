@@ -177,7 +177,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     cell_tree = config["cell_tree"]
 
     df = read_new_cd(config['acetree_file'])
-    df_t = df[df.time==time_point]
+    df_t = df[df.time == time_point]
     nucleus_names = list(df_t.cell)  # all names based on nucleus location
     nucleus_number = [number_dict[cell_name] for cell_name in nucleus_names]
 
