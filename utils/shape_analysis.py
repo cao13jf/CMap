@@ -29,7 +29,8 @@ cell_tree = None
 def init(l):  # used for parallel computing
     global file_lock
     file_lock = l
-
+# global file_block
+# file_lock = None
 
 def run_shape_analysis(config):
     '''
@@ -67,13 +68,13 @@ def run_shape_analysis(config):
         configs.append(config.copy())
 
         # -------------------- single test ---------------------------------
-        # config['time_point'] = 179
+        # config['time_point'] = 170
         # cell_graph_network(file_lock, config)
         # -------------------- single test ---------------------------------
     embryo_name = config["embryo_name"]
-    # for idx, _ in enumerate(tqdm(mpPool.imap_unordered(cell_graph_network, configs), total=len(configs), desc="Naming {} segmentations".format(embryo_name))):
-    #     #
-    #     pass
+    for idx, _ in enumerate(tqdm(mpPool.imap_unordered(cell_graph_network, configs), total=len(configs), desc="Naming {} segmentations".format(embryo_name))):
+        #
+        pass
 
     # ========================================================
     #       Combine previous TPs
@@ -360,7 +361,7 @@ def get_contact_area(volume):
         neighbor_labels.remove(0)
         if len(neighbor_labels) == 2:
             boundary_elements.append(neighbor_labels)
-    boundary_elements_uni = list(np.unique(np.array(boundary_elements), axis=0))
+    boundary_elements_uni = list(x.tolist() for x in np.unique(np.array(boundary_elements), axis=0))
     contact_area = []
     boundary_elements_uni_new = []
     for (label1, label2) in boundary_elements_uni:
@@ -509,6 +510,7 @@ def update_time_tree(embryo_name, cell_name, time_point, file_lock, config, add=
         pass
     finally:
         file_lock.release()
+        # pass
 
 
 def update_daughter_info(nucleus_loc_info, ch1, ch2, mother):
