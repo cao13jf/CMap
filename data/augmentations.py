@@ -62,7 +62,7 @@ def cell_sliced_distance(seg_cell, seg_nuc, sampled=True, d_threshold=15):
     vertical_slice_edt[vertical_slice_edt > d_threshold] = d_threshold
     vertical_slice_edt = (d_threshold - vertical_slice_edt) / d_threshold
     # vertical_slice_edt = add_volume_boundary_mask(vertical_slice_edt, fill_value=0)
-    # #  to simulate slice annotation, only keep slices through the nucleus # TODO: change from slice to entire cell mask
+    # #  to simulate slice annotation, only keep slices through the nucleus #
     # keep_mask = np.zeros_like(cell_mask, dtype=bool)
     # for label in sampled_labels:
     #     tem_mask = np.zeros_like(cell_mask, dtype=bool)

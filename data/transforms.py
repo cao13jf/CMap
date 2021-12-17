@@ -27,7 +27,7 @@ class Base(object):
         return img
 
     #  define how to call tf
-    def __call__(self, img, dim=3, reuse_pros=False):  # TODO: reuse with raw and seg
+    def __call__(self, img, dim=3, reuse_pros=False):  #
         # resampling parameters and set self properties
         if not reuse_pros:
             im = img if isinstance(img, np.ndarray) else img[0]
@@ -79,7 +79,7 @@ class RandomRotation(Base):
         self.angle_buffer = np.random.randint(-self.angle_spectrum, self.angle_spectrum)
         return list(shape)
 
-    def tf(self, img, k=0):  # TODO: consider 'cval'
+    def tf(self, img, k=0):  #
         img = ndimage.rotate(img, self.angle_buffer, axes=self.axes_buffer, reshape=False, order=0, mode="constant", cval=0)
         return img
 
@@ -266,7 +266,7 @@ class Normalize(Base):
 
 class Resize(Base):
     def __init__(self, target_size=(205, 288, 144)):
-        assert len(target_size) == 3, "Only support in-slice resize"  # TODO: support for 3D resize
+        assert len(target_size) == 3, "Only support in-slice resize"  #
         self.target_size = target_size
 
     def tf(self, img, k=0):
@@ -381,7 +381,7 @@ class NumpyType(Base):
         self.types = types
 
     def tf(self, img, k=0):
-        return img.astype(self.types[k])  # TODO: how to recognize string cmd
+        return img.astype(self.types[k])  #
 
     def __str__(self):
         s_types = ",".join([str(s) for s in self.types])

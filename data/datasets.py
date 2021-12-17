@@ -23,7 +23,7 @@ class Memb3DDataset(Dataset):
         self.names = [os.path.basename(path).split(".")[0] for path in self.paths]
         self.for_train = for_train
         self.return_target = return_target
-        self.transforms = eval(transforms or "Identity()")  # TODO: define transformation library
+        self.transforms = eval(transforms or "Identity()")  #
         self.size = self.get_size()
 
     def __getitem__(self, item):

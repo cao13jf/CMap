@@ -26,7 +26,7 @@ def nii_to_pkl(embryo_path, has_label=True, max_time=None):
     for i, raw_memb_file in enumerate(tqdm(raw_memb_list, desc="saving"+embryo_path)):
         base_name = os.path.basename(raw_memb_file).split("_")
         base_name = base_name[0] + "_" + base_name[1]
-        raw_memb = nib_load(raw_memb_file)  # TODO: how to normalize
+        raw_memb = nib_load(raw_memb_file)  #
         raw_nuc = nib_load(raw_nuc_list[i]) if len(raw_nuc_list) > 0 else None
         seg_nuc = nib_load(seg_nuc_list[i]) if len(raw_nuc_list) > 0 else None
         if has_label:

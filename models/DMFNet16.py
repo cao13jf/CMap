@@ -195,7 +195,7 @@ class DMFNet(nn.Module):
         #  Weights initlization
         for m in self.modules():
             if isinstance(m, nn.Conv3d):
-                torch.nn.init.torch.nn.init.kaiming_normal_(m.weight)  #TODO: different between method and method_
+                torch.nn.init.torch.nn.init.kaiming_normal_(m.weight)  #
             elif isinstance(m, nn.BatchNorm3d) or isinstance(m, nn.GroupNorm) or isinstance(m, SynchronizedBatchNorm3d):
                 nn.init.constant_(m.weight, 1.)
                 nn.init.constant(m.bias, 0.0)

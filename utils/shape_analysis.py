@@ -71,9 +71,9 @@ def run_shape_analysis(config):
         # cell_graph_network(file_lock, config)
         # -------------------- single test ---------------------------------
     embryo_name = config["embryo_name"]
-    for idx, _ in enumerate(tqdm(mpPool.imap_unordered(cell_graph_network, configs), total=len(configs), desc="Naming {} segmentations".format(embryo_name))):
-        # TODO: Process name: `Naming segmentations`; Current state: idx; Final state: `max_time`
-        pass
+    # for idx, _ in enumerate(tqdm(mpPool.imap_unordered(cell_graph_network, configs), total=len(configs), desc="Naming {} segmentations".format(embryo_name))):
+    #     #
+    #     pass
 
     # ========================================================
     #       Combine previous TPs
@@ -88,27 +88,27 @@ def run_shape_analysis(config):
             cell_graph = pickle.load(f)
             stat_embryo = assemble_result(cell_graph, itime, number_dict)
 
-    # =======================================================
-    # Combine all surfaces and volumes in one single file
-    # =======================================================
-    # combien all volume and surface informace
-    volume_lists = []
-    surface_lists = []
-    for t in tqdm(range(1, max_time + 1), desc="Generate surface and volume {}".format(embryo_name.split('/')[-1])):
-        nucleus_loc_file = os.path.join(config["save_nucleus_folder"], embryo_name, os.path.basename(embryo_name)+"_"+str(t).zfill(3)+"_nucLoc"+".csv")
-        pd_loc = pd.read_csv(nucleus_loc_file)
-        cell_volume_surface = pd_loc[["nucleus_name", "volume", "surface"]]
-        cell_volume_surface = cell_volume_surface.set_index("nucleus_name")
-        volume_lists.append(cell_volume_surface["volume"].to_frame().T.dropna(axis=1))
-        surface_lists.append(cell_volume_surface["surface"].to_frame().T.dropna(axis=1))
-    volume_stat = pd.concat(volume_lists, keys=range(1, max_time+1), ignore_index=True, axis=0, sort=False, join="outer")
-    surface_stat = pd.concat(surface_lists, keys=range(1, max_time+1), ignore_index=True, axis=0, sort=False, join="outer")
-    volume_stat.to_csv(os.path.join(config["stat_folder"], embryo_name.split('/')[-1] + "_volume"+'.csv'))
-    surface_stat.to_csv(os.path.join(config["stat_folder"], embryo_name.split('/')[-1] + "_surface"+'.csv'))
-
-
-    if config['delete_tem_file']:  # If need to delete temporary files.
-        shutil.rmtree(os.path.join(config["project_folder"], 'TemCellGraph'))
+    # # =======================================================
+    # # Combine all surfaces and volumes in one single file
+    # # =======================================================
+    # # combien all volume and surface informace
+    # volume_lists = []
+    # surface_lists = []
+    # for t in tqdm(range(1, max_time + 1), desc="Generate surface and volume {}".format(embryo_name.split('/')[-1])):
+    #     nucleus_loc_file = os.path.join(config["save_nucleus_folder"], embryo_name, os.path.basename(embryo_name)+"_"+str(t).zfill(3)+"_nucLoc"+".csv")
+    #     pd_loc = pd.read_csv(nucleus_loc_file)
+    #     cell_volume_surface = pd_loc[["nucleus_name", "volume", "surface"]]
+    #     cell_volume_surface = cell_volume_surface.set_index("nucleus_name")
+    #     volume_lists.append(cell_volume_surface["volume"].to_frame().T.dropna(axis=1))
+    #     surface_lists.append(cell_volume_surface["surface"].to_frame().T.dropna(axis=1))
+    # volume_stat = pd.concat(volume_lists, keys=range(1, max_time+1), ignore_index=True, axis=0, sort=False, join="outer")
+    # surface_stat = pd.concat(surface_lists, keys=range(1, max_time+1), ignore_index=True, axis=0, sort=False, join="outer")
+    # volume_stat.to_csv(os.path.join(config["stat_folder"], embryo_name.split('/')[-1] + "_volume"+'.csv'))
+    # surface_stat.to_csv(os.path.join(config["stat_folder"], embryo_name.split('/')[-1] + "_surface"+'.csv'))
+    #
+    #
+    # if config['delete_tem_file']:  # If need to delete temporary files.
+    #     shutil.rmtree(os.path.join(config["project_folder"], 'TemCellGraph'))
 
     stat_embryo = stat_embryo.loc[:, ((stat_embryo != 0)&(~np.isnan(stat_embryo))).any(axis=0)]
     save_file_name_csv = os.path.join(config['stat_folder'], config['embryo_name']+'_contact.csv')
@@ -323,7 +323,7 @@ def get_contact_area_fast(volume):
     labels.remove(0)
 
     contact_area = []
-    boundary_elements_uni_new = []
+    boundary_elements_uni_new = []  # TODO: debug, some contacts are not detected
     for label1 in tqdm(labels):
         label1_mask = get_boundafry(volume==label1, b_width=2)
         label2s = get_contact_pairs(volume, label1, b_width=2)
@@ -535,7 +535,7 @@ def shape_analysis_func(args):
         max_time = max_times[i_embryo]
         # Construct folder
         para_config = {}
-        para_config["xy_resolution"] = 0.09  # TODO: Default xy resolution 0.09
+        para_config["xy_resolution"] = 0.09  #
         para_config["max_time"] = max_time
         para_config["embryo_name"] = embryo_name
         para_config["data_folder"] = os.path.join("dataset/test", embryo_name)

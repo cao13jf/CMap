@@ -281,7 +281,7 @@ def get_surface_area(cell_mask):
     :param cell_mask: single cell mask
     :return surface_are: cell's surface are
     '''
-    # ball_structure = morphology.cube(3) # TODO
+    # ball_structure = morphology.cube(3) #
     # erased_mask = ndimage.binary_erosion(cell_mask, ball_structure, iterations=1)
     # surface_area = np.logical_and(~erased_mask, cell_mask).sum()
     verts, faces, _, _ = marching_cubes_lewiner(cell_mask)

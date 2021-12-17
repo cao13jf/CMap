@@ -19,9 +19,9 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
     for i, data in enumerate(tqdm(valid_loader, desc="Getting binary membrane:")):
         if scoring:
             target_cpu = data["seg_memb"][0, 0, :, :, :].numpy() if scoring else None
-            x, target = data["raw_memb"], data["seg_memb"]  # TODO: batch = in prediction
+            x, target = data["raw_memb"], data["seg_memb"]  #
         else:
-            x, nuc = data[0:2]  # TODO: change collate in dataloader
+            x, nuc = data[0:2]  #
         #  go through the network
         start_time = time.time()
         pred_bin = model(x, nuc)
@@ -39,7 +39,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
 
         #  post process
         if postprocess == True:
-            pass  # TODO: add postprocess
+            pass  #
 
         #  save volume and snapshot data
         if snapsot is not None:

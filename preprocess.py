@@ -80,7 +80,7 @@ def combine_slices(config):
                 configs.append((origin_folder, target_folder, embryo_name, tp, out_size, num_slice, out_res))
             for idx, _ in enumerate(tqdm(mpPool.imap_unordered(stack_memb_slices, configs), total=len(configs),
                                          desc="2/3 Stack membrane of {}".format(embryo_name))):
-                # TODO: Process Name: `2/3 Stack membrane`; Current status: `idx`; Final status: max_time
+                #
                 pass
 
         # save nucleus
@@ -100,7 +100,7 @@ def combine_slices(config):
                 # save_nuc_seg(configs[0])
             for idx, _ in enumerate(tqdm(mpPool.imap_unordered(save_nuc_seg, configs), total=len(configs),
                                          desc="3/3 Construct nucleus location of {}".format(embryo_name))):
-                # TODO: Process Name: `3/3 Construct nucleus location`; Current status: `idx`; Final status: max_time
+                #
                 pass
             # for tp in range(1, max_time+1):
             #     save_nuc_seg(embryo_name=embryo_name,
