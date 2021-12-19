@@ -59,7 +59,7 @@ def run_shape_analysis(config):
     #       sementing TPs in a parallel way
     # ========================================================
     file_lock = mp.Lock()  # |-----> for change treelib files
-    print(file_lock, mp.cpu_count(), init)
+    # print(file_lock, mp.cpu_count(), init)
     mpPool = mp.Pool(mp.cpu_count()-1, initializer=init, initargs=(file_lock,))
     configs = []
     config["cell_tree"] = cell_tree
@@ -114,6 +114,10 @@ def run_shape_analysis(config):
     stat_embryo = stat_embryo.loc[:, ((stat_embryo != 0)&(~np.isnan(stat_embryo))).any(axis=0)]
     save_file_name_csv = os.path.join(config['stat_folder'], config['embryo_name']+'_contact.csv')
     stat_embryo.to_csv(save_file_name_csv)
+
+    #### compose volume and surface information
+    compose_surface_and_volume(embryo_name)
+
 
 
 def cell_graph_network(config):
@@ -526,6 +530,32 @@ def update_daughter_info(nucleus_loc_info, ch1, ch2, mother):
     nucleus_loc_info.loc[nucleus_loc_info.nucleus_name == ch2, ["note", "volume", "surface"]] = ["child_of_{}".format(mother), '', '']
 
     return nucleus_loc_info
+
+def compose_surface_and_volume(embryo):
+    loc_folder = "./output/NucleusLoc"
+    # combien all volume and surface informace
+    volume_stat = pd.DataFrame([], columns=[], dtype=np.float32)
+    surface_stat = pd.DataFrame([], columns=[], dtype=np.float32)
+    volume_lists = []
+    surface_lists = []
+    t_max = len(glob.glob(os.path.join(loc_folder, embryo, "*_nucLoc.csv")))
+    for t in tqdm(range(1, t_max + 1), desc="Processing {}".format(embryo)):
+        nucleus_loc_file = os.path.join(loc_folder, embryo,
+                                        os.path.basename(embryo) + "_" + str(t).zfill(3) + "_nucLoc" + ".csv")
+        pd_loc = pd.read_csv(nucleus_loc_file)
+        cell_volume_surface = pd_loc[["nucleus_name", "volume", "surface"]]
+        cell_volume_surface = cell_volume_surface.set_index("nucleus_name")
+        volume_lists.append(cell_volume_surface["volume"].to_frame().T.dropna(axis=1))
+        surface_lists.append(cell_volume_surface["surface"].to_frame().T.dropna(axis=1))
+    volume_stat = pd.concat(volume_lists, keys=range(1, t_max + 1), ignore_index=True, axis=0, sort=False,
+                            join="outer")
+    surface_stat = pd.concat(surface_lists, keys=range(1, t_max + 1), ignore_index=True, axis=0, sort=False,
+                             join="outer")
+    volume_stat.index = list(range(1, t_max + 1))
+    surface_stat.index = list(range(1, t_max + 1))
+    volume_stat.to_csv(os.path.join("./statistics", embryo, embryo + "_volume" + '.csv'))
+    surface_stat.to_csv(os.path.join("./statistics", embryo, embryo + "_surface" + '.csv'))
+
 
 def shape_analysis_func(args):
 
