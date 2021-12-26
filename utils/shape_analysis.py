@@ -157,7 +157,7 @@ def cell_graph_network(config):
         point_graph.add_node(cell_name, pos=nucleus_loc[nucleus_loc.nucleus_name==cell_name].iloc[:, 2:5].values[0].tolist())
     #  add connections between SegCell (edge and edge weight)
 
-    relation_graph = add_relation(point_graph, division_seg, name_dict)
+    relation_graph = add_relation(point_graph, division_seg, name_dict, res=config["res"])
 
     # nx.draw(relation_graph, pos=nuc_position, with_labels=True, node_size=100, font_color='b', edge_cmap=plt.cm.Blues)
     file_name = os.path.join(config["project_folder"], 'TemCellGraph', config['embryo_name'], config['embryo_name'] + '_T' + str(config['time_point']) + '.txt')
@@ -300,7 +300,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     return unify_seg, nuc_positions
 
 
-def add_relation(point_graph, division_seg, name_dict):
+def add_relation(point_graph, division_seg, name_dict, res):
     '''
     Add relationship information between SegCell. (contact surface area)
     :param point_graph: point graph of SegCell
@@ -310,7 +310,7 @@ def add_relation(point_graph, division_seg, name_dict):
     if np.unique(division_seg).shape[0] > 2:  # in case there are multiple cells
         contact_pairs, contact_area = get_contact_area(division_seg)
         for i, one_pair in enumerate(contact_pairs):
-            point_graph.add_edge(name_dict[one_pair[0]], name_dict[one_pair[1]], area=contact_area[i])
+            point_graph.add_edge(name_dict[one_pair[0]], name_dict[one_pair[1]], area=contact_area[i] * (res**2))
 
     return point_graph
 
