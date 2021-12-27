@@ -139,7 +139,7 @@ def cell_graph_network(config):
 
 
     ## unify the labels in the segmentation and that in the aceTree information
-    division_seg, nuc_position = unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config)
+    division_seg, nuc_position, config["res"] = unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config)
     division_seg_save_file = os.path.join(os.path.dirname(seg_file)+'LabelUnified', config['embryo_name'] + "_" + str(time_point).zfill(3)+'_segCell.nii.gz')
     save_nii(division_seg, division_seg_save_file)
 
@@ -156,7 +156,7 @@ def cell_graph_network(config):
         cell_name = name_dict[label]
         point_graph.add_node(cell_name, pos=nucleus_loc[nucleus_loc.nucleus_name==cell_name].iloc[:, 2:5].values[0].tolist())
     #  add connections between SegCell (edge and edge weight)
-
+    # config["res"] = ace_shape[-1] / seg.shape[-1] * config["xy_resolution"]
     relation_graph = add_relation(point_graph, division_seg, name_dict, res=config["res"])
 
     # nx.draw(relation_graph, pos=nuc_position, with_labels=True, node_size=100, font_color='b', edge_cmap=plt.cm.Blues)
@@ -297,7 +297,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
             cell_locations.append(list(nucleus_location_zoom[repeat_label[0]]))
     nuc_positions = dict(zip(cell_names, cell_locations)) # ABalappap
 
-    return unify_seg, nuc_positions
+    return unify_seg, nuc_positions, config["res"]
 
 
 def add_relation(point_graph, division_seg, name_dict, res):
