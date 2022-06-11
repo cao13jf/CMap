@@ -30,11 +30,11 @@ workers: 8
 
 
 #  Postprocess
-get_cell: True
-tp_combine: True
+get_cell: False
+tp_combine: False
 shape_analysis: True
-get_volume_var: True
-gui_data: True
+get_volume_var: False
+gui_data: False
 trained_model: ./ckpts/model_last.pth
 
 
@@ -43,12 +43,12 @@ trained_model: ./ckpts/model_last.pth
 # =================================
 raw_size: [92, 712, 512]
 # [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
-max_times: [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
+max_times: [195, 195, 195, 140, 155]
 get_memb_bin: False
 show_snap: False
 # [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2, 200117plc1pop1ip2, 200117plc1pop1ip3]
 test_data_dir: dataset/test
-test_embryos: [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2, 200117plc1pop1ip2, 200117plc1pop1ip3]
+test_embryos: [200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2, 200117plc1pop1ip2, 200117plc1pop1ip3]
 train_transforms: # for training
   Compose([
     ContourEDT(9),
