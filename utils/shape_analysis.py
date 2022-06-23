@@ -9,6 +9,7 @@ from PIL import Image
 from tqdm import tqdm
 from scipy import ndimage
 import multiprocessing as mp
+import open3d as o3d
 from skimage import morphology
 from skimage.measure import marching_cubes_lewiner, mesh_surface_area
 
@@ -64,17 +65,21 @@ def run_shape_analysis(config):
     # ========================================================
     file_lock = mp.Lock()  # |-----> for change treelib files
     # print(file_lock, mp.cpu_count(), init)
-    mpPool = mp.Pool(mp.cpu_count() - 1, initializer=init, initargs=(file_lock,))
+    # mpPool = mp.Pool(mp.cpu_count() - 1, initializer=init, initargs=(file_lock,))
+    mpPool = mp.Pool(10, initializer=init, initargs=(file_lock,))
+
     configs = []
     config["cell_tree"] = cell_tree
+    # max_time=179
     for itime in tqdm(range(1, max_time + 1), desc="Compose configs"):
         config['time_point'] = itime
         configs.append(config.copy())
 
         # -------------------- single test ---------------------------------
-        # config['time_point'] = 170
-        # cell_graph_network(file_lock, config)
+        config['time_point'] = 10
+        cell_graph_network(file_lock, config)
         # -------------------- single test ---------------------------------
+
     embryo_name = config["embryo_name"]
     for idx, _ in enumerate(tqdm(mpPool.imap_unordered(cell_graph_network, configs), total=len(configs),
                                  desc="Naming {} segmentations (contact graph)".format(embryo_name))):
@@ -165,7 +170,8 @@ def cell_graph_network(config):
                              pos=nucleus_loc[nucleus_loc.nucleus_name == cell_name].iloc[:, 2:5].values[0].tolist())
     #  add connections between SegCell (edge and edge weight)
     # config["res"] = ace_shape[-1] / seg.shape[-1] * config["xy_resolution"]
-    relation_graph = add_relation(point_graph, division_seg, name_dict, res=config["res"])
+    relation_graph = add_relation(point_graph, division_seg, name_dict, res=config["res"],
+                                  config_this={'mesh_path':config['mesh_path'],'embryo_name':config['embryo_name'],'time_point':str(config['time_point']).zfill(3)})
 
     # nx.draw(relation_graph, pos=nuc_position, with_labels=True, node_size=100, font_color='b', edge_cmap=plt.cm.Blues)
     file_name = os.path.join(config["project_folder"], 'TemCellGraph', config['embryo_name'],
@@ -234,14 +240,16 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
         raw_label = seg[nucleus_loc[0], nucleus_loc[1], nucleus_loc[2]]
         update_flag = changed_flag[nucleus_loc[0], nucleus_loc[1], nucleus_loc[2]]
         if raw_label != 0:
+            config_this={'mesh_path':config['mesh_path'],'embryo_name':config['embryo_name'],'time_point':str(config['time_point']).zfill(3),'cell_label':raw_label}
             if not update_flag:
                 unify_seg[seg == raw_label] = target_label
                 changed_flag[seg == raw_label] = 1
                 # add volume and surface information
                 # surface_area = get_surface_area(seg == raw_label)
-                volume,surface_area = get_volume_surface_area_adjusted_Alpha_Shape(seg == raw_label)
+                volume,surface_area = get_volume_surface_area_adjusted_Alpha_Shape(config_this)
                 nucleus_loc_to_save.loc[nucleus_loc_to_save.nucleus_label == target_label, "volume"] = volume * (config["res"] ** 3)
                 nucleus_loc_to_save.loc[nucleus_loc_to_save.nucleus_label == target_label, "surface"] = surface_area * (config["res"] ** 2)
+                # print('finish calculate volume adn surface')
             else:
                 # check whether two labels from the same mother
                 another_label = unify_seg[nucleus_loc[0], nucleus_loc[1], nucleus_loc[2]]
@@ -262,9 +270,10 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
                             "note": "mother"
                         }, ignore_index=True)
                         # surface_area = get_surface_area(seg == raw_label)
-                        volume,surface_area = get_volume_surface_area_adjusted_Alpha_Shape(seg == raw_label)
+                        volume,surface_area = get_volume_surface_area_adjusted_Alpha_Shape(config_this)
                         nucleus_loc_to_save.loc[nucleus_loc_to_save.nucleus_label == mother_label, "volume"] = volume* (config["res"] ** 3)
                         nucleus_loc_to_save.loc[nucleus_loc_to_save.nucleus_label == mother_label, "surface"] = surface_area * (config["res"] ** 2)
+                        # print('finish calculate volume adn surface')
                         # update daughter SegCell information
                         nucleus_loc_to_save = update_daughter_info(nucleus_loc_to_save, ch1, ch2, mother_name)
                         update_time_tree(config['embryo_name'], mother_name, time_point, file_lock, config, add=True)
@@ -318,7 +327,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     return unify_seg, nuc_positions, config["res"]
 
 
-def add_relation(point_graph, division_seg, name_dict, res):
+def add_relation(point_graph, division_seg, name_dict, res,config_this):
     '''
     Add relationship information between SegCell. (contact surface area)
     :param point_graph: point graph of SegCell
@@ -327,7 +336,7 @@ def add_relation(point_graph, division_seg, name_dict, res):
     '''
     if np.unique(division_seg).shape[0] > 2:  # in case there are multiple cells
         # contact_pairs, contact_area = get_contact_area(division_seg)
-        contact_pairs, contact_area = get_contact_surface_adjusted_Alpha_Shape(division_seg)
+        contact_pairs, contact_area = get_contact_surface_adjusted_Alpha_Shape(config_this,volume=division_seg)
         for i, one_pair in enumerate(contact_pairs):
             point_graph.add_edge(name_dict[one_pair[0]], name_dict[one_pair[1]], area=contact_area[i] * (res ** 2))
 
@@ -399,82 +408,64 @@ def get_contact_area(volume):
     return boundary_elements_uni_new, contact_area
 
 
-def get_contact_surface_adjusted_Alpha_Shape(volume):
-    cell_mask = volume != 0
-    boundary_mask = (cell_mask == 0) & ndimage.binary_dilation(cell_mask)
-    [x_bound, y_bound, z_bound] = np.nonzero(boundary_mask)
-    boundary_elements = []
+def get_contact_surface_adjusted_Alpha_Shape(config_this,volume):
+    # print(config_this)
+    mesh_path=config_this['mesh_path']
+    embryo_name=config_this['embryo_name']
+    time_point=config_this['time_point']
 
-    # find boundary between cells
-    for (x, y, z) in zip(x_bound, y_bound, z_bound):
-        neighbors = volume[np.ix_(range(x - 1, x + 2), range(y - 1, y + 2), range(z - 1, z + 2))]
-        neighbor_labels = list(np.unique(neighbors))
-        neighbor_labels.remove(0)
-        if len(neighbor_labels) == 2:  # contact between two cells
-            boundary_elements.append(neighbor_labels)
-    # cell contact pairs
-    cell_contact_pairs = list(np.unique(np.array(boundary_elements), axis=0))
-    cell_conatact_pair_renew = []
-    contact_points_dict = {}
-    contact_area_dict = {}
+    contact_saving_path = os.path.join(mesh_path, 'contactSurface', embryo_name,embryo_name+'_'+time_point+'_segCell.pickle')
+    with open(contact_saving_path,'rb') as handle:
+        contact_mesh_dict = pickle.load(handle)
 
-    for (label1, label2) in cell_contact_pairs:
-        contact_mask = np.logical_and(ndimage.binary_dilation(volume == label1),
-                                      ndimage.binary_dilation(volume == label2))
-        contact_mask = np.logical_and(contact_mask, boundary_mask)
-        if contact_mask.sum() > 4:
+    cell_contact_pairs = []
+    contact_area_list = []
+    # cell_mesh_dict={}
+    for cell_label in np.unique(volume):
+        if cell_label != 0:
+            # m_mesh=None
+            cellMesh_saving_path = os.path.join(mesh_path, '3DMesh', embryo_name, time_point, str(cell_label) + '.ply')
+            if not os.path.exists(cellMesh_saving_path):
+                print(cellMesh_saving_path,' not exists!!!!')
+                continue
+            # try:
+            m_mesh = o3d.io.read_triangle_mesh(cellMesh_saving_path)
+            # except:
+            #     print(cellMesh_saving_path, ' exists but open failed!!!!!')
+            #     continue
 
-            cell_conatact_pair_renew.append((label1, label2))
-            str_key = str(label1) + '_' + str(label2)
-            contact_area_dict[str_key]=0
+            if len(m_mesh.vertices) is 0 or not m_mesh.is_watertight():
+                print(embryo_name, time_point, str(cell_label), ' read failed: not watertight')
+                continue
 
-            point_position_x, point_position_y, point_position_z = np.where(contact_mask == True)
-
-            contact_points_list = []
-            for i in range(len(point_position_x)):
-                contact_points_list.append([point_position_x[i],point_position_y[i],point_position_z[i]])
-            # print(str_key)
-            contact_points_dict[str_key] = contact_points_list
-    # already get the contact pair and the contact points x y z
-    # return cell_conatact_pair_renew, contact_points_dict
-    # start calculate contact surface area
-
-    cell_list = np.unique(volume)
-    # print(cell_list)
-    for cell_key in cell_list:
-        # print(cell_key)
-        if cell_key != 0:
-            tuple_tmp = np.where(ndimage.binary_dilation(volume == cell_key)==1)
-            sphere_list = np.concatenate((tuple_tmp[0][:, None], tuple_tmp[1][:, None], tuple_tmp[2][:, None]),axis=1)
-            # print(sphere_list,sphere_list.shape)
-
-            sphere_list_adjusted = sphere_list.astype(float) + np.random.uniform(0, 0.001, (len(tuple_tmp[0]), 3))
-            m_mesh = generate_alpha_shape(sphere_list_adjusted, alpha_value=1)
             cell_vertices = np.asarray(m_mesh.vertices).astype(int)
 
-            # print(sphere_list)
-            # todo: waiting to update, fast 10 times: zelin
-            for (cell1, cell2) in cell_conatact_pair_renew:
-                idx = str(cell1) + '_' + str(cell2)
-                if cell_key not in (cell1,cell2) or contact_area_dict[idx]!=0:
+            for cell_pair,contact_vertices in contact_mesh_dict.items():
+                cell1=cell_pair.split('_')[0]
+                cell2 = cell_pair.split('_')[1]
+                # idx = str(cell1) + '_' + str(cell2)
+                if cell_label not in (cell1,cell2) or (cell1,cell2) in cell_contact_pairs:
                     continue
                 # build a mask to erase not contact points
                 contact_mask_not = [True for i in range(len(cell_vertices))]
                 # print(idx)
                 # enumerate each points in contact surface
-                for [x, y, z] in contact_points_dict[idx]:
-                    # print(x,y,z)
-                    contact_vertices_loc = np.where(np.prod(cell_vertices == [x, y, z], axis=-1))
-                    if len(contact_vertices_loc[0]) != 0:
-                        contact_mask_not[contact_vertices_loc[0][0]] = False
+                for vertices_loc in contact_vertices:
+
+                    contact_mask_not[vertices_loc] = False
 
                 # contact_vertices_loc=np.where(np.prod(cell_vertices == [x, y, z], axis=-1))
                 # contact_mask_not=np.logical_not(np.prod(cell_vertices == [x, y, z], axis=-1))
                 contact_mesh = deepcopy(m_mesh)
                 contact_mesh.remove_vertices_by_mask(contact_mask_not)
-                contact_area_dict[idx]=contact_mesh.get_surface_area()
+                o3d.visualization.draw_geometries([contact_mesh], mesh_show_back_face=True,
+                                                  mesh_show_wireframe=True)
+                cell_contact_pairs.append((cell1,cell2))
+                surface_area=contact_mesh.get_surface_area()
+                contact_area_list.append(surface_area)
+                print((cell1,cell2),surface_area)
                 # print(idx,contact_area_dict[idx])
-    return cell_conatact_pair_renew,list(contact_area_dict.values())
+    return cell_contact_pairs,contact_area_list
 
 def construct_stat_embryo(cell_tree, max_time):
     '''
@@ -586,12 +577,39 @@ def get_surface_area(cell_mask):
     return surface
 
 
-def get_volume_surface_area_adjusted_Alpha_Shape(volume):
-    tuple_tmp = np.where(volume == 1)
-    sphere_list_adjusted = np.concatenate((tuple_tmp[0][:, None], tuple_tmp[1][:, None], tuple_tmp[2][:, None]),
-                                          axis=1).astype(float) + np.random.uniform(0, 0.001, (len(tuple_tmp[0]), 3))
-    m_mesh = generate_alpha_shape(sphere_list_adjusted, alpha_value=1)
-    return m_mesh.get_volume(),m_mesh.get_surface_area()
+def get_volume_surface_area_adjusted_Alpha_Shape(config_this):
+    # print(config_this)
+    mesh_path=config_this['mesh_path']
+    embryo_name=config_this['embryo_name']
+    time_point=config_this['time_point']
+    cell_label=config_this['cell_label']
+    cellMesh_saving_path = os.path.join(mesh_path, '3DMesh',embryo_name, time_point,str(cell_label) + '.ply')
+    # m_mesh=None
+    # try:
+    if not os.path.exists(cellMesh_saving_path):
+        print(cellMesh_saving_path, ' not exists!!!!')
+        return 0.0,0.0
+    m_mesh = o3d.io.read_triangle_mesh(cellMesh_saving_path)
+    # except:
+    #     print('calculating volume and surface failed, cannot open or not exists')
+    #     return 0.0,0.0
+    # print('finish reading')
+
+    if len(m_mesh.vertices)>0:
+        if m_mesh.is_watertight():
+            print('begin calculate volume and surface',embryo_name,time_point,cell_label)
+            volume_tmp=m_mesh.get_volume()
+            surface_area_tmp=m_mesh.get_surface_area()
+            print(volume_tmp,surface_area_tmp)
+            o3d.visualization.draw_geometries([m_mesh], mesh_show_back_face=True,
+                                              mesh_show_wireframe=True)
+            return volume_tmp,surface_area_tmp
+        else:
+            print('----no watertight----', config_this)
+            return 0.0, 0.0
+    else:
+        print('mesh read have no vertices',config_this)
+        return 0.0,0.0
 
 
 def update_time_tree(embryo_name, cell_name, time_point, file_lock, config, add=False):
@@ -687,6 +705,8 @@ def shape_analysis_func(args):
         para_config["acetree_file"] = os.path.join("./dataset/test", embryo_name, "".join(["CD", embryo_name, ".csv"]))
         para_config["project_folder"] = "./statistics"
         para_config["number_dictionary"] = "dataset/number_dictionary.csv"
+
+        para_config['mesh_path'] = r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/'
 
         if not os.path.isdir(para_config['stat_folder']):
             os.makedirs(para_config['stat_folder'])
