@@ -63,6 +63,8 @@ def run_shape_analysis(config):
     # ========================================================
     #       sementing TPs in a parallel way
     # ========================================================
+
+
     file_lock = mp.Lock()  # |-----> for change treelib files
     # print(file_lock, mp.cpu_count(), init)
     # mpPool = mp.Pool(mp.cpu_count() - 1, initializer=init, initargs=(file_lock,))
@@ -70,15 +72,16 @@ def run_shape_analysis(config):
 
     configs = []
     config["cell_tree"] = cell_tree
+
     # max_time=179
     for itime in tqdm(range(1, max_time + 1), desc="Compose configs"):
         config['time_point'] = itime
         configs.append(config.copy())
 
-        # -------------------- single test ---------------------------------
-        config['time_point'] = 10
-        cell_graph_network(file_lock, config)
-        # -------------------- single test ---------------------------------
+        # # -------------------- single test ---------------------------------
+        # config['time_point'] = 50
+        # cell_graph_network(config)
+        # # -------------------- single test ---------------------------------
 
     embryo_name = config["embryo_name"]
     for idx, _ in enumerate(tqdm(mpPool.imap_unordered(cell_graph_network, configs), total=len(configs),
@@ -413,58 +416,22 @@ def get_contact_surface_adjusted_Alpha_Shape(config_this,volume):
     mesh_path=config_this['mesh_path']
     embryo_name=config_this['embryo_name']
     time_point=config_this['time_point']
-
-    contact_saving_path = os.path.join(mesh_path, 'contactSurface', embryo_name,embryo_name+'_'+time_point+'_segCell.pickle')
-    with open(contact_saving_path,'rb') as handle:
-        contact_mesh_dict = pickle.load(handle)
-
     cell_contact_pairs = []
     contact_area_list = []
+    contact_saving_path = os.path.join(mesh_path, 'stat', embryo_name,embryo_name+'_'+time_point+'_segCell_contact.txt')
+    try:
+        with open(contact_saving_path,'rb') as handle:
+            contact_dict = pickle.load(handle)
+    except:
+        print('open failed ',contact_saving_path)
+        return cell_contact_pairs, contact_area_list
+
     # cell_mesh_dict={}
-    for cell_label in np.unique(volume):
-        if cell_label != 0:
-            # m_mesh=None
-            cellMesh_saving_path = os.path.join(mesh_path, '3DMesh', embryo_name, time_point, str(cell_label) + '.ply')
-            if not os.path.exists(cellMesh_saving_path):
-                print(cellMesh_saving_path,' not exists!!!!')
-                continue
-            # try:
-            m_mesh = o3d.io.read_triangle_mesh(cellMesh_saving_path)
-            # except:
-            #     print(cellMesh_saving_path, ' exists but open failed!!!!!')
-            #     continue
-
-            if len(m_mesh.vertices) is 0 or not m_mesh.is_watertight():
-                print(embryo_name, time_point, str(cell_label), ' read failed: not watertight')
-                continue
-
-            cell_vertices = np.asarray(m_mesh.vertices).astype(int)
-
-            for cell_pair,contact_vertices in contact_mesh_dict.items():
-                cell1=cell_pair.split('_')[0]
-                cell2 = cell_pair.split('_')[1]
-                # idx = str(cell1) + '_' + str(cell2)
-                if cell_label not in (cell1,cell2) or (cell1,cell2) in cell_contact_pairs:
-                    continue
-                # build a mask to erase not contact points
-                contact_mask_not = [True for i in range(len(cell_vertices))]
-                # print(idx)
-                # enumerate each points in contact surface
-                for vertices_loc in contact_vertices:
-
-                    contact_mask_not[vertices_loc] = False
-
-                # contact_vertices_loc=np.where(np.prod(cell_vertices == [x, y, z], axis=-1))
-                # contact_mask_not=np.logical_not(np.prod(cell_vertices == [x, y, z], axis=-1))
-                contact_mesh = deepcopy(m_mesh)
-                contact_mesh.remove_vertices_by_mask(contact_mask_not)
-                o3d.visualization.draw_geometries([contact_mesh], mesh_show_back_face=True,
-                                                  mesh_show_wireframe=True)
-                cell_contact_pairs.append((cell1,cell2))
-                surface_area=contact_mesh.get_surface_area()
-                contact_area_list.append(surface_area)
-                print((cell1,cell2),surface_area)
-                # print(idx,contact_area_dict[idx])
+    for idx,contact_value in contact_dict.items():
+        cell1=int(idx.split('_')[0])
+        cell2=int(idx.split('_')[1])
+        cell_contact_pairs.append((cell1,cell2))
+        contact_area_list.append(contact_value)
     return cell_contact_pairs,contact_area_list
 
 def construct_stat_embryo(cell_tree, max_time):
@@ -583,33 +550,26 @@ def get_volume_surface_area_adjusted_Alpha_Shape(config_this):
     embryo_name=config_this['embryo_name']
     time_point=config_this['time_point']
     cell_label=config_this['cell_label']
-    cellMesh_saving_path = os.path.join(mesh_path, '3DMesh',embryo_name, time_point,str(cell_label) + '.ply')
-    # m_mesh=None
-    # try:
-    if not os.path.exists(cellMesh_saving_path):
-        print(cellMesh_saving_path, ' not exists!!!!')
-        return 0.0,0.0
-    m_mesh = o3d.io.read_triangle_mesh(cellMesh_saving_path)
-    # except:
-    #     print('calculating volume and surface failed, cannot open or not exists')
-    #     return 0.0,0.0
-    # print('finish reading')
 
-    if len(m_mesh.vertices)>0:
-        if m_mesh.is_watertight():
-            print('begin calculate volume and surface',embryo_name,time_point,cell_label)
-            volume_tmp=m_mesh.get_volume()
-            surface_area_tmp=m_mesh.get_surface_area()
-            print(volume_tmp,surface_area_tmp)
-            o3d.visualization.draw_geometries([m_mesh], mesh_show_back_face=True,
-                                              mesh_show_wireframe=True)
-            return volume_tmp,surface_area_tmp
-        else:
-            print('----no watertight----', config_this)
-            return 0.0, 0.0
-    else:
-        print('mesh read have no vertices',config_this)
-        return 0.0,0.0
+    volume,surface=0.0,0.0
+    volume_path = os.path.join(mesh_path, 'stat', embryo_name,embryo_name+'_'+time_point+'_segCell_volume.txt')
+    surface_path = os.path.join(mesh_path, 'stat', embryo_name,embryo_name+'_'+time_point+'_segCell_surface.txt')
+    try:
+        with open(volume_path, 'rb') as handle:
+            volume = pickle.load(handle)[cell_label]
+    except:
+        print('open failed ', volume_path)
+
+    try:
+        with open(surface_path, 'rb') as handle:
+            surface = pickle.load(handle)[cell_label]
+    except:
+        print('open failed ', surface_path)
+
+    return volume, surface
+
+
+
 
 
 def update_time_tree(embryo_name, cell_name, time_point, file_lock, config, add=False):
