@@ -67,8 +67,8 @@ def run_shape_analysis(config):
 
     file_lock = mp.Lock()  # |-----> for change treelib files
     # print(file_lock, mp.cpu_count(), init)
-    # mpPool = mp.Pool(mp.cpu_count() - 1, initializer=init, initargs=(file_lock,))
-    mpPool = mp.Pool(10, initializer=init, initargs=(file_lock,))
+    mpPool = mp.Pool(mp.cpu_count() - 1, initializer=init, initargs=(file_lock,))
+    # mpPool = mp.Pool(10, initializer=init, initargs=(file_lock,))
 
     configs = []
     config["cell_tree"] = cell_tree
@@ -243,8 +243,9 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
         raw_label = seg[nucleus_loc[0], nucleus_loc[1], nucleus_loc[2]]
         update_flag = changed_flag[nucleus_loc[0], nucleus_loc[1], nucleus_loc[2]]
         if raw_label != 0:
-            config_this={'mesh_path':config['mesh_path'],'embryo_name':config['embryo_name'],'time_point':str(config['time_point']).zfill(3),'cell_label':raw_label}
             if not update_flag:
+                config_this = {'mesh_path': config['mesh_path'], 'embryo_name': config['embryo_name'],
+                               'time_point': str(config['time_point']).zfill(3), 'cell_label': target_label}
                 unify_seg[seg == raw_label] = target_label
                 changed_flag[seg == raw_label] = 1
                 # add volume and surface information
@@ -273,6 +274,8 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
                             "note": "mother"
                         }, ignore_index=True)
                         # surface_area = get_surface_area(seg == raw_label)
+                        config_this = {'mesh_path': config['mesh_path'], 'embryo_name': config['embryo_name'],
+                                       'time_point': str(config['time_point']).zfill(3), 'cell_label': mother_label}
                         volume,surface_area = get_volume_surface_area_adjusted_Alpha_Shape(config_this)
                         nucleus_loc_to_save.loc[nucleus_loc_to_save.nucleus_label == mother_label, "volume"] = volume* (config["res"] ** 3)
                         nucleus_loc_to_save.loc[nucleus_loc_to_save.nucleus_label == mother_label, "surface"] = surface_area * (config["res"] ** 2)
@@ -339,7 +342,7 @@ def add_relation(point_graph, division_seg, name_dict, res,config_this):
     '''
     if np.unique(division_seg).shape[0] > 2:  # in case there are multiple cells
         # contact_pairs, contact_area = get_contact_area(division_seg)
-        contact_pairs, contact_area = get_contact_surface_adjusted_Alpha_Shape(config_this,volume=division_seg)
+        contact_pairs, contact_area = get_contact_surface_adjusted_Alpha_Shape(config_this)
         for i, one_pair in enumerate(contact_pairs):
             point_graph.add_edge(name_dict[one_pair[0]], name_dict[one_pair[1]], area=contact_area[i] * (res ** 2))
 
@@ -411,7 +414,7 @@ def get_contact_area(volume):
     return boundary_elements_uni_new, contact_area
 
 
-def get_contact_surface_adjusted_Alpha_Shape(config_this,volume):
+def get_contact_surface_adjusted_Alpha_Shape(config_this):
     # print(config_this)
     mesh_path=config_this['mesh_path']
     embryo_name=config_this['embryo_name']
@@ -554,17 +557,23 @@ def get_volume_surface_area_adjusted_Alpha_Shape(config_this):
     volume,surface=0.0,0.0
     volume_path = os.path.join(mesh_path, 'stat', embryo_name,embryo_name+'_'+time_point+'_segCell_volume.txt')
     surface_path = os.path.join(mesh_path, 'stat', embryo_name,embryo_name+'_'+time_point+'_segCell_surface.txt')
+    # if cell_label ==486:
+    #     with open(volume_path, 'rb') as handle:
+    #         volume = pickle.load(handle)
+    #     print(np.unique(volume))
     try:
         with open(volume_path, 'rb') as handle:
             volume = pickle.load(handle)[cell_label]
-    except:
-        print('open failed ', volume_path)
+    except Exception as e:
+        # print(e)
+        print('open failed ', volume_path, cell_label)
 
     try:
         with open(surface_path, 'rb') as handle:
             surface = pickle.load(handle)[cell_label]
-    except:
-        print('open failed ', surface_path)
+    except Exception as e:
+        # print(e)
+        print('open failed ', surface_path,cell_label)
 
     return volume, surface
 
