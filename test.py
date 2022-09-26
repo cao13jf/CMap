@@ -63,8 +63,11 @@ def main():
     random.seed(args.seed)
     np.random.seed(args.seed)
 
+    # start to predict the unconstant eggshell (prediciton, binary segmentation)
     if args.get_memb_bin:
+        # get membrane binary shell
         test_folder = dict(root="dataset/test", has_label=False)
+        # nii.gz to pickle, make it easier to read in neural network
         doit(test_folder, embryo_names=args.test_embryos, max_times=args.max_times)
         # =============================================================
         #  construct network model
@@ -122,6 +125,7 @@ def main():
         logging.info("-"*50)
         logging.info(msg)
 
+        # the file will save in the segMemb folder
         with torch.no_grad():
             validate(
                 valid_loader=test_loader,  # dataset loader
@@ -134,8 +138,10 @@ def main():
                 postprocess=False,
                 size=test_set.size
             )
-    #  Post process on binary segmentation.
+
+    #  Post process on binary segmentation. Group them into closed 3D cells
     if args.get_cell:
+        # read the binary segmentation in segMemb folder and process them
         membrane2cell(args)
 
     #  Combine labels based on dividing cells

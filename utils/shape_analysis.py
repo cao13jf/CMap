@@ -142,6 +142,7 @@ def cell_graph_network(config):
     :return :
     '''
     time_point = config['time_point']
+    # seg file is the "SegCellTimeCombined" FOld
     seg_file = os.path.join(config['seg_folder'],
                             config['embryo_name'] + "_" + str(time_point).zfill(3) + '_segCell.nii.gz')
     nucleus_loc_file = os.path.join(config["project_folder"], 'TemCellGraph', config['embryo_name'],
@@ -155,7 +156,8 @@ def cell_graph_network(config):
 
     ## unify the labels in the segmentation and that in the aceTree information
     division_seg, nuc_position, config["res"] = unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config)
-    division_seg_save_file = os.path.join(os.path.dirname(seg_file) + 'LabelUnified',
+    # TODO: dangerous action 2 - I change 'LabelUnified' to 'LabelUnifiedPost1'
+    division_seg_save_file = os.path.join(os.path.dirname(seg_file) + 'LabelUnifiedPost1',
                                           config['embryo_name'] + "_" + str(time_point).zfill(3) + '_segCell.nii.gz')
     save_nii(division_seg, division_seg_save_file)
 
@@ -194,6 +196,10 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     :return nuc_positions: nucleus positions with labels
     '''
 
+    # todo: Danger usage 1 - here. But time is limited, use this first
+    with open(os.path.join('tem_files', 'wrong_division_cells.pikcle'), "rb") as fp:  # Unpickling
+        list_wrong_division_label = pickle.load(fp)
+
     pd_number = pd.read_csv(config["number_dictionary"], names=["name", "label"])
     number_dict = pd.Series(pd_number.label.values, index=pd_number.name).to_dict()
 
@@ -213,6 +219,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     nucleus_location = nucleus_location.values
 
     ## load seg volume
+    # seg file is the "SegCellTimeCombined" FOlder
     seg = nib.load(seg_file).get_data().transpose([2, 1, 0])
     config["res"] = ace_shape[-1] / seg.shape[-1] * config["xy_resolution"]
     nucleus_location_zoom = (nucleus_location * np.array(seg.shape) / np.array(ace_shape)).astype(np.uint16)
@@ -229,6 +236,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
                                        config['embryo_name'] + "_" + str(time_point).zfill(3) + '_nucLoc' + '.txt')
     ##################################################
     #  unify the segmentation label
+    # seg file is the "SegCellTimeCombined" FOlder
     unify_seg = np.zeros_like(seg)
     changed_flag = np.zeros_like(seg)  # to label whether a cell has been updated with labels in the nucleus stack.
     nucleus_loc_to_save["volume"] = ""  ################### Used for wrting cell information
@@ -242,10 +250,12 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
             continue
         raw_label = seg[nucleus_loc[0], nucleus_loc[1], nucleus_loc[2]]
         update_flag = changed_flag[nucleus_loc[0], nucleus_loc[1], nucleus_loc[2]]
+        # raw label is the label in SegCellTimeCOmbined
         if raw_label != 0:
             if not update_flag:
                 config_this = {'mesh_path': config['mesh_path'], 'embryo_name': config['embryo_name'],
                                'time_point': str(config['time_point']).zfill(3), 'cell_label': target_label}
+                # set the SegCellTimeCombined With CD file again, even SegCell is already unified actually
                 unify_seg[seg == raw_label] = target_label
                 changed_flag[seg == raw_label] = 1
                 # add volume and surface information
@@ -310,7 +320,8 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     ##  deal with dividing SegCell
     raw_labels = list(seg[nucleus_location_zoom[:, 0], nucleus_location_zoom[:, 1], nucleus_location_zoom[:, 2]])
     repeat_labels = [[i, label] for i, label in enumerate(raw_labels) if raw_labels.count(label) > 1]
-    repeat_labels = [x for x in repeat_labels if x[1] != 0]  # Label with 0 is the missed cell
+    repeat_labels = [x for x in repeat_labels if x[1] != 0]
+    # Label with 0 is the missed cell
     # reset all labels to their parent label
     division_seg = unify_seg.copy()
     cell_locations = [list(x) for x in list(nucleus_location_zoom)]
@@ -324,6 +335,15 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
             parent_label = number_dict[parent_node.tag]
         except:
             pass
+
+        # todo: danger usage 1- here
+        # expect the two region condition:! please. brain is burning.
+        # print([config['embryo_name'], parent_label, time_point])
+        # print(list_wrong_division_label)
+        if [config['embryo_name'], name_dict[parent_label], time_point] in list_wrong_division_label:
+            print([config['embryo_name'], name_dict[parent_label], time_point],'--match, wrong division - SegCellCombinedLabelUnified')
+            continue
+
         division_seg[unify_seg == number_dict[cell_name]] = parent_label
         if name_dict[parent_label] not in cell_names:
             cell_names.append(name_dict[parent_label])

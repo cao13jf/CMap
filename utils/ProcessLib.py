@@ -23,10 +23,12 @@ from utils.data_structure import construct_celltree
 #   main function for post process
 #=========================================================================
 def segment_membrane(para):
+    # transform the binary segmentation result to the single cell
     embryo_name = para[0]
-    file_name = para[1]
+    file_name = para[1] # the path of segMemb file (binary segmentation result)
     egg_shell = para[2]
     name_embryo_T = "_".join(os.path.basename(file_name).split("_")[0:2])
+    # the segNuc file have only one pixel for each nuc, Dr. Cao will dialation to bigger (radius 8)
     segNuc_file = os.path.join("./dataset/test", embryo_name, "SegNuc", name_embryo_T + "_segNuc.nii.gz")
 
     memb_edt = nib_load(file_name) # * egg_shell
@@ -335,6 +337,7 @@ def get_eggshell(wide_type_name, hollow=False):
 
 
 def otsu3d(gray):
+    # raw membrane gii.gz
     pixel_number = gray.shape[0] * gray.shape[1] * gray.shape[2]
     mean_weigth = 1.0/pixel_number
     his, bins = np.histogram(gray, np.arange(0,257))
@@ -365,12 +368,16 @@ def otsu3d(gray):
 Based on the division summary, all cells should be seperated at 4th TP
 '''
 def combine_division(embryos, max_times, overwrite=False):
-
+    # judge if embryos a list
     embryos = embryos if isinstance(embryos, list) else [embryos]
+
+    # todo: Danger usage 1 - here. But time is limited, use this first
+    with open(os.path.join('tem_files','wrong_division_cells.pikcle'), "rb") as fp:  # Unpickling
+        list_wrong_division = pickle.load(fp)
 
     for i_embryo, embryo in enumerate(embryos):
         max_time = max_times[i_embryo]
-        ace_file = os.path.join("./dataset/test", embryo, "CD"+embryo+".csv")
+        ace_file = os.path.join("./dataset/test", embryo, "CD"+embryo+".csv") # pixel x y z
         cell_tree, max_time = construct_celltree(ace_file, max_time=max_time)
 
         try:
@@ -382,22 +389,22 @@ def combine_division(embryos, max_times, overwrite=False):
 
         memb_files = glob.glob(os.path.join("./output", embryo, "SegMemb", '*.nii.gz'))
         cell_files = glob.glob(os.path.join("./output", embryo, "SegCell", '*.nii.gz'))
-        nuc_files = glob.glob(os.path.join("./dataset/test", embryo, "SegNuc", '*.nii.gz'))
+        nuc_files = glob.glob(os.path.join("./dataset/test", embryo, "SegNuc", '*.nii.gz')) # acetree editting result
         memb_files.sort()
         nuc_files.sort()
         cell_files.sort()
 
         # =============== single test =================================
-        for tp in tqdm(range(0, len(nuc_files), 1), desc="Combining {}".format(embryo)):
-            embryo = embryo
-            memb_file = memb_files[tp]
+        for tp in tqdm(range(0, len(nuc_files), 1), desc="Combining (cell division - SegCellTimeCombined) {}".format(embryo)):
+            embryo = embryo # todo ? : what is this
+            memb_file = memb_files[tp] # prediction result, binary segmentation result
             nuc_file = nuc_files[tp]
             cell_file = cell_files[tp]
 
             t = int(filename2t(memb_file))
 
             seg_map = nib_load(memb_file)
-            seg_bin = (seg_map > 0.93 * seg_map.max()).astype(np.float)
+            seg_binary = (seg_map > 0.93 * seg_map.max()).astype(np.float)
             seg_nuc = nib_load(nuc_file)
             seg_cell = nib_load(cell_file)
 
@@ -408,7 +415,7 @@ def combine_division(embryos, max_times, overwrite=False):
             cell_labels = np.unique(seg_cell).tolist()
             for one_label in labels:
                 one_times = cell_tree[name_dict[one_label]].data.get_time()
-                if any(time < t for time in one_times): # if previous division exist
+                if any(time < t for time in one_times): # if previous division exist?????
                     continue
                 if (one_label in processed_labels):
                     continue
@@ -418,12 +425,20 @@ def combine_division(embryos, max_times, overwrite=False):
                 another_label = [number_dict[a.tag] for a in cell_tree.children(parent_label.tag)]
                 another_label.remove(one_label)
                 another_label = another_label[0]
-
+                # this one cell label and sister cell label
                 if (one_label not in cell_labels) or (another_label not in cell_labels):
                     continue
+
+                # todo: danger usage 1- here
+                # expect the two region condition:! please. brain is burning.
+                if [embryo, parent_label.tag, tp] in list_wrong_division:
+                    print([embryo, parent_label.tag, tp],' not combined in SegCellCombined step')
+                    continue
+
                 x0 = np.stack(np.where(seg_nuc == one_label)).squeeze().tolist()
                 x1 = np.stack(np.where(seg_nuc == another_label)).squeeze().tolist()
-                edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_bin)
+                # TODO:WHY USE BINARY SEGMENATTION ? NO CONSISTENT WITH THE UNIFIED RESULT?
+                edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_binary)
                 if edge_weight == 0:
                     mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)
                     mask = binary_closing(mask, structure=np.ones((3, 3, 3)))
@@ -474,6 +489,9 @@ def combine_division_mp(para):
     processed_labels = []
     output_seg_cell = seg_cell.copy()
     cell_labels = np.unique(seg_cell).tolist()
+
+
+
     for one_label in labels:
         one_times = cell_tree[name_dict[one_label]].data.get_time()
         if any(time < t for time in one_times): # if previous division exist
@@ -489,6 +507,9 @@ def combine_division_mp(para):
 
         if (one_label not in cell_labels) or (another_label not in cell_labels):
             continue
+
+
+
         x0 = np.stack(np.where(seg_nuc == one_label)).squeeze().tolist()
         x1 = np.stack(np.where(seg_nuc == another_label)).squeeze().tolist()
         edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_bin)

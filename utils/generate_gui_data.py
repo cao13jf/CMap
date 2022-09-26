@@ -55,7 +55,7 @@ def generate_gui_data(args):
     # ================== copy files ==============================
     if COPY_FILE:
         # volume
-        for embryo_name in tqdm(embryo_names, desc="Moving files from CShaper"):
+        for embryo_name in tqdm(embryo_names, desc="Moving stat files from SegCellTimeCombinedLabelUnifiedPost1"):
             check_folder(os.path.join(save_folder, embryo_name))
             move_file(os.path.join(statistic_folder, embryo_name, embryo_name + "_surface.csv"),
                             os.path.join(save_folder, embryo_name, embryo_name + "_surface.csv"))
@@ -68,7 +68,7 @@ def generate_gui_data(args):
 
             raw_folder0 = os.path.join(raw_folder, embryo_name, "RawMemb")
             raw_files = glob.glob(os.path.join(raw_folder0, "*.nii.gz"))
-            seg_folder0 = os.path.join(seg_folder, embryo_name, "SegCellTimeCombinedLabelUnified")
+            seg_folder0 = os.path.join(seg_folder, embryo_name, "SegCellTimeCombinedLabelUnifiedPost1")
             seg_files = glob.glob(os.path.join(seg_folder0, "*.nii.gz"))
             save_file = os.path.join(raw_folder, embryo_name, "SegCell", os.path.basename(raw_files[0]))
             check_folder(save_file)
