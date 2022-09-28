@@ -150,7 +150,7 @@ def main():
         combine_cells(args)
 
     if args.shape_analysis:
-        print("Begin collect cell shape information...\n")
+        print("Begin collect cell shape information to do cell shape statistics...\n")
         shape_analysis_func(args)
 
     if args.get_volume_var:

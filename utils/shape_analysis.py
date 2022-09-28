@@ -9,7 +9,6 @@ from PIL import Image
 from tqdm import tqdm
 from scipy import ndimage
 import multiprocessing as mp
-import open3d as o3d
 from skimage import morphology
 from skimage.measure import marching_cubes_lewiner, mesh_surface_area
 
@@ -36,6 +35,47 @@ def init(l):  # used for parallel computing
 
 # global file_block
 # file_lock = None
+
+
+def shape_analysis_func(args):
+    max_times = args.max_times
+    embryo_names = args.test_embryos
+    raw_size = args.raw_size
+
+    for i_embryo, embryo_name in enumerate(embryo_names):
+        max_time = max_times[i_embryo]
+        # Construct folder
+        para_config = {}
+        para_config["xy_resolution"] = 0.09  #
+        para_config["max_time"] = max_time
+        para_config["embryo_name"] = embryo_name
+        para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
+        para_config["save_nucleus_folder"] = "output/NucleusLoc"
+        para_config["seg_folder"] = os.path.join("output", embryo_name, "SegCellTimeCombined")
+        para_config["stat_folder"] = os.path.join("statistics", embryo_name)
+        para_config["delete_tem_file"] = False
+        para_config["num_slice"] = raw_size[0]
+        para_config["acetree_file"] = os.path.join("./dataset/test", embryo_name, "".join(["CD", embryo_name, ".csv"]))
+        para_config["project_folder"] = "./statistics"
+        para_config["number_dictionary"] = "dataset/number_dictionary.csv"
+
+        para_config['mesh_path'] = r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/'
+
+        if not os.path.isdir(para_config['stat_folder']):
+            os.makedirs(para_config['stat_folder'])
+
+        # Get the size of the figure
+        # example_embryo_folder = os.path.join(para_config["raw_folder"], para_config["embryo_name"], "tif")
+        # example_img_file = glob.glob(os.path.join(example_embryo_folder, "*.tif"))
+        # raw_size = [para_config["num_slice"]] + list(np.asarray(Image.open(example_img_file[0])).shape)
+        para_config["image_size"] = raw_size
+
+        if not os.path.isdir(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name'])):
+            os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
+        else:
+            shutil.rmtree(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
+            os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
+        run_shape_analysis(para_config)
 
 def run_shape_analysis(config):
     '''
@@ -673,45 +713,6 @@ def compose_surface_and_volume(embryo):
     surface_stat.to_csv(os.path.join("./statistics", embryo, embryo + "_surface" + '.csv'))
 
 
-def shape_analysis_func(args):
-    max_times = args.max_times
-    embryo_names = args.test_embryos
-    raw_size = args.raw_size
-
-    for i_embryo, embryo_name in enumerate(embryo_names):
-        max_time = max_times[i_embryo]
-        # Construct folder
-        para_config = {}
-        para_config["xy_resolution"] = 0.09  #
-        para_config["max_time"] = max_time
-        para_config["embryo_name"] = embryo_name
-        para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
-        para_config["save_nucleus_folder"] = "output/NucleusLoc"
-        para_config["seg_folder"] = os.path.join("output", embryo_name, "SegCellTimeCombined")
-        para_config["stat_folder"] = os.path.join("statistics", embryo_name)
-        para_config["delete_tem_file"] = False
-        para_config["num_slice"] = raw_size[0]
-        para_config["acetree_file"] = os.path.join("./dataset/test", embryo_name, "".join(["CD", embryo_name, ".csv"]))
-        para_config["project_folder"] = "./statistics"
-        para_config["number_dictionary"] = "dataset/number_dictionary.csv"
-
-        para_config['mesh_path'] = r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/'
-
-        if not os.path.isdir(para_config['stat_folder']):
-            os.makedirs(para_config['stat_folder'])
-
-        # Get the size of the figure
-        # example_embryo_folder = os.path.join(para_config["raw_folder"], para_config["embryo_name"], "tif")
-        # example_img_file = glob.glob(os.path.join(example_embryo_folder, "*.tif"))
-        # raw_size = [para_config["num_slice"]] + list(np.asarray(Image.open(example_img_file[0])).shape)
-        para_config["image_size"] = raw_size
-
-        if not os.path.isdir(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name'])):
-            os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
-        else:
-            shutil.rmtree(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
-            os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
-        run_shape_analysis(para_config)
 
 # if __name__ == '__main__':
 #     '''
