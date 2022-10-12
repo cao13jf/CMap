@@ -49,12 +49,12 @@ def shape_analysis_func(args):
         para_config["xy_resolution"] = 0.09  #
         para_config["max_time"] = max_time
         para_config["embryo_name"] = embryo_name
-        para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
+        # para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
         para_config["save_nucleus_folder"] = "output/NucleusLoc"
         para_config["seg_folder"] = os.path.join("output", embryo_name, "SegCellTimeCombined")
         para_config["stat_folder"] = os.path.join("statistics", embryo_name)
         para_config["delete_tem_file"] = False
-        para_config["num_slice"] = raw_size[0]
+        # para_config["num_slice"] = raw_size[0]
         para_config["acetree_file"] = os.path.join("./dataset/test", embryo_name, "".join(["CD", embryo_name, ".csv"]))
         para_config["project_folder"] = "./statistics"
         para_config["number_dictionary"] = "dataset/number_dictionary.csv"
@@ -183,9 +183,9 @@ def cell_graph_network(config):
     '''
     time_point = config['time_point']
     # seg file is the "SegCellTimeCombined" FOld
-    seg_file = os.path.join(config['seg_folder'],
+    seg_file = os.path.join(config['seg_folder'], #para_config["seg_folder"] = os.path.join("output", embryo_name, "SegCellTimeCombined")
                             config['embryo_name'] + "_" + str(time_point).zfill(3) + '_segCell.nii.gz')
-    nucleus_loc_file = os.path.join(config["project_folder"], 'TemCellGraph', config['embryo_name'],
+    nucleus_loc_file = os.path.join(config["project_folder"], 'TemCellGraph', config['embryo_name'], #para_config["project_folder"] = "./statistics"
                                     config['embryo_name'] + "_" + str(time_point).zfill(
                                         3) + '_nucLoc' + '.txt')  # read nucleus location Data
 
@@ -237,8 +237,12 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     '''
 
     # todo: Danger usage 1 - here. But time is limited, use this first
-    with open(os.path.join('tem_files', 'wrong_division_cells.pikcle'), "rb") as fp:  # Unpickling
-        list_wrong_division_label = pickle.load(fp)
+    list_wrong_division_label=[]
+    try:
+        with open(os.path.join('tem_files', 'wrong_division_cells.pikcle'), "rb") as fp:  # Unpickling
+            list_wrong_division_label = pickle.load(fp)
+    except:
+        print('NO tem_files wrong_division_cells.pikcle, no dealing with CMap data')
 
     pd_number = pd.read_csv(config["number_dictionary"], names=["name", "label"])
     number_dict = pd.Series(pd_number.label.values, index=pd_number.name).to_dict()
@@ -713,42 +717,3 @@ def compose_surface_and_volume(embryo):
     surface_stat.to_csv(os.path.join("./statistics", embryo, embryo + "_surface" + '.csv'))
 
 
-
-# if __name__ == '__main__':
-#     '''
-#     argv[1]: the config file
-#     '''
-#     max_time = 195
-#     embryo_name = "191108plc1p1"
-#     raw_size = [92, 712, 512]
-#
-#     # Construct folder
-#     para_config = {}
-#     para_config["xy_resolution"] = 0.09
-#     para_config["max_time"] = max_time
-#     para_config["embryo_name"] = embryo_name
-#     para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
-#     para_config["save_nucleus_folder"] = "ResultCell/NucleusLoc"
-#     para_config["seg_folder"] = os.path.join("output", embryo_name, "SegCellTimeCombined")
-#     para_config["stat_folder"] = os.path.join("statistics", embryo_name)
-#     para_config["delete_tem_file"] = False
-#     para_config["num_slice"] = raw_size[0]
-#     para_config["acetree_file"] = os.path.join("./dataset/test", embryo_name, "".join(["CD", embryo_name, ".csv"]))
-#     para_config["project_folder"] = "./statistics"
-#     para_config["number_dictionary"] = "dataset/number_dictionary.csv"
-#
-#     if not os.path.isdir(para_config['stat_folder']):
-#         os.makedirs(para_config['stat_folder'])
-#
-#     # Get the size of the figure
-#     # example_embryo_folder = os.path.join(para_config["raw_folder"], para_config["embryo_name"], "tif")
-#     # example_img_file = glob.glob(os.path.join(example_embryo_folder, "*.tif"))
-#     # raw_size = [para_config["num_slice"]] + list(np.asarray(Image.open(example_img_file[0])).shape)
-#     para_config["image_size"] = raw_size
-#
-#     if not os.path.isdir(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name'])):
-#         os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
-#     else:
-#         shutil.rmtree(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
-#         os.makedirs(os.path.join(para_config['save_nucleus_folder'], para_config['embryo_name']))
-#     run_shape_analysis(para_config)

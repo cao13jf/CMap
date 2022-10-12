@@ -3,11 +3,24 @@ This llibrary defines all structures that will be used in the shape analysis
 '''
 
 import os
+import io
 import glob
 import pickle
 from termcolor import colored
 import pandas as pd
 from treelib import Tree, Node
+
+def read_old_cd(cd_file_path):
+    df_nuc=pd.DataFrame(columns=['cell','time','x','y','z'])
+    with io.open(cd_file_path, mode="r", encoding="utf-8") as f:
+        # next(f)
+        next(f)
+        for line in f:
+            info_list = line.split()
+            # print(info_list)
+            df_nuc.loc[len(df_nuc)]=[info_list[0],info_list[1],info_list[4],info_list[3],info_list[2]]
+    df_nuc = df_nuc.astype({"x":float, "y":float, "z":float, "time":int})
+    return df_nuc
 
 def read_new_cd(cd_file):
     df_nuc = pd.read_csv(cd_file, lineterminator="\n")
@@ -17,10 +30,10 @@ def read_new_cd(cd_file):
 
     return df_nuc
 
-def construct_celltree(nucleus_file, max_time):
+def construct_celltree(nucleus_file_path, max_time, read_cshaper_cd=False):
     '''
     Construct cell tree structure with cell names
-    :param nucleus_file:  the name list file to the tree initilization
+    :param nucleus_file_path:  the name list file to the tree initilization
     :param max_time: the maximum time point to be considered
     :return cell_tree: cell tree structure where each time corresponds to one cell (with specific name)
     '''
@@ -45,23 +58,32 @@ def construct_celltree(nucleus_file, max_time):
     cell_tree.create_node('MS', 'MS', parent='EMS')
 
     # Read the name excel and construct the tree with complete segCell
-    df_time = read_new_cd(nucleus_file)
+    if read_cshaper_cd:
+        df_time = read_old_cd(nucleus_file_path)
+    else:
+        df_time = read_new_cd(nucleus_file_path)
 
     # read and combine all names from different acetrees
     ## Get cell number
     try:
-        pd_number = pd.read_csv('./dataset/number_dictionary.csv', names=["name", "label"])
-        number_dictionary = pd.Series(pd_number.label.values, index=pd_number.name).to_dict()
+        if read_cshaper_cd:
+            CShaper_data_path = r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/Segmentation Results'
+            number_dictionary_path = os.path.join(CShaper_data_path, 'name_dictionary.csv')
+            pd_name_dict = pd.read_csv(number_dictionary_path, index_col=0, header=0)
+            # label_name = pd_name_dict.to_dict()['0']
+            number_dictionary = pd.Series(pd_name_dict.index, index=pd_name_dict['0']).to_dict()
+        else:
+            pd_number = pd.read_csv('./dataset/number_dictionary.csv', names=["name", "label"])
+            number_dictionary = pd.Series(pd_number.label.values, index=pd_number.name).to_dict()
     except:
-        raise Exception("Not find number dictionary at ./dataset")
+        raise Exception("Not find number dictionary at ./dataset or ")
 
     # =====================================
     # dynamic update the name dictionary
     # =====================================
     cell_in_dictionary = list(number_dictionary.keys())
 
-    ace_pd = read_new_cd(os.path.join(nucleus_file))
-    ace_pd = ace_pd[ace_pd.time <= max_time]
+    ace_pd = df_time[df_time.time <= max_time]
     cell_list = list(ace_pd.cell.unique())
     add_cell_list = list(set(cell_list) - set(cell_in_dictionary))
 
@@ -79,6 +101,7 @@ def construct_celltree(nucleus_file, max_time):
 
     df_time = df_time[df_time.time <= max_time]
     all_cell_names = list(df_time.cell.unique())
+    # print(all_cell_names)
     for cell_name in list(all_cell_names):
         if cell_name not in number_dictionary:
             continue
