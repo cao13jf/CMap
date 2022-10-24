@@ -16,6 +16,106 @@ from utils.post_lib import save_nii
 from utils.data_structure import construct_celltree
 from utils.shape_analysis import construct_stat_embryo
 
+def CMap_data_assemble():
+
+    CMap_data_path = r'/home/home/ProjectCode/LearningCell/MembProjectCode'
+    embryo_names = ['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1', '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2', '200117plc1pop1ip3']
+
+    max_times = [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
+    # if not os.path.isdir('/home/jeff/ProjectCode/LearningCell/MembProjectCode/TemCellGraph'):
+    #     os.makedirs('/home/jeff/ProjectCode/LearningCell/MembProjectCode/TemCellGraph')
+    number_dictionary_path = os.path.join('/home/home/ProjectCode/LearningCell/MembProjectCode/gui', 'name_dictionary.csv')
+    pd_name_dict = pd.read_csv(number_dictionary_path, index_col=0, header=0)
+    label_name = pd_name_dict.to_dict()['0']
+    name_label = pd.Series(pd_name_dict.index, index=pd_name_dict['0']).to_dict()
+
+    for idx, embryo_name in enumerate(embryo_names):
+        cd_file_path=os.path.join(CMap_data_path,'dataset/test',embryo_name,'CD{}.csv'.format(embryo_name))
+        cell_tree, max_time = construct_celltree(cd_file_path, max_times[idx])
+
+#**************        # -----surface-------------and-----------volume-----------------------
+        all_names = [cname for cname in cell_tree.expand_tree(mode=Tree.WIDTH)]
+        # for idx, cell_name in enumerate(all_names):
+        volume_embryo = pd.DataFrame(
+            np.full(shape=(max_time, len(all_names)), fill_value=np.nan, dtype=np.float32),
+            index=range(1, max_time + 1), columns=all_names)
+
+        surface_embryo = pd.DataFrame(
+            np.full(shape=(max_time, len(all_names)), fill_value=np.nan, dtype=np.float32),
+            index=range(1, max_time + 1), columns=all_names)
+
+        for tp in tqdm(range(1, max_time+1), desc='assembling volume and surface area of {} result'.format(embryo_name)):
+            path_tmp = os.path.join(r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/stat', embryo_name)
+            with open(os.path.join(path_tmp,  '{}_{}_segCell_volume.txt'.format(embryo_name,str(tp).zfill(3))),'rb') as handle:
+                volume_dict=pickle.load(handle)
+            with open(os.path.join(path_tmp,  '{}_{}_segCell_surface.txt'.format(embryo_name,str(tp).zfill(3))),'rb') as handle:
+                surface_dict=pickle.load(handle)
+
+            for cell_label_,vol_value in volume_dict.items():
+                cell_name_=label_name[cell_label_]
+                volume_embryo.loc[tp, cell_name_] = vol_value
+
+            for cell_label_, sur_value in surface_dict.items():
+                cell_name_ = label_name[cell_label_]
+                surface_embryo.loc[tp, cell_name_] = sur_value
+
+        volume_embryo = volume_embryo.loc[:, ((volume_embryo != 0) & (~np.isnan(volume_embryo))).any(axis=0)]
+        volume_embryo.to_csv(os.path.join(CMap_data_path,'statistics',embryo_name,embryo_name+'_volume.csv'))
+        surface_embryo = surface_embryo.loc[:, ((surface_embryo != 0) & (~np.isnan(surface_embryo))).any(axis=0)]
+        surface_embryo.to_csv(os.path.join(CMap_data_path,'statistics',embryo_name,embryo_name+'_surface.csv'))
+
+        # *******       # # ----contact--------------------------initialize the contact csv  file----------------------
+        # Get tuble lists with elements from the list
+        # print(cell_tree)
+        # print()
+        name_combination = []
+        first_level_names = []
+        for i, name1 in enumerate(all_names):
+            for name2 in all_names[i + 1:]:
+                if not (cell_tree.is_ancestor(name1, name2) or cell_tree.is_ancestor(name2, name1)):
+                    first_level_names.append(name1)
+                    name_combination.append((name1, name2))
+
+        multi_index = pd.MultiIndex.from_tuples(name_combination, names=['cell1', 'cell2'])
+        # print(multi_index)
+        stat_embryo = pd.DataFrame(
+            np.full(shape=(max_time, len(name_combination)), fill_value=np.nan, dtype=np.float32),
+            index=range(1, max_time + 1), columns=multi_index)
+        # set zero element to express the exist of the specific nucleus
+        for cell_name in all_names:
+            if cell_name not in first_level_names:
+                continue
+            try:
+                cell_time = cell_tree.get_node(cell_name).data.get_time()
+                cell_time = [x for x in cell_time if x <= max_time]
+                stat_embryo.loc[cell_time, (cell_name, slice(None))] = 0
+            except:
+                cell_name
+        # print(stat_embryo)
+        # edges_view = point_embryo.edges(data=True)
+        for tp in tqdm(range(1, max_times[idx] + 1),
+                       desc='assembling contact surface of {} result'.format(embryo_name)):
+            path_tmp = os.path.join(
+                r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/stat', embryo_name)
+            with open(os.path.join(path_tmp, '{}_{}_segCell_contact.txt'.format(embryo_name, str(tp).zfill(3))),
+                      'rb') as handle:
+                contact_dict = pickle.load(handle)
+            for contact_sur_idx, contact_sur_value in contact_dict.items():
+                [cell1, cell2] = contact_sur_idx.split('_')
+                cell1_name = label_name[int(cell1)]
+                cell2_name = label_name[int(cell2)]
+                if (cell1_name, cell2_name) in stat_embryo.columns:
+                    stat_embryo.loc[tp, (cell1_name, cell2_name)] = contact_sur_value
+                elif (cell2_name, cell1_name) in stat_embryo.columns:
+                    stat_embryo.loc[tp, (cell2_name, cell1_name)] = contact_sur_value
+                else:
+                    pass
+                    # print('columns missing (cell1_name, cell2_name)')
+        stat_embryo = stat_embryo.loc[:, ((stat_embryo != 0) & (~np.isnan(stat_embryo))).any(axis=0)]
+
+        print(stat_embryo)
+        stat_embryo.to_csv(os.path.join(CMap_data_path, 'statistics',embryo_name, embryo_name + '_contact.csv'))
+        # --------------------------------------------------------------------------------------------
 
 def CShaper_data_assemble():
 
@@ -66,54 +166,54 @@ def CShaper_data_assemble():
 
 
  #*******       # # ----contact--------------------------initialize the contact csv  file----------------------
-        # # Get tuble lists with elements from the list
-        # # print(cell_tree)
-        # # print()
-        # name_combination = []
-        # first_level_names = []
-        # for i, name1 in enumerate(all_names):
-        #     for name2 in all_names[i + 1:]:
-        #         if not (cell_tree.is_ancestor(name1, name2) or cell_tree.is_ancestor(name2, name1)):
-        #             first_level_names.append(name1)
-        #             name_combination.append((name1, name2))
-        #
-        # multi_index = pd.MultiIndex.from_tuples(name_combination, names=['cell1', 'cell2'])
-        # # print(multi_index)
-        # stat_embryo = pd.DataFrame(
-        #     np.full(shape=(max_time, len(name_combination)), fill_value=np.nan, dtype=np.float32),
-        #     index=range(1, max_time + 1), columns=multi_index)
-        # # set zero element to express the exist of the specific nucleus
-        # for cell_name in all_names:
-        #     if cell_name not in first_level_names:
-        #         continue
-        #     try:
-        #         cell_time = cell_tree.get_node(cell_name).data.get_time()
-        #         cell_time = [x for x in cell_time if x <= max_time]
-        #         stat_embryo.loc[cell_time, (cell_name, slice(None))] = 0
-        #     except:
-        #         cell_name
-        # # print(stat_embryo)
-        # # edges_view = point_embryo.edges(data=True)
-        # for tp in tqdm(range(1, max_times[idx]+1), desc='assembling contact surface of {} result'.format(embryo_name)):
-        #     path_tmp = os.path.join(r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/stat', embryo_name)
-        #     with open(os.path.join(path_tmp,  '{}_{}_segCell_contact.txt'.format(embryo_name,str(tp).zfill(3))),'rb') as handle:
-        #         contact_dict=pickle.load(handle)
-        #     for contact_sur_idx,contact_sur_value in contact_dict.items():
-        #         [cell1,cell2]=contact_sur_idx.split('_')
-        #         cell1_name=label_name[int(cell1)]
-        #         cell2_name=label_name[int(cell2)]
-        #         if (cell1_name, cell2_name) in stat_embryo.columns:
-        #             stat_embryo.loc[tp, (cell1_name, cell2_name)] = contact_sur_value
-        #         elif (cell2_name, cell1_name) in stat_embryo.columns:
-        #             stat_embryo.loc[tp, (cell2_name, cell1_name)] = contact_sur_value
-        #         else:
-        #             pass
-        #             # print('columns missing (cell1_name, cell2_name)')
-        # stat_embryo = stat_embryo.loc[:, ((stat_embryo != 0) & (~np.isnan(stat_embryo))).any(axis=0)]
-        #
+        # Get tuble lists with elements from the list
+        # print(cell_tree)
+        # print()
+        name_combination = []
+        first_level_names = []
+        for i, name1 in enumerate(all_names):
+            for name2 in all_names[i + 1:]:
+                if not (cell_tree.is_ancestor(name1, name2) or cell_tree.is_ancestor(name2, name1)):
+                    first_level_names.append(name1)
+                    name_combination.append((name1, name2))
+
+        multi_index = pd.MultiIndex.from_tuples(name_combination, names=['cell1', 'cell2'])
+        # print(multi_index)
+        stat_embryo = pd.DataFrame(
+            np.full(shape=(max_time, len(name_combination)), fill_value=np.nan, dtype=np.float32),
+            index=range(1, max_time + 1), columns=multi_index)
+        # set zero element to express the exist of the specific nucleus
+        for cell_name in all_names:
+            if cell_name not in first_level_names:
+                continue
+            try:
+                cell_time = cell_tree.get_node(cell_name).data.get_time()
+                cell_time = [x for x in cell_time if x <= max_time]
+                stat_embryo.loc[cell_time, (cell_name, slice(None))] = 0
+            except:
+                cell_name
         # print(stat_embryo)
-        # stat_embryo.to_csv(os.path.join(CShaper_data_path,'Stat',embryo_name+'_Stat.csv'))
-        # # --------------------------------------------------------------------------------------------
+        # edges_view = point_embryo.edges(data=True)
+        for tp in tqdm(range(1, max_times[idx]+1), desc='assembling contact surface of {} result'.format(embryo_name)):
+            path_tmp = os.path.join(r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/stat', embryo_name)
+            with open(os.path.join(path_tmp,  '{}_{}_segCell_contact.txt'.format(embryo_name,str(tp).zfill(3))),'rb') as handle:
+                contact_dict=pickle.load(handle)
+            for contact_sur_idx,contact_sur_value in contact_dict.items():
+                [cell1,cell2]=contact_sur_idx.split('_')
+                cell1_name=label_name[int(cell1)]
+                cell2_name=label_name[int(cell2)]
+                if (cell1_name, cell2_name) in stat_embryo.columns:
+                    stat_embryo.loc[tp, (cell1_name, cell2_name)] = contact_sur_value
+                elif (cell2_name, cell1_name) in stat_embryo.columns:
+                    stat_embryo.loc[tp, (cell2_name, cell1_name)] = contact_sur_value
+                else:
+                    pass
+                    # print('columns missing (cell1_name, cell2_name)')
+        stat_embryo = stat_embryo.loc[:, ((stat_embryo != 0) & (~np.isnan(stat_embryo))).any(axis=0)]
+
+        print(stat_embryo)
+        stat_embryo.to_csv(os.path.join(CShaper_data_path,'Stat',embryo_name+'_Stat.csv'))
+        # --------------------------------------------------------------------------------------------
 
 
 
@@ -311,5 +411,5 @@ if __name__ == "__main__":
     # doit(test_folder, embryo_names, max_times=max_times)
 
     # move_and_build_CShaper_data_structure()
-
-    CShaper_data_assemble()
+    CMap_data_assemble()
+    # CShaper_data_assemble()
