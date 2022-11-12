@@ -371,9 +371,9 @@ def combine_division(embryos, max_times, overwrite=False):
     # judge if embryos a list
     embryos = embryos if isinstance(embryos, list) else [embryos]
 
-    # todo: Danger usage 1 - here. But time is limited, use this first
-    with open(os.path.join('tem_files','wrong_division_cells.pikcle'), "rb") as fp:  # Unpickling
-        list_wrong_division = pickle.load(fp)
+    # # todo: Danger usage 1 - here. But time is limited, use this first
+    # with open(os.path.join('tem_files','wrong_division_cells.pikcle'), "rb") as fp:  # Unpickling
+    #     list_wrong_division = pickle.load(fp)
 
     for i_embryo, embryo in enumerate(embryos):
         max_time = max_times[i_embryo]
@@ -395,7 +395,7 @@ def combine_division(embryos, max_times, overwrite=False):
         cell_files.sort()
 
         # =============== single test =================================
-        for tp in tqdm(range(0, len(nuc_files), 1), desc="Combining (cell division - SegCellTimeCombined) {}".format(embryo)):
+        for tp in tqdm(range(0, len(nuc_files), 1), desc="Combining (cell division -> SegCellTimeCombined) {}".format(embryo)):
             embryo = embryo # todo ? : what is this
             memb_file = memb_files[tp] # prediction result, binary segmentation result
             nuc_file = nuc_files[tp]
@@ -431,13 +431,12 @@ def combine_division(embryos, max_times, overwrite=False):
 
                 # todo: danger usage 1- here
                 # expect the two region condition:! please. brain is burning.
-                if [embryo, parent_label.tag, tp] in list_wrong_division:
-                    print([embryo, parent_label.tag, tp],' not combined in SegCellCombined step')
-                    continue
+                # if [embryo, parent_label.tag, tp] in list_wrong_division:
+                #     print([embryo, parent_label.tag, tp],' not combined in SegCellCombined step')
+                #     continue
 
                 x0 = np.stack(np.where(seg_nuc == one_label)).squeeze().tolist()
                 x1 = np.stack(np.where(seg_nuc == another_label)).squeeze().tolist()
-                # TODO:WHY USE BINARY SEGMENATTION ? NO CONSISTENT WITH THE UNIFIED RESULT?
                 edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_binary)
                 if edge_weight == 0:
                     mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)

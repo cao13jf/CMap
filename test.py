@@ -56,7 +56,7 @@ def main():
     assert torch.cuda.is_available(), "CPU is needed for prediction"
 
     # =============================================================
-    #  set seeds for randomlization
+    #  set seeds for randomlization in TRAIN_TEST.yaml
     # =============================================================
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed(args.seed)

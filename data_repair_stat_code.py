@@ -24,10 +24,13 @@ def CMap_data_assemble():
     max_times = [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
     # if not os.path.isdir('/home/jeff/ProjectCode/LearningCell/MembProjectCode/TemCellGraph'):
     #     os.makedirs('/home/jeff/ProjectCode/LearningCell/MembProjectCode/TemCellGraph')
-    number_dictionary_path = os.path.join('/home/home/ProjectCode/LearningCell/MembProjectCode/gui', 'name_dictionary.csv')
+    number_dictionary_path = os.path.join('/home/jeff/ProjectCode/LearningCell/MembProjectCode/tem_files/tem_division_folder', 'name_dictionary.csv')
     pd_name_dict = pd.read_csv(number_dictionary_path, index_col=0, header=0)
     label_name = pd_name_dict.to_dict()['0']
     name_label = pd.Series(pd_name_dict.index, index=pd_name_dict['0']).to_dict()
+
+    vol_coefficient=((512/256)*0.09)**3
+    sur_coefficient=((512/256)*0.09)**2
 
     for idx, embryo_name in enumerate(embryo_names):
         cd_file_path=os.path.join(CMap_data_path,'dataset/test',embryo_name,'CD{}.csv'.format(embryo_name))
@@ -53,11 +56,11 @@ def CMap_data_assemble():
 
             for cell_label_,vol_value in volume_dict.items():
                 cell_name_=label_name[cell_label_]
-                volume_embryo.loc[tp, cell_name_] = vol_value
+                volume_embryo.loc[tp, cell_name_] = vol_value*vol_coefficient
 
             for cell_label_, sur_value in surface_dict.items():
                 cell_name_ = label_name[cell_label_]
-                surface_embryo.loc[tp, cell_name_] = sur_value
+                surface_embryo.loc[tp, cell_name_] = sur_value*sur_coefficient
 
         volume_embryo = volume_embryo.loc[:, ((volume_embryo != 0) & (~np.isnan(volume_embryo))).any(axis=0)]
         volume_embryo.to_csv(os.path.join(CMap_data_path,'statistics',embryo_name,embryo_name+'_volume.csv'))
@@ -105,9 +108,9 @@ def CMap_data_assemble():
                 cell1_name = label_name[int(cell1)]
                 cell2_name = label_name[int(cell2)]
                 if (cell1_name, cell2_name) in stat_embryo.columns:
-                    stat_embryo.loc[tp, (cell1_name, cell2_name)] = contact_sur_value
+                    stat_embryo.loc[tp, (cell1_name, cell2_name)] = contact_sur_value*sur_coefficient
                 elif (cell2_name, cell1_name) in stat_embryo.columns:
-                    stat_embryo.loc[tp, (cell2_name, cell1_name)] = contact_sur_value
+                    stat_embryo.loc[tp, (cell2_name, cell1_name)] = contact_sur_value*sur_coefficient
                 else:
                     pass
                     # print('columns missing (cell1_name, cell2_name)')
@@ -153,7 +156,7 @@ def CShaper_data_assemble():
 
             for cell_label_,vol_value in volume_dict.items():
                 cell_name_=label_name[cell_label_]
-                volume_embryo.loc[tp, cell_name_] = vol_value
+                volume_embryo.loc[tp, cell_name_] = vol_value # the volume and surface coefficient will be timesed in PROJECT GUI
 
             for cell_label_, sur_value in surface_dict.items():
                 cell_name_ = label_name[cell_label_]
@@ -215,7 +218,92 @@ def CShaper_data_assemble():
         stat_embryo.to_csv(os.path.join(CShaper_data_path,'Stat',embryo_name+'_Stat.csv'))
         # --------------------------------------------------------------------------------------------
 
+def CShaper_nucloc_file_repair():
 
+    CShaper_data_path = r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/Segmentation Results'
+    embryo_names = ['Sample' + str(i).zfill(2) for i in range(4, 21)]
+    max_times = [150, 170, 210, 165, 160, 160, 160, 170, 165, 150, 155, 170, 160, 160, 160, 160, 170]
+
+    number_dictionary_path = os.path.join(CShaper_data_path, 'name_dictionary.csv')
+    pd_name_dict = pd.read_csv(number_dictionary_path, index_col=0, header=0)
+    label_name = pd_name_dict.to_dict()['0']
+    name_label = pd.Series(pd_name_dict.index, index=pd_name_dict['0']).to_dict()
+
+    with open(os.path.join('tem_files', 'CShaper_wrong_division_cells.pikcle'), 'rb') as fp:
+        wrong_division_list=pickle.load(fp)
+
+    for item_wrong in tqdm(wrong_division_list, desc='repairing the wrong division in CShaper data'):
+        embryo_name=item_wrong[0]
+        tp=item_wrong[1]
+        wrong_mother=item_wrong[2]
+        assigned_child=item_wrong[3]
+
+        cd_file_path = os.path.join(CShaper_data_path, 'RawData', embryo_name, 'CD{}.txt'.format(embryo_name))
+        cd_file_dict = {}
+        with io.open(cd_file_path, mode="r", encoding="utf-8") as f:
+            # next(f)
+            # next(f)
+            for line in f:
+                info_list = line.split()
+                cd_file_dict[(info_list[0], info_list[1])] = info_list[2:]
+        # print('working on segemented file ', '{}_{}_segCell.nii.gz'.format(embryo_name,str(tp).zfill(3)))
+
+        path_tmp = os.path.join(r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/stat',
+                                embryo_name)
+        with open(os.path.join(path_tmp, '{}_{}_segCell_volume.txt'.format(embryo_name, str(tp).zfill(3))),
+                  'rb') as handle:
+            volume_dict = pickle.load(handle)
+        with open(os.path.join(path_tmp, '{}_{}_segCell_surface.txt'.format(embryo_name, str(tp).zfill(3))),
+                  'rb') as handle:
+            surface_dict = pickle.load(handle)
+
+        nucLoc_origin_file_path = os.path.join(CShaper_data_path, 'LostCells', embryo_name,
+                                               '{}_{}_nucLoc.csv'.format(embryo_name,
+                                                                         str(tp).zfill(3)))
+        df_nucLoc = pd.read_csv(nucLoc_origin_file_path, header=0)
+        nucLoc_save_file_path = os.path.join(CShaper_data_path, 'UpdatedNucLocFile', embryo_name,
+                                             '{}_{}_nucLoc.csv'.format(embryo_name,
+                                                                       str(tp).zfill(3)))
+        zxy_pos = cd_file_dict[(assigned_child, str(tp))]
+        z = 114 - int(float(zxy_pos[0]) / 68 * 114)
+        x = int(float(zxy_pos[1]) / 712 * 256)
+        y = int(float(zxy_pos[2]) / 512 * 184)
+
+        df_nucLoc = df_nucLoc.loc[
+            ~df_nucLoc['nucleus_name'].str.startswith(wrong_mother)]
+        cell_label_=name_label[assigned_child]
+        df_nucLoc.loc[len(df_nucLoc.index)] = [cell_label_, assigned_child, x, y, z, volume_dict[cell_label_],surface_dict[cell_label_],'makeup resigned']
+        df_nucLoc.to_csv(nucLoc_save_file_path,index=False)
+
+    volume_coefficient=0.25**3
+    surface_coefficient=0.25**2
+    for idx, embryo_name in enumerate(embryo_names):
+        for tp in tqdm(range(1, max_times[idx] + 1),desc='re-giving {} nucloc file'.format(embryo_name)):
+            path_tmp = os.path.join(
+                r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/stat',
+                embryo_name)
+            with open(os.path.join(path_tmp, '{}_{}_segCell_volume.txt'.format(embryo_name, str(tp).zfill(3))),
+                      'rb') as handle:
+                volume_dict = pickle.load(handle)
+            with open(os.path.join(path_tmp, '{}_{}_segCell_surface.txt'.format(embryo_name, str(tp).zfill(3))),
+                      'rb') as handle:
+                surface_dict = pickle.load(handle)
+
+            nucLoc_save_file_path = os.path.join(CShaper_data_path, 'UpdatedNucLocFile', embryo_name,
+                                                 '{}_{}_nucLoc.csv'.format(embryo_name,
+                                                                           str(tp).zfill(3)))
+            df_nucLoc = pd.read_csv(nucLoc_save_file_path, header=0)
+
+            for cell_label_,vol_value in volume_dict.items():
+                # print(df_nucLoc.loc[df_nucLoc['nucleus_label']==cell_label_])
+                df_nucLoc.loc[df_nucLoc['nucleus_label']==cell_label_,'volume'] = vol_value*volume_coefficient
+                # print(df_nucLoc.loc[df_nucLoc['nucleus_label']==cell_label_])
+
+
+            for cell_label_, sur_value in surface_dict.items():
+                df_nucLoc.loc[df_nucLoc['nucleus_label']==cell_label_,'surface'] = sur_value*surface_coefficient
+
+            df_nucLoc.to_csv(nucLoc_save_file_path,index=False)
 
 
 def CShaper_data_makeup():
@@ -228,10 +316,10 @@ def CShaper_data_makeup():
     label_name=pd_name_dict.to_dict()['0']
     name_label=pd.Series(pd_name_dict.index,index=pd_name_dict['0']).to_dict()
 
+    wrong_division_list=[]
 
     for idx, embryo_name in enumerate(embryo_names):
-        embryo_this_path = os.path.join(r'/home/home/ProjectCode/LearningCell/MembProjectCode/output', embryo_name,
-                                            'SegCellTimeCombined')
+        embryo_this_path = os.path.join(CShaper_data_path, 'SegmentedCell',embryo_name+'LabelUnified')
         cd_file_path=os.path.join(CShaper_data_path,'RawData',embryo_name,'CD{}.txt'.format(embryo_name))
         cd_file_dict={}
 
@@ -268,11 +356,14 @@ def CShaper_data_makeup():
                         # print(cd_file_dict.get((name_this_tp+'a',str(tp)),False),cd_file_dict.get((name_this_tp+'p',str(tp)),False),cd_file_dict.get((name_this_tp+'l',str(tp)),False),cd_file_dict.get((name_this_tp+'r',str(tp)),False))
                         # print(name_this_tp, 'is dividing')
                         if cd_file_dict.get((name_this_tp+'a',str(tp)),False) and cd_file_dict.get((name_this_tp+'p',str(tp)),False):
-                            print(name_this_tp,' dividing as ', name_this_tp+'a',name_this_tp+'p',tp)
+                            pass
+                            # print(name_this_tp,' dividing as ', name_this_tp+'a',name_this_tp+'p',tp)
                         elif cd_file_dict.get((name_this_tp+'l',str(tp)),False) and cd_file_dict.get((name_this_tp+'r',str(tp)),False):
-                            print(name_this_tp,' dividing as ', name_this_tp+'l',name_this_tp+'r',tp)
+                            pass
+                            # print(name_this_tp,' dividing as ', name_this_tp+'l',name_this_tp+'r',tp)
                         elif cd_file_dict.get((name_this_tp + 'd', str(tp)), False) and cd_file_dict.get((name_this_tp + 'v', str(tp)), False):
-                            print(name_this_tp,' dividing as ', name_this_tp+'d',name_this_tp+'v',tp)
+                            pass
+                            # print(name_this_tp,' dividing as ', name_this_tp+'d',name_this_tp+'v',tp)
                         elif name_this_tp in ['EMS', 'P1','P2','P3','P4']:
                             pass
                         # elif cd_file_dict.get((name_this_tp+'aa',str(tp)),False) \
@@ -283,19 +374,22 @@ def CShaper_data_makeup():
                         else:
                             print('{}_{}_segCell.nii.gz'.format(embryo_name,str(tp).zfill(3)),'wrong dividing cell ',(name_this_tp,str(tp)))
                             for key, value in cd_file_dict.items():  # iter on both keys and values
+                                # combine cells to their grandmother..
                                 if key[0].startswith(name_this_tp) and key[1]==str(tp):
                                     print(name_this_tp,' set to ',key[0])
+                                    # key[0] str, name of the cell
+                                    # key[1] str, time of the embryo
                                     modifying_seg[embryo_this_tp==name_label[name_this_tp]]=name_label[key[0]]
+                                    wrong_division_list.append([embryo_name,tp,name_this_tp,key[0]])
                                     break
-                            flag_print=True
-                            # zxy_pos = cd_file_dict[(name_this_tp, str(tp))]
-                            # z = 114 - int(float(zxy_pos[0]) / 68 * 114)
-                            # x = int(float(zxy_pos[1]) / 712 * 256)
-                            # y = int(float(zxy_pos[2]) / 512 * 184)
+
+
             # if flag_print:
             #     print(np.unique(embryo_this_tp),np.unique(modifying_seg))
             save_nii(modifying_seg, os.path.join(CShaper_data_path,'UpdatedSegmentedCell',embryo_name,'{}_{}_segCell.nii.gz'.format(embryo_name,str(tp).zfill(3))))
-
+    print(wrong_division_list)
+    with open(os.path.join('tem_files', 'CShaper_wrong_division_cells.pikcle'), 'wb') as fp:
+        pickle.dump(wrong_division_list, fp)
 
 
 def move_and_build_CShaper_data_structure():
@@ -411,5 +505,7 @@ if __name__ == "__main__":
     # doit(test_folder, embryo_names, max_times=max_times)
 
     # move_and_build_CShaper_data_structure()
-    CMap_data_assemble()
+    # CMap_data_assemble()
     # CShaper_data_assemble()
+    # CShaper_data_makeup()
+    CMap_data_assemble()

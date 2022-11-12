@@ -142,7 +142,7 @@ def run_shape_analysis(config):
                                  config['embryo_name'] + '_T' + str(itime) + '.txt')
         with open(file_name, 'rb') as f:
             cell_graph = pickle.load(f)
-            stat_embryo = assemble_result(cell_graph, itime, number_dict)
+            stat_embryo = assemble_result(cell_graph, itime, number_dict) # use saved cell contact graph to assemble result
 
     # # =======================================================
     # # Combine all surfaces and volumes in one single file
@@ -197,7 +197,7 @@ def cell_graph_network(config):
     ## unify the labels in the segmentation and that in the aceTree information
     division_seg, nuc_position, config["res"] = unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config)
     # TODO: dangerous action 2 - I change 'LabelUnified' to 'LabelUnifiedPost1'
-    division_seg_save_file = os.path.join(os.path.dirname(seg_file) + 'LabelUnifiedPost1',
+    division_seg_save_file = os.path.join(os.path.dirname(seg_file) + 'LabelUnified',
                                           config['embryo_name'] + "_" + str(time_point).zfill(3) + '_segCell.nii.gz')
     save_nii(division_seg, division_seg_save_file)
 
@@ -237,12 +237,12 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
     '''
 
     # todo: Danger usage 1 - here. But time is limited, use this first
-    list_wrong_division_label=[]
-    try:
-        with open(os.path.join('tem_files', 'wrong_division_cells.pikcle'), "rb") as fp:  # Unpickling
-            list_wrong_division_label = pickle.load(fp)
-    except:
-        print('NO tem_files wrong_division_cells.pikcle, no dealing with CMap data')
+    # list_wrong_division_label=[]
+    # try:
+    #     with open(os.path.join('tem_files', 'wrong_division_cells.pikcle'), "rb") as fp:  # Unpickling
+    #         list_wrong_division_label = pickle.load(fp)
+    # except:
+    #     print('NO tem_files wrong_division_cells.pikcle, no dealing with CMap data')
 
     pd_number = pd.read_csv(config["number_dictionary"], names=["name", "label"])
     number_dict = pd.Series(pd_number.label.values, index=pd_number.name).to_dict()
@@ -264,7 +264,7 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
 
     ## load seg volume
     # seg file is the "SegCellTimeCombined" FOlder
-    seg = nib.load(seg_file).get_data().transpose([2, 1, 0])
+    seg = nib.load(seg_file).get_data().transpose([2, 1, 0]) # z, y , x
     config["res"] = ace_shape[-1] / seg.shape[-1] * config["xy_resolution"]
     nucleus_location_zoom = (nucleus_location * np.array(seg.shape) / np.array(ace_shape)).astype(np.uint16)
     nucleus_location_zoom[:, 0] = seg.shape[0] - nucleus_location_zoom[:, 0]
@@ -384,9 +384,9 @@ def unify_label_seg_and_nuclues(file_lock, time_point, seg_file, config):
         # expect the two region condition:! please. brain is burning.
         # print([config['embryo_name'], parent_label, time_point])
         # print(list_wrong_division_label)
-        if [config['embryo_name'], name_dict[parent_label], time_point] in list_wrong_division_label:
-            print([config['embryo_name'], name_dict[parent_label], time_point],'--match, wrong division - SegCellCombinedLabelUnified')
-            continue
+        # if [config['embryo_name'], name_dict[parent_label], time_point] in list_wrong_division_label:
+        #     print([config['embryo_name'], name_dict[parent_label], time_point],'--match, wrong division - SegCellCombinedLabelUnified')
+        #     continue
 
         division_seg[unify_seg == number_dict[cell_name]] = parent_label
         if name_dict[parent_label] not in cell_names:
@@ -544,7 +544,7 @@ def assemble_result(point_embryo, time_point, number_dict):
     '''
     global stat_embryo
     edges_view = point_embryo.edges(data=True)
-
+    # use saved graph to mark in the dataframe.csv
     for one_edge in edges_view:
         edge_weight = one_edge[2]['area']
         if (one_edge[0], one_edge[1]) in stat_embryo.columns:
@@ -618,6 +618,7 @@ def get_volume_surface_area_adjusted_Alpha_Shape(config_this):
     time_point=config_this['time_point']
     cell_label=config_this['cell_label']
 
+    # if not found will set as 0. That's fine. THe post segmentation, shape analysis and assemble will work at PROJECT CellShapeAnalysis
     volume,surface=0.0,0.0
     volume_path = os.path.join(mesh_path, 'stat', embryo_name,embryo_name+'_'+time_point+'_segCell_volume.txt')
     surface_path = os.path.join(mesh_path, 'stat', embryo_name,embryo_name+'_'+time_point+'_segCell_surface.txt')
