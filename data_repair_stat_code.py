@@ -218,6 +218,109 @@ def CShaper_data_assemble():
         stat_embryo.to_csv(os.path.join(CShaper_data_path,'Stat',embryo_name+'_Stat.csv'))
         # --------------------------------------------------------------------------------------------
 
+
+def CMap_nucloc_file_repair():
+
+    CMap_data_path = r'/home/home/ProjectCode/LearningCell/MembProjectCode'
+    embryo_names = ['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1', '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2', '200117plc1pop1ip3']
+
+    max_times = [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
+    # if not os.path.isdir('/home/jeff/ProjectCode/LearningCell/MembProjectCode/TemCellGraph'):
+    #     os.makedirs('/home/jeff/ProjectCode/LearningCell/MembProjectCode/TemCellGraph')
+    number_dictionary_path = os.path.join('/home/jeff/ProjectCode/LearningCell/MembProjectCode/tem_files/tem_division_folder', 'name_dictionary.csv')
+    pd_name_dict = pd.read_csv(number_dictionary_path, index_col=0, header=0)
+    label_name = pd_name_dict.to_dict()['0']
+    name_label = pd.Series(pd_name_dict.index, index=pd_name_dict['0']).to_dict()
+
+    vol_coefficient=((512/256)*0.09)**3
+    sur_coefficient=((512/256)*0.09)**2
+
+    with open('/home/home/ProjectCode/LearningCell/CellShapeAnalysis/tem_files/SegCellTimeCombinedLabelUnified_wrong_division_cells.pikcle', 'rb') as fp:
+        wrong_division_list=pickle.load(fp)
+
+    for item_wrong in tqdm(wrong_division_list, desc='repairing the wrong division in CMap data'):
+        embryo_name=item_wrong[0]
+        tp=item_wrong[2]
+        wrong_mother=item_wrong[1]
+        # assigned_child1=label_name[wrong_mother+'a']
+        # assigned_child2=label_name[wrong_mother+'p']
+
+
+        cd_file_path = os.path.join(CMap_data_path, 'dataset/test', embryo_name, 'CD{}.csv'.format(embryo_name))
+        cd_file_dict = {}
+        with io.open(cd_file_path, mode="r", encoding="utf-8") as f:
+            # next(f)
+            next(f)
+            for line in f:
+                info_list = line.split(',')
+                [cellname_,tp_]=info_list[0].split(':')
+                cd_file_dict[(cellname_,tp_)] = info_list[1:]
+        # print('working on segemented file ', '{}_{}_segCell.nii.gz'.format(embryo_name,str(tp).zfill(3)))
+
+        path_tmp = os.path.join(r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/stat',
+                                embryo_name)
+        with open(os.path.join(path_tmp, '{}_{}_segCell_volume.txt'.format(embryo_name, str(tp).zfill(3))),
+                  'rb') as handle:
+            volume_dict = pickle.load(handle)
+        with open(os.path.join(path_tmp, '{}_{}_segCell_surface.txt'.format(embryo_name, str(tp).zfill(3))),
+                  'rb') as handle:
+            surface_dict = pickle.load(handle)
+
+        nucLoc_origin_file_path = os.path.join(CMap_data_path, 'output/NucleusLoc', embryo_name,
+                                               '{}_{}_nucLoc.csv'.format(embryo_name,
+                                                                         str(tp).zfill(3)))
+        df_nucLoc = pd.read_csv(nucLoc_origin_file_path, header=0)
+        nucLoc_save_file_path = os.path.join(CMap_data_path, 'output/UpdatedNucleusLoc', embryo_name,
+                                             '{}_{}_nucLoc.csv'.format(embryo_name,
+                                                                       str(tp).zfill(3)))
+        zxy_pos1 = cd_file_dict[(wrong_mother+'a', str(tp))]
+        x1 = int(float(zxy_pos1[0]) / 712 * 356)
+        y1 = int(float(zxy_pos1[1]) / 512 * 256)
+        z1 = 214 - int(float(zxy_pos1[2]) / 92 * 214)
+
+        zxy_pos2 = cd_file_dict[(wrong_mother + 'p', str(tp))]
+        x2 = int(float(zxy_pos2[0]) / 712 * 356)
+        y2 = int(float(zxy_pos2[1]) / 512 * 256)
+        z2 = 214 - int(float(zxy_pos2[2]) / 92 * 214)
+
+
+        df_nucLoc = df_nucLoc.loc[
+            ~df_nucLoc['nucleus_name'].str.startswith(wrong_mother)]
+        cell_label1_=name_label[wrong_mother+'a']
+        df_nucLoc.loc[len(df_nucLoc.index)] = [cell_label1_, wrong_mother+'a', x1, y1, z1, volume_dict[cell_label1_],surface_dict[cell_label1_],'makeup resigned']
+        cell_label2_ = name_label[wrong_mother + 'p']
+        df_nucLoc.loc[len(df_nucLoc.index)] = [cell_label2_, wrong_mother + 'p', x2, y2, z2, volume_dict[cell_label2_],
+                                               surface_dict[cell_label2_], 'makeup resigned']
+        df_nucLoc.to_csv(nucLoc_save_file_path,index=False)
+
+    for idx, embryo_name in enumerate(embryo_names):
+        for tp in tqdm(range(1, max_times[idx] + 1),desc='re-giving {} nucloc file'.format(embryo_name)):
+            path_tmp = os.path.join(
+                r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/cell_mesh_contact/stat',
+                embryo_name)
+            with open(os.path.join(path_tmp, '{}_{}_segCell_volume.txt'.format(embryo_name, str(tp).zfill(3))),
+                      'rb') as handle:
+                volume_dict = pickle.load(handle)
+            with open(os.path.join(path_tmp, '{}_{}_segCell_surface.txt'.format(embryo_name, str(tp).zfill(3))),
+                      'rb') as handle:
+                surface_dict = pickle.load(handle)
+
+            nucLoc_save_file_path = os.path.join(CMap_data_path, 'output/UpdatedNucleusLoc', embryo_name,
+                                                 '{}_{}_nucLoc.csv'.format(embryo_name,
+                                                                           str(tp).zfill(3)))
+            df_nucLoc = pd.read_csv(nucLoc_save_file_path, header=0)
+
+            for cell_label_,vol_value in volume_dict.items():
+                # print(df_nucLoc.loc[df_nucLoc['nucleus_label']==cell_label_])
+                df_nucLoc.loc[df_nucLoc['nucleus_label']==cell_label_,'volume'] = vol_value*vol_coefficient
+                # print(df_nucLoc.loc[df_nucLoc['nucleus_label']==cell_label_])
+
+
+            for cell_label_, sur_value in surface_dict.items():
+                df_nucLoc.loc[df_nucLoc['nucleus_label']==cell_label_,'surface'] = sur_value*sur_coefficient
+
+            df_nucLoc.to_csv(nucLoc_save_file_path,index=False)
+
 def CShaper_nucloc_file_repair():
 
     CShaper_data_path = r'/home/home/ProjectCode/LearningCell/CellShapeAnalysis/DATA/Segmentation Results'
@@ -508,4 +611,5 @@ if __name__ == "__main__":
     # CMap_data_assemble()
     # CShaper_data_assemble()
     # CShaper_data_makeup()
-    CMap_data_assemble()
+    # CMap_data_assemble()
+    CMap_nucloc_file_repair()
