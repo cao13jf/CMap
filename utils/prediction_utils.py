@@ -34,7 +34,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
 
         #  binary prediction
         pred_bin = pred_bin.cpu().numpy()
-        pred_bin = pred_bin.squeeze().transpose([1, 2, 0])
+        pred_bin = pred_bin.squeeze().transpose([1, 2, 0]) # from z, x, y to x, y ,z
         pred_bin = resize(pred_bin.astype(np.float), size, mode='constant', cval=0, order=0, anti_aliasing=False)
 
         #  post process
@@ -52,10 +52,11 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "SegMemb", names[i] + "_segMemb"), pred_bin)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "SegMemb",  names[i] + "_segMemb.nii.gz")
-                nib_save((pred_bin*256).astype(np.int16), save_name)
+                nib_save((pred_bin*256).astype(np.int16), save_name) # pred_bin is range(0,1)
 
 def membrane2cell(args):
     for embryo_name in args.test_embryos:
+        # get the binary mask of a embryo with histogram transform(3DMMNS)
         embryo_mask = get_eggshell(embryo_name)
 
         file_names = glob.glob(os.path.join("./output",embryo_name, "SegMemb",'*.nii.gz'))

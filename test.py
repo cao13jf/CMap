@@ -22,7 +22,7 @@ from utils.shape_analysis import shape_analysis_func
 from utils.qc import generate_qc
 from utils.generate_gui_data import generate_gui_data
 
-cudnn.benchmark = True
+cudnn.benchmark = True # https://zhuanlan.zhihu.com/p/73711222 to accelerate the network
 path = os.path.dirname(__file__)
 
 parser = argparse.ArgumentParser()

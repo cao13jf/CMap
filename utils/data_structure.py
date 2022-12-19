@@ -90,7 +90,6 @@ def construct_celltree(nucleus_file_path, max_time, read_cshaper_cd=False):
     if len(add_cell_list) != 0:
         assert len(add_cell_list) == 0, "Name dictionary should be updated"
         print(colored("Name dictionary updated", "red"))
-
         # ================================= cancel dynamic updating ============
         # add_cell_list.sort()
         # print("Name dictionary updated !!!")

@@ -23,10 +23,16 @@ from utils.data_structure import construct_celltree
 #   main function for post process
 #=========================================================================
 def segment_membrane(para):
+    '''
+
+    :param para:
+    :return:
+    '''
     # transform the binary segmentation result to the single cell
     embryo_name = para[0]
     file_name = para[1] # the path of segMemb file (binary segmentation result)
-    egg_shell = para[2]
+    egg_shell = para[2] # the binary mask of a embryo with histogram transform ;todo: not used here?
+
     name_embryo_T = "_".join(os.path.basename(file_name).split("_")[0:2])
     # the segNuc file have only one pixel for each nuc, Dr. Cao will dialation to bigger (radius 8)
     segNuc_file = os.path.join("./dataset/test", embryo_name, "SegNuc", name_embryo_T + "_segNuc.nii.gz")
@@ -233,6 +239,11 @@ def cell_filter_with_nucleus(cell_seg, nuc_seg):
     return cell_seg
 
 def get_largest_connected_region(embryo_mask):
+    '''
+    erase the little noise
+    :param embryo_mask:
+    :return:
+    '''
     label_structure = np.ones((3, 3, 3))
     embryo_mask = ndimage.morphology.binary_closing(embryo_mask, structure=label_structure)
     [labelled_regions, _]= ndimage.label(embryo_mask, label_structure)
@@ -323,9 +334,9 @@ def get_eggshell(wide_type_name, hollow=False):
     overlap_num = 15 if len(embryo_tp_list) > 15 else len(embryo_tp_list)
     embryo_sum = nib_load(embryo_tp_list[0]).astype(np.float)
     for tp_file in embryo_tp_list[1:overlap_num]:
-        embryo_sum += nib_load(tp_file)
+        embryo_sum += nib_load(tp_file) # add the random 15 images, why?????
 
-    embryo_mask = otsu3d(embryo_sum)
+    embryo_mask = otsu3d(embryo_sum) # building a binary mask with histogram transform with sum of 15 raw images.
     embryo_mask = get_largest_connected_region(embryo_mask)
     embryo_mask[0:2, :, :] = False; embryo_mask[:, 0:2, :] = False; embryo_mask[:, :, 0:2] = False
     embryo_mask[-3:, :, :] = False; embryo_mask[:, -3:, :] = False; embryo_mask[:, :, -3:] = False
@@ -337,7 +348,7 @@ def get_eggshell(wide_type_name, hollow=False):
 
 
 def otsu3d(gray):
-    # raw membrane gii.gz
+    # added 15 raw membrane gii.gz
     pixel_number = gray.shape[0] * gray.shape[1] * gray.shape[2]
     mean_weigth = 1.0/pixel_number
     his, bins = np.histogram(gray, np.arange(0,257))

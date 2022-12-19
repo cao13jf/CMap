@@ -37,19 +37,6 @@ get_volume_var: False
 gui_data: True
 trained_model: ./ckpts/model_last.pth
 
-
-# =================================
-# Parameters for prediction (Paras for training will be preserved)
-# =================================
-raw_size: [92, 712, 512]
-# [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
-max_times: [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
-get_memb_bin: False
-show_snap: False
-# [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2, 200117plc1pop1ip2, 200117plc1pop1ip3]
-# ['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1', '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2', '200117plc1pop1ip3']
-test_data_dir: dataset/test
-test_embryos: [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2, 200117plc1pop1ip2, 200117plc1pop1ip3]
 train_transforms: # for training
   Compose([
     ContourEDT(9),
@@ -59,15 +46,33 @@ train_transforms: # for training
     NumpyType((np.float32, np.float32, np.float32, np.float32))
     ])
 
-# Resize((256, 352, 224)),
+# =================================
+# Parameters for prediction (Paras for training will be preserved)
+# =================================
+# raw z x y
+# CMap [92, 712, 512]
+raw_size: [94, 712, 512]
+# [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
+get_memb_bin: False
+show_snap: False
+# [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2, 200117plc1pop1ip2, 200117plc1pop1ip3]
+# ['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1', '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2', '200117plc1pop1ip3']
+# CMap: dataset/test
+test_data_dir: /home/jeff/ProjectCode/CellAtlas/DataSource/nuc_labelled
+test_embryos: [221017plc1p2]
+max_times: [240]
+
+
+# Resize((256, 356, 214)), for CMap [92, 712, 512]
+# todo: why (256,352,224) before????
 test_transforms: # for testing
   Compose([
-    Resize((256, 352, 224)),
+    Resize((256, 356, 224)),
     NumpyType((np.float32, np.float32)),
     ])
 
 # =================================
 # Parameters for GUI data
 # =================================
-z_resolutions: [0.18]
+z_resolutions: [0.18] # 0.09* [92*0.42/0.09:429] /214= 0.18056074766
 gui_folder: ./gui

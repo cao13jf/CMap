@@ -27,17 +27,17 @@ class Base(object):
         return img
 
     #  define how to call tf
-    def __call__(self, img, dim=3, reuse_pros=False):  #
+    def __call__(self, imgs, dim=3, reuse_pros=False):  #
         # resampling parameters and set self properties
         if not reuse_pros:
-            im = img if isinstance(img, np.ndarray) else img[0]
+            im = imgs if isinstance(imgs, np.ndarray) else imgs[0]
             shape = im.shape
             assert len(shape) == 3, "only support 3-dim data"
             self.sample(*shape)
 
-        if isinstance(img, collections.Sequence):
-            return [self.tf(x, k) for k, x in enumerate(img)]
-        return self.tf(img)
+        if isinstance(imgs, collections.Sequence):
+            return [self.tf(x, k) for k, x in enumerate(imgs)]
+        return self.tf(imgs)
 
     #  define print string
     def __str__(self):
@@ -381,7 +381,7 @@ class NumpyType(Base):
         self.types = types
 
     def tf(self, img, k=0):
-        return img.astype(self.types[k])  #
+        return img.astype(self.types[k])  # k?
 
     def __str__(self):
         s_types = ",".join([str(s) for s in self.types])
