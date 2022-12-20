@@ -17,7 +17,7 @@ from utils.data_structure import construct_celltree
 from utils.shape_analysis import construct_stat_embryo
 
 
-def CMap_data_assemble():
+def CMap_stat_data_assemble():
     CMap_data_path = r'/home/home/ProjectCode/LearningCell/MembProjectCode'
     embryo_names = ['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
                     '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
@@ -39,7 +39,7 @@ def CMap_data_assemble():
         cd_file_path = os.path.join(CMap_data_path, 'dataset/test', embryo_name, 'CD{}.csv'.format(embryo_name))
         cell_tree, max_time = construct_celltree(cd_file_path, max_times[idx])
 
-        # **************        # -----surface-------------and-----------volume-----------------------
+        # ------------surface-------------and-----------volume-----------------------
         all_names = [cname for cname in cell_tree.expand_tree(mode=Tree.WIDTH)]
         # for idx, cell_name in enumerate(all_names):
         volume_embryo = pd.DataFrame(
@@ -74,7 +74,7 @@ def CMap_data_assemble():
         surface_embryo = surface_embryo.loc[:, ((surface_embryo != 0) & (~np.isnan(surface_embryo))).any(axis=0)]
         surface_embryo.to_csv(os.path.join(CMap_data_path, 'statistics', embryo_name, embryo_name + '_surface.csv'))
 
-        # *******       # # ----contact--------------------------initialize the contact csv  file----------------------
+        # ------------contact-----------initialize the contact csv  file----------------------
         # Get tuble lists with elements from the list
         # print(cell_tree)
         # print()
@@ -347,9 +347,9 @@ def CMap_nucloc_file_regenerator():
                                                            'child of {}'.format(cell_mother_name_)]
                 elif cell_mother_label_ not in no_repeat_record_list:
                     print('lost cell ', embryo_name, tp,cell_name_)
-                    z = 114 - int(float(zxy_pos[0]) / 68 * 114)
-                    y = int(float(zxy_pos[1]) / 712 * 256)  # labelled as X in cd file
-                    x = int(float(zxy_pos[2]) / 512 * 184)  # labelled as Y in cd file
+                    y = int(float(zxy_pos[0]) / 712 * 356)  # labelled as X in cd file
+                    x = int(float(zxy_pos[1]) / 512 * 256)  # labelled as Y in cd file
+                    z = 214 - int(float(zxy_pos[2]) / 92 * 214)
 
                     df_nucLoc.loc[len(df_nucLoc.index)] = [cell_label_, cell_name_, x, y, z,
                                                            None, None, 'lost']
@@ -617,5 +617,5 @@ if __name__ == "__main__":
     # CShaper_nucloc_file_regenerate()
     # CShaper_data_assemble()
     # CShaper_data_makeup()
-    # CMap_data_assemble()
+    # CMap_stat_data_assemble()
     CMap_nucloc_file_regenerator()

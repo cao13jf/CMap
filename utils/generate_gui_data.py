@@ -32,7 +32,8 @@ def generate_gui_data(args):
     CELLSPAN_FLAG = True
     NEIGHBOR_FLAG = True
     GET_DIVISIONS = True
-    COPY_FILE = True
+    COPY_FILE_SEGMENTED = False
+    COPY_STAT_FILE=True
 
     embryo_names = args.test_embryos
 
@@ -53,7 +54,7 @@ def generate_gui_data(args):
 
     all_lost_cells = []
     # ================== copy files ==============================
-    if COPY_FILE:
+    if COPY_STAT_FILE:
         # volume
         for embryo_name in tqdm(embryo_names, desc="Moving stat files from SegCellTimeCombinedLabelUnifiedPost1"):
             check_folder(os.path.join(save_folder, embryo_name))
@@ -65,25 +66,26 @@ def generate_gui_data(args):
             # contact (with transpose)
             transpose_csv(os.path.join(statistic_folder, embryo_name, embryo_name + "_contact.csv"),
                           os.path.join(save_folder, embryo_name, embryo_name + "_Stat.csv"))
-
-            raw_folder0 = os.path.join(raw_folder, embryo_name, "RawMemb")
-            raw_files = glob.glob(os.path.join(raw_folder0, "*.nii.gz"))
-            seg_folder0 = os.path.join(seg_folder, embryo_name, "SegCellTimeCombinedLabelUnifiedPost1")
-            seg_files = glob.glob(os.path.join(seg_folder0, "*.nii.gz"))
-            save_file = os.path.join(raw_folder, embryo_name, "SegCell", os.path.basename(raw_files[0]))
-            check_folder(save_file)
-            save_file = os.path.join(raw_folder, embryo_name, "RawMemb", os.path.basename(raw_files[0]))
-            check_folder(save_file)
-            for raw_file, seg_file in zip(raw_files, seg_files):
-                save_file = os.path.join(save_folder, embryo_name, "RawMemb", os.path.basename(raw_file))
-                move_file(raw_file, save_file)
-                save_file = os.path.join(save_folder, embryo_name, "SegCell", os.path.basename(seg_file))
-                move_file(seg_file, save_file)
+            if COPY_FILE_SEGMENTED:
+                raw_folder0 = os.path.join(raw_folder, embryo_name, "RawMemb")
+                raw_files = glob.glob(os.path.join(raw_folder0, "*.nii.gz"))
+                seg_folder0 = os.path.join(seg_folder, embryo_name, "SegCellTimeCombinedLabelUnifiedPost1")
+                seg_files = glob.glob(os.path.join(seg_folder0, "*.nii.gz"))
+                save_file = os.path.join(raw_folder, embryo_name, "SegCell", os.path.basename(raw_files[0]))
+                check_folder(save_file)
+                save_file = os.path.join(raw_folder, embryo_name, "RawMemb", os.path.basename(raw_files[0]))
+                check_folder(save_file)
+                for raw_file, seg_file in zip(raw_files, seg_files):
+                    save_file = os.path.join(save_folder, embryo_name, "RawMemb", os.path.basename(raw_file))
+                    move_file(raw_file, save_file)
+                    save_file = os.path.join(save_folder, embryo_name, "SegCell", os.path.basename(seg_file))
+                    move_file(seg_file, save_file)
 
         pd_number = pd_number[["label", "name"]]
         pd_number = pd.concat([pd.DataFrame({"label": [np.NaN], "name": ["0"]}), pd_number], ignore_index=True)
         pd_number.to_csv(save_folder + "/name_dictionary.csv", index=False, header=False)
 
+        CMapAddZeroToUnresonableBlank(args.gui_folder,args.gui_folder,embryo_names)
 
     # =================== save cell life span ======================================
 
@@ -95,22 +97,22 @@ def generate_gui_data(args):
         ace_file = os.path.join(raw_folder, embryo_name, "CD{}.csv".format(embryo_name))
 
         volume_pd = pd.read_csv(volume_file, header=0, index_col=0)
-        volume_pd.index = list(range(1, len(volume_pd.index) + 1, 1))
+        volume_pd.index = list(range(1, len(volume_pd.index) + 1, 1)) # todo:what is this?useless?
         contact_pd = pd.read_csv(contact_file, header=[0, 1], index_col=0)
         ace_pd = read_new_cd(ace_file)
         celltree, _ = construct_celltree(ace_file, len(volume_pd.index), name_file, read_old=False)
 
-        # save cells at tp
+        # ----------------save cells at TPCell folder
         if TP_CELLS_FLAGE:
             bar = tqdm(total=len(volume_pd))
             bar.set_description("saving tp cells")
             for tp, row in volume_pd.iterrows():
                 row = row.dropna()
                 cell_names = list(row.index)
-                cell_label = [name2label_dict[x] for x in cell_names]
+                cell_label = [name2label_dict[x] for x in cell_names] # transfer the cell name to cell label
 
                 write_file = os.path.join(save_folder, embryo_name, "TPCell", "{}_{}_cells.txt".format(embryo_name, str(tp).zfill(3)))
-                write_string = ",".join([str(x) for x in cell_label]) + "\n"
+                write_string = ",".join([str(x) for x in cell_label]) + "\n" # save the cell label for this tp
                 check_folder(write_file)
 
                 with open(write_file, "w") as f:
@@ -118,18 +120,18 @@ def generate_gui_data(args):
                 bar.update(1)
 
 
-            # save lifecycle.csv
+        # save ****_lifecycle.csv
         if CELLSPAN_FLAG:
             write_file = os.path.join(save_folder, embryo_name, "{}_lifescycle.csv".format(embryo_name))
             check_folder(write_file)
 
             open(write_file, "w").close()
-            bar = tqdm(total=len(volume_pd.columns))
+            bar = tqdm(total=len(volume_pd.columns)) # go through volume csv
             bar.set_description("saving life cycle")
-            for cell_col in volume_pd:
+            for cell_col in volume_pd: # go through volume csv (cell name)
                 valid_index = volume_pd[cell_col].notnull()
-                tps = list(volume_pd[valid_index].index)
-                label_tps = [name2label_dict[cell_col]] + tps
+                tps = list(volume_pd[valid_index].index) # get the existing time point of this cell
+                label_tps = [name2label_dict[cell_col]] + tps # combine the cell label and the existing time as a list
 
                 write_string = ",".join([str(x) for x in label_tps]) + "\n"
 
@@ -138,7 +140,7 @@ def generate_gui_data(args):
 
             bar.update(1)
 
-        # save neighbors
+        # save neighbors ---GuiNeighbor
         if NEIGHBOR_FLAG:
             contact_pd = contact_pd.replace(0, np.nan)
             bar = tqdm(total=len(contact_pd))
@@ -168,7 +170,7 @@ def generate_gui_data(args):
                 open(write_file, "w").close()
                 with open(write_file, "a") as f:
 
-                    for k, v in neighbors.items():
+                    for k, v in neighbors.items(): # cell label and its neighborhood
                         labels = [k] + list(set(v))
                         write_string = ",".join([str(x) for x in labels]) + "\n"
                         f.write(write_string)
@@ -176,16 +178,16 @@ def generate_gui_data(args):
                 bar.update(1)
 
 
-            # write division
+        # write division ------------ DivisionCell
         if GET_DIVISIONS:
             bar = tqdm(total=len(volume_pd))
             bar.set_description("saving neighbors")
             for tp, row in volume_pd.iterrows():
                 row = row.dropna()
                 cur_ace_pd = ace_pd[ace_pd["time"] == tp]
-                nuc_cells = list(cur_ace_pd["cell"])
-                seg_cells = list(row.index)
-                dif_cells = list(set(nuc_cells) - set(seg_cells))
+                nuc_cells = list(cur_ace_pd["cell"])  # cell in cd file this time point
+                seg_cells = list(row.index)  # cell in volume.csv this time point
+                dif_cells = list(set(nuc_cells) - set(seg_cells)) # only get the additional cells; lost cell?
 
                 division_cells = []
                 lost_cells = []
@@ -202,6 +204,8 @@ def generate_gui_data(args):
                     sister_cells = [x.tag for x in celltree.children(parent_cell)]
                     sister_cells.remove(dif_cell)
                     sister_cell = sister_cells[0]
+                    # assert parent_cell in seg_cells
+                    # division_cells.append(parent_cell)
                     if parent_cell in seg_cells:
                         division_cells.append(parent_cell)
                     else:
@@ -225,7 +229,7 @@ def generate_gui_data(args):
 
                         all_lost_cells.append("{}_{}_{}".format(embryo_name, dif_cell, str(tp).zfill(3)))
                         lost_cells.append(dif_cell)
-
+                # each tp
                 division_cells = list(set(division_cells))
                 lost_cells = list(set(lost_cells))
                 division_cells = [name2label_dict[x] for x in division_cells]
@@ -252,11 +256,53 @@ def generate_gui_data(args):
     # =================================================
     if RENAME_FLAG:
         for res, embryo_name in zip(z_resolutions, embryo_names):
-            data_files = glob.glob(os.path.join(save_folder, embryo_name, "*/*.nii.gz"), recursive=True)
+            data_files = glob.glob(os.path.join(save_folder, embryo_name, "*/*.nii.gz"), recursive=True) # go through all nii.gz files
             data_files.sort()
             for data_file in tqdm(data_files, desc="Adding header"):
-                img = nib.load(data_file).get_fdata()
+                img = nib.load(data_file).get_fdata() # load
                 img = nib.Nifti1Image(img, np.eye(4))
                 img.header.set_xyzt_units(xyz=3, t=8)
                 img.header["pixdim"] = [1.0, res, res, res, 0., 0., 0., 0.]
-                nib.save(img, data_file)
+                nib.save(img, data_file) # then save to the same place??????????//
+
+
+def CMapAddZeroToUnresonableBlank(gui_source_data_path,gui_target_data_path,embryo_names):
+
+    # max_times = {"200117plc1pop1ip3":155}
+    for embryo_name in embryo_names:
+        contact_file=pd.read_csv(os.path.join(gui_source_data_path,embryo_name,embryo_name+'_Stat.csv'),header=0,index_col=[0,1])
+        # for column_num,column_value in enumerate(contact_file.columns):
+        #     print(column_num,column_value)
+        # print(not contact_file.at[('Dap','Daaa'),str(144)]>=0)
+        # print(not contact_file.loc[('Dap','Daaa')][143]>=0)
+        # # Earap
+        # # Earpp
+        # print(not contact_file.at[('Earap','Earpp'),str(144)]>=0)
+        #
+        # input()
+        for tp_index in contact_file.index:
+            # print(embryo_name,'  contact pairs  ',tp_index)
+            start_column=0
+            stop_column=0
+            first_flag=False
+            # notNullIndex=contact_file.loc[tp_index].notna()
+            for column_num,column_value in enumerate(contact_file.columns):
+                # print(notNullIndex.loc[idx])
+                if contact_file.at[tp_index,column_value]>=0 and not first_flag:
+                    start_column=column_num
+                    first_flag=True
+                if contact_file.at[tp_index,column_value]>=0:
+                    stop_column=column_num
+
+            # print(start_column,stop_column)
+            for col in range(start_column,stop_column+1):
+                # if tp_index == ('Dap', 'Daaa'):
+                #     # print(start_column, stop_column)
+                #     print(col,not contact_file.loc[tp_index][col]>=0)
+                # if contact_file.loc[tp_index][col]<0:
+                #     print('gagagaga')
+                if not contact_file.loc[tp_index][col] >=0:
+                    # print(tp_index,col)
+                    contact_file.loc[tp_index][col]=0
+            # print(notNullIndex)
+        contact_file.to_csv(os.path.join(gui_target_data_path,embryo_name,embryo_name+'_Stat.csv'))

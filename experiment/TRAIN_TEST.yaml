@@ -51,16 +51,18 @@ train_transforms: # for training
 # =================================
 # raw z x y
 # CMap [92, 712, 512]
-raw_size: [94, 712, 512]
+# New confocal images [94, 712, 512]
+raw_size: [92, 712, 512]
 # [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
 get_memb_bin: False
 show_snap: False
 # [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2, 200117plc1pop1ip2, 200117plc1pop1ip3]
-# ['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1', '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2', '200117plc1pop1ip3']
 # CMap: dataset/test
-test_data_dir: /home/jeff/ProjectCode/CellAtlas/DataSource/nuc_labelled
-test_embryos: [221017plc1p2]
-max_times: [240]
+# new confocal images:/home/jeff/ProjectCode/CellAtlas/DataSource/nuc_labelled
+test_data_dir: dataset/test
+test_embryos: [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2, 200117plc1pop1ip2, 200117plc1pop1ip3]
+# new confocal images: [240]
+max_times: [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
 
 
 # Resize((256, 356, 214)), for CMap [92, 712, 512]

@@ -3,10 +3,12 @@ import pickle
 from tqdm import tqdm
 import pandas as pd
 
+from utils.data_structure import construct_celltree
 from utils.stat_tools import generate_name_series
 
 def generate_qc(args):
     embryo_names = args.test_embryos
+    max_times=args.max_times
     volume_folder = "./statistics"
     save_folder = "./statistics"
 
@@ -19,15 +21,16 @@ def generate_qc(args):
     # =====================================================
     # Detect error based on volume consistency
     # =====================================================
-    for embryo_name in tqdm(embryo_names, desc="QC"):
-        time_tree_file = os.path.join(volume_folder, embryo_name, embryo_name+"_time_tree.txt")
+    for idx,embryo_name in enumerate(tqdm(embryo_names, desc="QC")):
+        # time_tree_file = os.path.join(volume_folder, embryo_name, embryo_name+"_time_tree.txt")
         volume_file = os.path.join(volume_folder, embryo_name, embryo_name+"_volume.csv")
         volume_pd = pd.read_csv(volume_file, index_col=0, header=0)
         volume_pd.index = list(range(1, len(volume_pd) + 1, 1))
         cell_names = list(volume_pd)
 
-        with open(time_tree_file, "rb") as f:
-            time_tree = pickle.load(f)
+        CMap_data_path = r'./'
+        cd_file_path = os.path.join(CMap_data_path, 'dataset/test', embryo_name, 'CD{}.csv'.format(embryo_name))
+        cell_tree,_=construct_celltree(cd_file_path,max_time=max_times[idx])
 
 
         # ==================================================
@@ -53,8 +56,8 @@ def generate_qc(args):
         child2parent_ratio_dict = [] # {"Cell Name": volume of its parent cell}
         names = []
         for cell_name in cell_names:
-            if not time_tree[cell_name].is_leaf():
-                children = time_tree.children(cell_name)
+            if not cell_tree[cell_name].is_leaf():
+                children = cell_tree.children(cell_name)
                 children = [child.tag for child in children]
                 if (children[0] in cell_names) and (children[1] in cell_names):
                     children_volume = volume_pd[children[0]] + volume_pd[children[1]]
