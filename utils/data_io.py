@@ -16,7 +16,7 @@ import nibabel as nib
 def nib_load(file_name):
     if not os.path.exists(file_name):
         raise IOError("Cannot find file {}".format(file_name))
-    return nib.load(file_name).get_data()
+    return nib.load(file_name).get_fdata()
 
 def read_new_cd(cd_file):
     df_nuc = pd.read_csv(cd_file, lineterminator="\n")

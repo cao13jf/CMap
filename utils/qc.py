@@ -21,7 +21,7 @@ def generate_qc(args):
     # =====================================================
     # Detect error based on volume consistency
     # =====================================================
-    for idx,embryo_name in enumerate(tqdm(embryo_names, desc="QC")):
+    for idx,embryo_name in enumerate(tqdm(embryo_names, desc="QC: generating quality control files based on cell volume")):
         # time_tree_file = os.path.join(volume_folder, embryo_name, embryo_name+"_time_tree.txt")
         volume_file = os.path.join(volume_folder, embryo_name, embryo_name+"_volume.csv")
         volume_pd = pd.read_csv(volume_file, index_col=0, header=0)

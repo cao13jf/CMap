@@ -335,10 +335,10 @@ def CMap_nucloc_file_regenerator():
                     x2 = int(float(zxy_pos2[1]) / 512 * 256)# labelled as Y in cd file
                     z2 = 214 - int(float(zxy_pos2[2]) / 92 * 214)
 
-                    z = int((z1 + z2) / 2)
-                    y = int((y1 + y2) / 2)  # labelled as X in cd file
-                    x = int((x1 + x2) / 2)
-                    df_nucLoc.loc[len(df_nucLoc.index)] = [cell_mother_label_, cell_mother_name_, x, y, z,
+                    # z = int((z1 + z2) / 2)
+                    # y = int((y1 + y2) / 2)  # labelled as X in cd file
+                    # x = int((x1 + x2) / 2)
+                    df_nucLoc.loc[len(df_nucLoc.index)] = [cell_mother_label_, cell_mother_name_, None, None, None,
                                                            volume_dict[cell_mother_label_]*volume_coefficient,
                                                            surface_dict[cell_mother_label_]*surface_coefficient, 'mother']
                     df_nucLoc.loc[len(df_nucLoc.index)] = [cell_label1, daughter_cell1, x1,y1, z1,None,None,
@@ -543,10 +543,10 @@ def CShaper_nucloc_file_regenerate():
                     y2 = int(float(zxy_pos2[1]) / 712 * 256)  # labelled as X in cd file
                     x2 = int(float(zxy_pos2[2]) / 512 * 184)  # labelled as Y in cd file
 
-                    z = int((z1 + z2) / 2)
-                    y = int((y1 + y2) / 2)  # labelled as X in cd file
-                    x = int((x1 + x2) / 2)
-                    df_nucLoc.loc[len(df_nucLoc.index)] = [cell_mother_label_, cell_mother_name_, x, y, z,
+                    # z = int((z1 + z2) / 2)
+                    # y = int((y1 + y2) / 2)  # labelled as X in cd file
+                    # x = int((x1 + x2) / 2)
+                    df_nucLoc.loc[len(df_nucLoc.index)] = [cell_mother_label_, cell_mother_name_, None, None, None,
                                                            volume_dict[cell_mother_label_]*volume_coefficient,
                                                            surface_dict[cell_mother_label_]*surface_coefficient, 'mother']
                     df_nucLoc.loc[len(df_nucLoc.index)] = [cell_label1, daughter_cell1, x1,y1, z1,None,None,

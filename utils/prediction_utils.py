@@ -24,7 +24,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
             x, nuc = data[0:2]  #
         #  go through the network
         start_time = time.time()
-        pred_bin = model(x, nuc)
+        pred_bin = model(x)
         elapsed_time = time.time() - start_time
         runtimes.append(elapsed_time)
         #  Regression only has one channel
@@ -35,7 +35,7 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
         #  binary prediction
         pred_bin = pred_bin.cpu().numpy()
         pred_bin = pred_bin.squeeze().transpose([1, 2, 0]) # from z, x, y to x, y ,z
-        pred_bin = resize(pred_bin.astype(np.float), size, mode='constant', cval=0, order=0, anti_aliasing=False)
+        pred_bin = resize(pred_bin.astype(float), size, mode='constant', cval=0, order=0, anti_aliasing=False)
 
         #  post process
         if postprocess == True:
@@ -52,23 +52,26 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "SegMemb", names[i] + "_segMemb"), pred_bin)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "SegMemb",  names[i] + "_segMemb.nii.gz")
-                nib_save((pred_bin*256).astype(np.int16), save_name) # pred_bin is range(0,1)
+                # pred_bin_saving=(pred_bin*256).astype(int)
+                # pred_bin_saving[pred_bin>(14/15)]=1
+                # nib_save((pred_bin_saving*256).astype(np.int16), save_name) # pred_bin is range(0,1)
+                nib_save(pred_bin,save_name)
 
 def membrane2cell(args):
-    for embryo_name in args.test_embryos:
+    for embryo_name in args.running_embryos:
         # get the binary mask of a embryo with histogram transform(3DMMNS)
-        embryo_mask = get_eggshell(embryo_name)
+        embryo_mask = get_eggshell(embryo_name,root_folder=args.test_data_dir)
 
-        file_names = glob.glob(os.path.join("./output",embryo_name, "SegMemb",'*.nii.gz'))
+        file_names = glob.glob(os.path.join(args.running_data_dir,embryo_name, "SegMemb",'*.nii.gz'))
         parameters = []
         for file_name in file_names:
-            parameters.append([embryo_name, file_name, embryo_mask])
+            parameters.append([embryo_name, file_name, embryo_mask,args.running_data_dir])
             # segment_membrane([embryo_name, file_name, embryo_mask])
         mpPool = mp.Pool(mp.cpu_count() - 1)
         for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters), desc="{} membrane --> cell".format(embryo_name)):
             pass
 
 def combine_cells(args):
-    combine_division(args.test_embryos, args.max_times, overwrite=False)
+    combine_division(args.running_embryos, args.run_max_times, overwrite=False)
 
 

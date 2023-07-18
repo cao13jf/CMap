@@ -140,6 +140,7 @@ class DMFUnit(nn.Module):
         elif hasattr(self, "conv2x2x2_shortcut"):
             shortcut = self.conv2x2x2_shortcut(shortcut)
 
+        # print(x.shape,h.shape,shortcut.shape)
         return h + shortcut
 
 
@@ -200,7 +201,7 @@ class DMFNet(nn.Module):
                 nn.init.constant_(m.weight, 1.)
                 nn.init.constant(m.bias, 0.0)
 
-    def forward(self, x, y):
+    def forward(self, x):
 
         x0 = self.first_conv(x)
 
@@ -226,7 +227,7 @@ class DMFNet(nn.Module):
         return out
 
 
-class MDFNetBin(DMFNet):
+class EDTDMFNet(DMFNet):
     def __init__(self, in_channels=1, n_first=32, conv_channels=128, groups=8, norm="bn", out_class=2):
         super().__init__(in_channels, n_first, conv_channels, groups, norm, out_class)
         self.first_conv_nuc = copy.deepcopy(self.first_conv)
@@ -250,7 +251,7 @@ class MDFNetBin(DMFNet):
         # num_in, num_out, kernel_size=1, stride=1, padding=None, groups=1, norm=Non
         self.out_conv = Conv3dBlock(n_first, out_class, kernel_size=1, stride=1, norm=norm)
 
-    def forward(self, memb, nuc):
+    def forward(self, memb):
 
         #  encoder -- memb
         x0 = self.first_conv(memb)
@@ -258,21 +259,21 @@ class MDFNetBin(DMFNet):
         x2 = self.encoder_block2(x1)
         x3 = self.encoder_block3(x2)
 
-        #  encoder -- memb
-        x0_nuc = self.first_conv_nuc(memb)
-        x1_nuc = self.encoder_block1_nuc(x0_nuc)
-        x2_nuc = self.encoder_block2_nuc(x1_nuc)
-        x3_nuc = self.encoder_block3_nuc(x2_nuc)
+        #  encoder -- additional memb
+        x0_ = self.first_conv_nuc(memb)
+        x1_ = self.encoder_block1_nuc(x0_)
+        x2_ = self.encoder_block2_nuc(x1_)
+        x3_ = self.encoder_block3_nuc(x2_)
 
         #  decoder
-        y1 = self.upsample1(x3 + x3_nuc)
-        y1 = torch.cat([x2 + x2_nuc, y1], dim=1)
+        y1 = self.upsample1(x3 + x3_)
+        y1 = torch.cat([x2 + x2_, y1], dim=1)
         y1 = self.decoder_block1(y1)
         y2 = self.upsample2(y1)
-        y2 = torch.cat([x1 + x1_nuc, y2], dim=1)
+        y2 = torch.cat([x1 + x1_, y2], dim=1)
         y2 = self.decoder_block2(y2)
         y3 = self.upsample3(y2)
-        y3 = torch.cat([x0 + x0_nuc, y3], dim=1)
+        y3 = torch.cat([x0 + x0_, y3], dim=1)
         y3 = self.decoder_block3(y3)
         y4 = self.upsample4(y3)
         y4 = self.out_conv(y4)

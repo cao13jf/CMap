@@ -60,7 +60,7 @@ class Memb3DDataset(Dataset):
         return outputs if isinstance(volumes0, list) else outputs[0]
 
     def get_size(self):
-
+        # print(self.paths)
         raw_memb = pkload(self.paths[0])["raw_memb"]
 
         return raw_memb.shape

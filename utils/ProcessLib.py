@@ -9,9 +9,10 @@ import pandas as pd
 import multiprocessing as mp
 from scipy import ndimage, stats
 import pickle
-from skimage.morphology import h_maxima, watershed, binary_opening
+from skimage.morphology import h_maxima, binary_opening
+from skimage.segmentation import watershed
 from scipy.ndimage.morphology import binary_closing, distance_transform_edt
-from skimage.measure import marching_cubes_lewiner, mesh_surface_area
+from skimage.measure import marching_cubes, mesh_surface_area
 from scipy.spatial import Delaunay
 from scipy.stats import mode
 
@@ -32,10 +33,11 @@ def segment_membrane(para):
     embryo_name = para[0]
     file_name = para[1] # the path of segMemb file (binary segmentation result)
     egg_shell = para[2] # the binary mask of a embryo with histogram transform ;todo: not used here?
+    test_data_dir=para[3]
 
-    name_embryo_T = "_".join(os.path.basename(file_name).split("_")[0:2])
+    embryo_name_tp = "_".join(os.path.basename(file_name).split("_")[0:2])
     # the segNuc file have only one pixel for each nuc, Dr. Cao will dialation to bigger (radius 8)
-    segNuc_file = os.path.join("./dataset/test", embryo_name, "SegNuc", name_embryo_T + "_segNuc.nii.gz")
+    segNuc_file = os.path.join(test_data_dir, embryo_name, "SegNuc", embryo_name_tp + "_segNuc.nii.gz")
 
     memb_edt = nib_load(file_name) # * egg_shell
     # =============== change to binary front distance ========================
@@ -69,7 +71,7 @@ def segment_membrane(para):
     #         watershed_seg[watershed_seg == i] = 0
 
     # save result
-    save_name = os.path.join("./output", embryo_name, "SegCell", name_embryo_T+"_segCell.nii.gz")
+    save_name = os.path.join(test_data_dir, embryo_name, "SegCell", embryo_name_tp+"_segCell.nii.gz")
     nib_save(watershed_seg.astype(np.uint16), save_name)
 
 
@@ -87,7 +89,7 @@ def construct_weighted_graph(bin_image, local_max_h = 2):
     '''
 
     volume_shape = bin_image.shape
-    bin_cell = ndimage.morphology.binary_opening(bin_image).astype(np.float)
+    bin_cell = ndimage.morphology.binary_opening(bin_image).astype(float)
     bin_memb = bin_cell == 0
     bin_cell_edt = ndimage.morphology.distance_transform_edt(bin_cell)
 
@@ -282,7 +284,7 @@ def get_contact_area(volume):
         contact_mask = np.logical_and(ndimage.binary_dilation(volume == label1), ndimage.binary_dilation(volume == label2))
         contact_mask = np.logical_and(contact_mask, boundary_mask)
         if contact_mask.sum() > 4:
-            verts, faces, _, _ = marching_cubes_lewiner(contact_mask)
+            verts, faces, _, _ = marching_cubes(contact_mask)
             area = mesh_surface_area(verts, faces) / 2
             contact_area.append(area)
             boundary_elements_uni_new.append((label1, label2))
@@ -297,7 +299,7 @@ def get_surface_area(cell_mask):
     # ball_structure = morphology.cube(3) #
     # erased_mask = ndimage.binary_erosion(cell_mask, ball_structure, iterations=1)
     # surface_area = np.logical_and(~erased_mask, cell_mask).sum()
-    verts, faces, _, _ = marching_cubes_lewiner(cell_mask)
+    verts, faces, _, _ = marching_cubes(cell_mask)
     surface = mesh_surface_area(verts, faces)
 
     return surface
@@ -322,13 +324,13 @@ def delete_isolate_labels(discrete_edt):
 #================================================================
 #   get egg shell
 #================================================================
-def get_eggshell(wide_type_name, hollow=False):
+def get_eggshell(wide_type_name, root_folder=r'./dataset/test',hollow=False):
     '''
     Get eggshell of specific embryo
     :param embryo_name:
     :return:
     '''
-    wide_type_folder = os.path.join("./dataset/test", wide_type_name, "RawMemb")
+    wide_type_folder = os.path.join(root_folder, wide_type_name, "RawMemb")
     embryo_tp_list = glob.glob(os.path.join(wide_type_folder, "*.nii.gz"))
     random.shuffle(embryo_tp_list)
     overlap_num = 15 if len(embryo_tp_list) > 15 else len(embryo_tp_list)
@@ -415,11 +417,11 @@ def combine_division(embryos, max_times, overwrite=False):
             t = int(filename2t(memb_file))
 
             seg_map = nib_load(memb_file)
-            seg_binary = (seg_map > 0.93 * seg_map.max()).astype(np.float)
-            seg_nuc = nib_load(nuc_file)
+            seg_memb_edt = (seg_map > 0.93 * seg_map.max()).astype(float)
+            labbel_seg_nuc = nib_load(nuc_file)
             seg_cell = nib_load(cell_file)
 
-            labels = np.unique(seg_nuc).tolist()
+            labels = np.unique(labbel_seg_nuc).tolist()
             labels.pop(0)
             processed_labels = []
             output_seg_cell = seg_cell.copy()
@@ -446,9 +448,9 @@ def combine_division(embryos, max_times, overwrite=False):
                 #     print([embryo, parent_label.tag, tp],' not combined in SegCellCombined step')
                 #     continue
 
-                x0 = np.stack(np.where(seg_nuc == one_label)).squeeze().tolist()
-                x1 = np.stack(np.where(seg_nuc == another_label)).squeeze().tolist()
-                edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_binary)
+                x0 = np.stack(np.where(labbel_seg_nuc == one_label)).squeeze().tolist()
+                x1 = np.stack(np.where(labbel_seg_nuc == another_label)).squeeze().tolist()
+                edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_memb_edt)
                 if edge_weight == 0:
                     mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)
                     mask = binary_closing(mask, structure=np.ones((3, 3, 3)))

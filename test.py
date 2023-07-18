@@ -15,7 +15,7 @@ from torch.utils.data import DataLoader
 import models
 from data import datasets
 from utils import ParserUse
-from utils.preprocess import doit
+from data.preprocess import niigz_to_pkl_run
 from utils.show_train import Visualizer
 from utils.prediction_utils import validate, membrane2cell, combine_cells
 from utils.shape_analysis import shape_analysis_func
@@ -68,7 +68,7 @@ def main():
         # get membrane binary shell
         test_folder = dict(root="dataset/test", has_label=False)
         # nii.gz to pickle, make it easier to read in neural network
-        doit(test_folder, embryo_names=args.test_embryos, max_times=args.max_times)
+        niigz_to_pkl_run(test_folder, embryo_names=args.test_embryos, max_times=args.max_times)
         # =============================================================
         #  construct network model
         # =============================================================
@@ -139,6 +139,7 @@ def main():
                 size=test_set.size
             )
 
+
     #  Post process on binary segmentation. Group them into closed 3D cells
     if args.get_cell:
         # read the binary segmentation in segMemb folder and process them
@@ -154,6 +155,7 @@ def main():
         shape_analysis_func(args)
 
     if args.get_volume_var:
+        # --------QC, children volume difference, volume difference to previous TP, volume divergence of cell
         print("Begin collect variations of volume and surface")
         generate_qc(args)
 
