@@ -52,26 +52,29 @@ def validate(valid_loader, model, savepath=None, names=None, scoring=False, verb
                 np.save(os.path.join(savepath,  names[i].split("_")[0], "SegMemb", names[i] + "_segMemb"), pred_bin)
             elif "nii.gz" in save_format.lower():
                 save_name = os.path.join(savepath, names[i].split("_")[0],  "SegMemb",  names[i] + "_segMemb.nii.gz")
-                # pred_bin_saving=(pred_bin*256).astype(int)
+                # pred_bin_saving=np.zeros(pred_bin.shape)
                 # pred_bin_saving[pred_bin>(14/15)]=1
-                # nib_save((pred_bin_saving*256).astype(np.int16), save_name) # pred_bin is range(0,1)
-                nib_save(pred_bin,save_name)
+                # nib_save(pred_bin,save_name)
+
+                nib_save((pred_bin*256).astype(np.int16), save_name) # pred_bin is range(0,1)
 
 def membrane2cell(args):
     for embryo_name in args.running_embryos:
         # get the binary mask of a embryo with histogram transform(3DMMNS)
-        embryo_mask = get_eggshell(embryo_name,root_folder=args.test_data_dir)
+        # embryo_mask = get_eggshell(embryo_name,root_folder=args.running_data_dir)
+        embryo_mask=None
 
         file_names = glob.glob(os.path.join(args.running_data_dir,embryo_name, "SegMemb",'*.nii.gz'))
         parameters = []
         for file_name in file_names:
             parameters.append([embryo_name, file_name, embryo_mask,args.running_data_dir])
             # segment_membrane([embryo_name, file_name, embryo_mask])
-        mpPool = mp.Pool(mp.cpu_count() - 1)
-        for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters), desc="{} membrane --> cell".format(embryo_name)):
+        mpPool = mp.Pool(8)
+        print('started ', 8, ' processes ',mpPool)
+        for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters), desc="{} edt cell membrane --> single cell instance".format(embryo_name)):
             pass
 
-def combine_cells(args):
-    combine_division(args.running_embryos, args.run_max_times, overwrite=False)
+def combine_dividing_cells(args):
+    combine_division(args.running_embryos, args.run_max_times, args.running_data_dir,overwrite=False)
 
 

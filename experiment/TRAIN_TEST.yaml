@@ -45,6 +45,8 @@ train_transforms: # for training
 # =================================
 get_memb_bin: True
 get_cell: True
+combine_dividing_cell: True
+
 show_snap: False
 #trained_model: ./ckpts/model_last.pth
 
@@ -74,13 +76,15 @@ test_transforms: # for testing, for unet based network, the data should be divid
 # Parameters for morphological analysis
 # =================================
 #  Postprocess
-#tp_combine: False
 shape_analysis: False
 get_volume_var: False
 gui_data: False
 # =================================
 # Parameters for GUI data
 # =================================
+# only accept same resolution
+xy_resolution: 0.18
+z_resolution: 0.42
 z_resolutions: [0.09] # 0.09* [92*0.42/0.09:429] /214= 0.18056074766
 # 0.09 * [94 * 0.43/0.09] /448 = 0.09022321428
 gui_folder: ./gui

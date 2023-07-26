@@ -19,6 +19,7 @@ from scipy.stats import mode
 # import user defined library
 from utils.data_io import nib_load, nib_save
 from utils.data_structure import construct_celltree
+from utils.shape_model import generate_alpha_shape
 
 #=========================================================================
 #   main function for post process
@@ -31,15 +32,15 @@ def segment_membrane(para):
     '''
     # transform the binary segmentation result to the single cell
     embryo_name = para[0]
-    file_name = para[1] # the path of segMemb file (binary segmentation result)
+    this_niigz_file_name = para[1] # the path of segMemb file (binary segmentation result)
     egg_shell = para[2] # the binary mask of a embryo with histogram transform ;todo: not used here?
-    test_data_dir=para[3]
+    running_data_dir=para[3]
 
-    embryo_name_tp = "_".join(os.path.basename(file_name).split("_")[0:2])
+    embryo_name_tp = "_".join(os.path.basename(this_niigz_file_name).split("_")[0:2])
     # the segNuc file have only one pixel for each nuc, Dr. Cao will dialation to bigger (radius 8)
-    segNuc_file = os.path.join(test_data_dir, embryo_name, "SegNuc", embryo_name_tp + "_segNuc.nii.gz")
+    segNuc_file = os.path.join(running_data_dir, embryo_name, "SegNuc", embryo_name_tp + "_segNuc.nii.gz")
 
-    memb_edt = nib_load(file_name) # * egg_shell
+    memb_edt = nib_load(this_niigz_file_name)# * egg_shell
     # =============== change to binary front distance ========================
     # center_mask = memb_edt > (memb_edt.max() * 0.90)
     # center_mask = get_largest_connected_region(center_mask)
@@ -71,7 +72,7 @@ def segment_membrane(para):
     #         watershed_seg[watershed_seg == i] = 0
 
     # save result
-    save_name = os.path.join(test_data_dir, embryo_name, "SegCell", embryo_name_tp+"_segCell.nii.gz")
+    save_name = os.path.join(running_data_dir, embryo_name, "SegCell", embryo_name_tp+"_segCell.nii.gz")
     nib_save(watershed_seg.astype(np.uint16), save_name)
 
 
@@ -136,29 +137,7 @@ def construct_weighted_graph(bin_image, local_max_h = 2):
 
     return point_list.tolist(), edge_list, edge_weight_list
 
-#  integrate along a line
-def line_weight_integral(x0, x1, weight_volume):
 
-    # find all points between start and end
-    inline_points = all_points_inline(x0, x1)
-    points_num = inline_points.shape[0]
-    line_weight = 0
-    for i in range(points_num):
-        point_weight = weight_volume[inline_points[i][0],
-                                    inline_points[i][1],
-                                    inline_points[i][2]]
-        line_weight = line_weight + point_weight
-
-    return line_weight
-
-#  get all lines along a point
-def all_points_inline(x0, x1):
-
-    d = np.diff(np.array((x0, x1)), axis=0)[0]
-    j = np.argmax(np.abs(d))
-    D = d[j]
-    aD = np.abs(D)
-    return x0 + (np.outer(np.arange(aD + 1), d) + (aD >> 1)) // aD
 
     # backup points that should be labelled together
 def combine_background_maximum(point_weight_list):
@@ -380,7 +359,7 @@ def otsu3d(gray):
 '''
 Based on the division summary, all cells should be seperated at 4th TP
 '''
-def combine_division(embryos, max_times, overwrite=False):
+def combine_division(embryos, max_times, running_dir,overwrite=False):
     # judge if embryos a list
     embryos = embryos if isinstance(embryos, list) else [embryos]
 
@@ -390,7 +369,7 @@ def combine_division(embryos, max_times, overwrite=False):
 
     for i_embryo, embryo in enumerate(embryos):
         max_time = max_times[i_embryo]
-        ace_file = os.path.join("./dataset/test", embryo, "CD"+embryo+".csv") # pixel x y z
+        ace_file = os.path.join(running_dir, 'CDFiles', "CD"+embryo+".csv") # pixel x y z
         cell_tree, max_time = construct_celltree(ace_file, max_time=max_time)
 
         try:
@@ -400,21 +379,21 @@ def combine_division(embryos, max_times, overwrite=False):
             raise Exception("Not find number dictionary at ./dataset")
         name_dict = dict((v, k) for k, v in number_dict.items())
 
-        memb_files = glob.glob(os.path.join("./output", embryo, "SegMemb", '*.nii.gz'))
-        cell_files = glob.glob(os.path.join("./output", embryo, "SegCell", '*.nii.gz'))
-        nuc_files = glob.glob(os.path.join("./dataset/test", embryo, "SegNuc", '*.nii.gz')) # acetree editting result
+        memb_files = glob.glob(os.path.join(running_dir, embryo, "SegMemb", '*.nii.gz'))
+        cell_files = glob.glob(os.path.join(running_dir, embryo, "SegCell", '*.nii.gz'))
+        nuc_files = glob.glob(os.path.join(running_dir, embryo, "SegNuc", '*.nii.gz')) # acetree editting result
         memb_files.sort()
         nuc_files.sort()
         cell_files.sort()
 
-        # =============== single test =================================
-        for tp in tqdm(range(0, len(nuc_files), 1), desc="Combining (cell division -> SegCellTimeCombined) {}".format(embryo)):
+        # ================== single test =================================
+        for tp_indx in tqdm(range(0, len(nuc_files), 1), desc="Combining the dividing cell in SegCellDividingCells) {}".format(embryo)):
             embryo = embryo # todo ? : what is this
-            memb_file = memb_files[tp] # prediction result, binary segmentation result
-            nuc_file = nuc_files[tp]
-            cell_file = cell_files[tp]
+            memb_file = memb_files[tp_indx] # prediction result, binary segmentation result
+            nuc_file = nuc_files[tp_indx]
+            cell_file = cell_files[tp_indx]
 
-            t = int(filename2t(memb_file))
+            exact_this_frame_tp=int(os.path.basename(memb_file).split('_')[1])
 
             seg_map = nib_load(memb_file)
             seg_memb_edt = (seg_map > 0.93 * seg_map.max()).astype(float)
@@ -426,45 +405,64 @@ def combine_division(embryos, max_times, overwrite=False):
             processed_labels = []
             output_seg_cell = seg_cell.copy()
             cell_labels = np.unique(seg_cell).tolist()
+            # start to detect dividing cells
             for one_label in labels:
                 one_times = cell_tree[name_dict[one_label]].data.get_time()
-                if any(time < t for time in one_times): # if previous division exist?????
+                # only deal with the later time point, the former is dealt at the former loop
+                if any(time < exact_this_frame_tp for time in one_times):
                     continue
+                # no need to deal with the sister cells
                 if (one_label in processed_labels):
                     continue
                 parent_label = cell_tree.parent(name_dict[one_label])
                 if parent_label is None:
                     continue
+                # sister cell
                 another_label = [number_dict[a.tag] for a in cell_tree.children(parent_label.tag)]
                 another_label.remove(one_label)
                 another_label = another_label[0]
-                # this one cell label and sister cell label
+                # this one cell label and sister cell label should both in this time point this volume
                 if (one_label not in cell_labels) or (another_label not in cell_labels):
                     continue
 
-                # todo: danger usage 1- here
-                # expect the two region condition:! please. brain is burning.
-                # if [embryo, parent_label.tag, tp] in list_wrong_division:
-                #     print([embryo, parent_label.tag, tp],' not combined in SegCellCombined step')
-                #     continue
-
-                x0 = np.stack(np.where(labbel_seg_nuc == one_label)).squeeze().tolist()
-                x1 = np.stack(np.where(labbel_seg_nuc == another_label)).squeeze().tolist()
-                edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_memb_edt)
+                this_cell_nucleus_pos = np.stack(np.where(labbel_seg_nuc == one_label)).squeeze().tolist()
+                sister_cell_nucleus_pos = np.stack(np.where(labbel_seg_nuc == another_label)).squeeze().tolist()
+                edge_weight = line_weight_integral(pos1=this_cell_nucleus_pos, pos2=sister_cell_nucleus_pos, weight_volume=seg_memb_edt)
                 if edge_weight == 0:
                     mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)
+                    # erase the gap between two cells
                     mask = binary_closing(mask, structure=np.ones((3, 3, 3)))
+
+                    if exact_this_frame_tp>100:
+                        # ---------------validate this these two cells belong to two regions------------------------
+                        tuple_tmp = np.where(mask)
+                        # print(len(tuple_tmp))
+                        sphere_list = np.concatenate(
+                            (tuple_tmp[0][:, None], tuple_tmp[1][:, None], tuple_tmp[2][:, None]), axis=1)
+                        adjusted_rate = 0.01
+                        sphere_list_adjusted = sphere_list.astype(float) + np.random.uniform(0, adjusted_rate,
+                                                                                             (len(tuple_tmp[0]), 3))
+                        alpha_v = 1.5
+                        m_mesh = generate_alpha_shape(sphere_list_adjusted, alpha_value=alpha_v)
+                        # print(len(m_mesh.cluster_connected_triangles()[2]))
+
+                        # alpha_v = 1
+
+                        if len(m_mesh.cluster_connected_triangles()[2]) > 1:
+                            continue
+
+
                     output_seg_cell[mask] = number_dict[parent_label.tag]
-                    one_times.remove(t)
+                    one_times.remove(exact_this_frame_tp)
                     another_times = cell_tree[name_dict[another_label]].data.get_time()
-                    another_times.remove(t)
+                    another_times.remove(exact_this_frame_tp)
                     cell_tree[name_dict[one_label]].data.set_time(one_times)
                     cell_tree[name_dict[another_label]].data.set_time(another_times)
                 processed_labels += [one_label, another_label]
 
             if not overwrite:
-                seg_save_file = os.path.join("./output", embryo, "SegCellTimeCombined",
-                                             embryo + "_" + str(t).zfill(3) + "_segCell.nii.gz")
+                seg_save_file = os.path.join(running_dir, embryo, "SegCellDividingCells",
+                                             embryo + "_" + str(exact_this_frame_tp).zfill(3) + "_segCell.nii.gz")
             else:
                 seg_save_file = cell_file
             nib_save(output_seg_cell, seg_save_file)
@@ -478,86 +476,28 @@ def combine_division(embryos, max_times, overwrite=False):
         # mpPool = mp.Pool(mp.cpu_count() - 1)
         # for _ in tqdm(mpPool.imap_unordered(combine_division_mp, parameters), total=len(parameters), desc=embryo):
         #     pass
+#  integrate along a line
+def line_weight_integral(pos1, pos2, weight_volume):
 
-def combine_division_mp(para):
-    embryo = para[0]
-    memb_file = para[1]
-    nuc_file = para[2]
-    cell_file = para[3]
-    cell_tree = para[4]
-    overwrite = para[5]
-    number_dict = para[6]
-    name_dict = para[7]
-
-    t = int(filename2t(memb_file))
-
-    seg_map = nib_load(memb_file)
-    seg_bin = (seg_map > 0.93 * seg_map.max()).astype(np.float)
-    seg_nuc = nib_load(nuc_file)
-    seg_cell = nib_load(cell_file)
-
-    labels = np.unique(seg_nuc).tolist()
-    labels.pop(0)
-    processed_labels = []
-    output_seg_cell = seg_cell.copy()
-    cell_labels = np.unique(seg_cell).tolist()
-
-
-
-    for one_label in labels:
-        one_times = cell_tree[name_dict[one_label]].data.get_time()
-        if any(time < t for time in one_times): # if previous division exist
-            continue
-        if (one_label in processed_labels):
-            continue
-        parent_label = cell_tree.parent(name_dict[one_label])
-        if parent_label is None:
-            continue
-        another_label = [number_dict[a.tag] for a in cell_tree.children(parent_label.tag)]
-        another_label.remove(one_label)
-        another_label = another_label[0]
-
-        if (one_label not in cell_labels) or (another_label not in cell_labels):
-            continue
-
-
-
-        x0 = np.stack(np.where(seg_nuc == one_label)).squeeze().tolist()
-        x1 = np.stack(np.where(seg_nuc == another_label)).squeeze().tolist()
-        edge_weight = line_weight_integral(x0=x0, x1=x1, weight_volume=seg_bin)
-        if edge_weight == 0:
-            mask = np.logical_or(seg_cell == one_label, seg_cell == another_label)
-            mask = binary_closing(mask, structure=np.ones((3, 3, 3)))
-            output_seg_cell[mask] = number_dict[parent_label.tag]
-            one_times.remove(t)
-            another_times = cell_tree[name_dict[another_label]].data.get_time()
-            another_times.remove(t)
-            cell_tree[name_dict[one_label]].data.set_time(one_times)
-            cell_tree[name_dict[another_label]].data.set_time(another_times)
-        processed_labels += [one_label, another_label]
-
-    if not overwrite:
-        seg_save_file = os.path.join("./output", embryo, "SegCellTimeCombined",
-                                     embryo + "_" + str(t).zfill(3) + "_segCell.nii.gz")
-    else:
-        seg_save_file = cell_file
-    nib_save(output_seg_cell, seg_save_file)
-
-# get t from file name
-def filename2t(filename):
-    base_name = os.path.basename(filename)
-
-    return int(base_name.split("_")[1])
-
-
-def line_weight_integral(x0, x1, weight_volume):
     # find all points between start and end
-    inline_points = all_points_inline(x0, x1).astype(np.uint16)
-    points_num = inline_points.shape[0]
+    inline_points = all_points_inline(pos1, pos2)
+    # print(inline_points)
+    # points_num = inline_points.shape[0]
     line_weight = 0
-    for i in range(points_num):
-        point_weight = weight_volume[inline_points[i][0],
-                                    inline_points[i][1],
-                                    inline_points[i][2]]
+    for inline_point in inline_points:
+        point_weight = weight_volume[inline_point[0],
+                                    inline_point[1],
+                                    inline_point[2]]
         line_weight = line_weight + point_weight
+
     return line_weight
+
+#  get all lines along a point
+def all_points_inline(pos1, pos2):
+
+    d = np.diff(np.array((pos1, pos2)), axis=0)[0]
+    j = np.argmax(np.abs(d))
+    D = d[j]
+    aD = np.abs(D)
+    return pos1 + (np.outer(np.arange(aD + 1), d) + (aD >> 1)) // aD
+

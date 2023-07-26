@@ -46,7 +46,7 @@ def shape_analysis_func(args):
         max_time = max_times[i_embryo]
         # Construct folder
         para_config = {}
-        para_config["xy_resolution"] = 0.09  #
+        para_config["xy_resolution"] = args.xy_resolution
         para_config["max_time"] = max_time
         para_config["embryo_name"] = embryo_name
         # para_config["data_folder"] = os.path.join("dataset/test", embryo_name)
@@ -103,7 +103,6 @@ def run_shape_analysis(config):
     # ========================================================
     #       sementing TPs in a parallel way
     # ========================================================
-
 
     file_lock = mp.Lock()  # |-----> for change treelib files
     # print(file_lock, mp.cpu_count(), init)

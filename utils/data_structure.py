@@ -11,6 +11,11 @@ import pandas as pd
 from treelib import Tree, Node
 
 def read_old_cd(cd_file_path):
+    """
+    txt file!
+    :param cd_file_path:
+    :return:
+    """
     df_nuc=pd.DataFrame(columns=['cell','time','x','y','z'])
     with io.open(cd_file_path, mode="r", encoding="utf-8") as f:
         # next(f)
@@ -22,6 +27,12 @@ def read_old_cd(cd_file_path):
     df_nuc = df_nuc.astype({"x":float, "y":float, "z":float, "time":int})
     return df_nuc
 
+def read_cd_file(cd_file_path):
+    df_nuc_tmp = pd.read_csv(cd_file_path)
+    df_nuc=df_nuc_tmp[['cell','time','x','y','z']]
+    df_nuc = df_nuc.astype({"x": float, "y": float, "z": float, "time": int})
+    return df_nuc
+
 def read_new_cd(cd_file):
     df_nuc = pd.read_csv(cd_file, lineterminator="\n")
     df_nuc[["cell", "time"]] = df_nuc["Cell & Time"].str.split(":", expand=True)
@@ -30,7 +41,7 @@ def read_new_cd(cd_file):
 
     return df_nuc
 
-def construct_celltree(nucleus_file_path, max_time, read_cshaper_cd=False):
+def construct_celltree(nucleus_file_path, max_time, read_cshaper_cd=False, is_read_new_cd=False):
     '''
     Construct cell tree structure with cell names
     :param nucleus_file_path:  the name list file to the tree initilization
@@ -60,6 +71,8 @@ def construct_celltree(nucleus_file_path, max_time, read_cshaper_cd=False):
     # Read the name excel and construct the tree with complete segCell
     if read_cshaper_cd:
         df_time = read_old_cd(nucleus_file_path)
+    elif not is_read_new_cd:
+        df_time = read_cd_file(nucleus_file_path)
     else:
         df_time = read_new_cd(nucleus_file_path)
 

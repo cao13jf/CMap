@@ -17,7 +17,7 @@ from data import datasets
 from utils import ParserUse
 from data.preprocess import niigz_to_pkl_run
 from utils.show_train import Visualizer
-from utils.prediction_utils import validate, membrane2cell, combine_cells
+from utils.prediction_utils import validate, membrane2cell, combine_dividing_cells
 from utils.shape_analysis import shape_analysis_func
 from utils.qc import generate_qc
 from utils.generate_gui_data import generate_gui_data
@@ -148,7 +148,7 @@ def main():
     #  Combine labels based on dividing cells
     if args.tp_combine:
         print("Begin combine division based on TP...\n")
-        combine_cells(args)
+        combine_dividing_cells(args)
 
     if args.shape_analysis:
         print("Begin collect cell shape information to do cell shape statistics...\n")
