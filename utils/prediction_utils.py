@@ -69,8 +69,8 @@ def membrane2cell(args):
         for file_name in file_names:
             parameters.append([embryo_name, file_name, embryo_mask,args.running_data_dir])
             # segment_membrane([embryo_name, file_name, embryo_mask])
-        mpPool = mp.Pool(8)
-        print('started ', 8, ' processes ',mpPool)
+        mpPool = mp.Pool(2)
+        print('started ', 2, ' processes ',mpPool)
         for _ in tqdm(mpPool.imap_unordered(segment_membrane, parameters), total=len(parameters), desc="{} edt cell membrane --> single cell instance".format(embryo_name)):
             pass
 

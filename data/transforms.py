@@ -3,7 +3,7 @@
 
 # import dependency library
 import random
-import collections
+import collections.abc as collections
 import torch
 import numpy as np
 from scipy import ndimage
