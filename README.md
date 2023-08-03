@@ -57,18 +57,68 @@ REF THE CD FILE ON GOOGLE DRIVE
 
 ## 2.2 Run the Program on Your PC with Python Environment
 
-You need to know how to use python or jupyter notebook. 
+If you are running this, you need to know how to use python and jupyter notebook. But it is very easy and kind for beginners! You may spend less than one week to learn python and jupyter notebook, then you can start preprocessing, training, running, shape analyzing, and GUI visualization data generation!
 
-* If you are running the program on your own data, no training is needed, all you need to do is preparing your tifR images and the corresponding CD{embryo_name}.csv files.
-* If you have your own 3D labeled data and going to train them, please generate and group the data as following folder structure:
-
-
-* Youtube tutorial video for a quick start! 
+* If you have your own 3D labeled data and going to train them, please generate and group the data as following folder structure. All these nii.gz files are composed of 2D slices and CD files. All the code could be found in the preprocessing part! You need to group the training data with your own python script because you need to label the SegCell with your own data.
+  ```
+  ├── Your project root directory (code, data, and temporary output)
+  │   ├── ckpts
+  |   │   │   ├── {network name}
+  |   |   │   │   ├── ...
+  │   ├── dataset
+  |   │   ├── training
+  |   |   │   ├── {embryo name}
+  |   |   |   │   ├── PklFile
+  |   |   |   |   │   ├── {embryo name}_{time point}.pkl
+  |   |   |   │   ├── RawMemb
+  |   |   |   |   │   ├── {embryo name}_{time point}_rawMemb.nii.gz
+  |   |   |   │   ├── RawNuc
+  |   |   |   |   │   ├── {embryo name}_{time point}_rawNuc.nii.gz
+  |   |   |   │   ├── SegCell
+  |   |   |   |   │   ├── {embryo name}_{time point}_segCell.nii.gz
+  |   |   |   │   ├── SegMemb
+  |   |   |   |   │   ├── {embryo name}_{time point}_segMemb.nii.gz
+  |   |   |   │   ├── SegNuc
+  |   |   |   |   │   ├── {embryo name}_{time point}_segNuc.nii.gz
+  ...
+  
+  ```
+* **If you are running the program on your own data, no training is needed**, all you need to do is to prepare your tifR images and the corresponding CD{embryo_name}.csv files.
+* Youtube tutorial video for a quick start  LINK ! 
 
 
 
 ### >>>>====Jupyter Notebook Running Steps====<<<<
 
+The steps are the same as the program on google colab. I use 30 processes in the local tutorial which could be faster but using large memory, which helps in shape analysis step. Shape analyzing costs a lot of time, please be patient if you use a small number of processes.
+
+* The root folder structure is as follows.
+  ```
+
+  ├── CMapCode
+  │   ├── ckpts
+  │   │   ├── CMap_model_epoch_50.pth
+  │   ├── data
+  │   │   ├── **.py
+  │   ├── dataset
+  |   │   ├── run
+  |   |   │   ├── {embryo name}
+  |   |   |   │   ├── tifR
+  |   |   |   |   │   ├── {embryo name}_L1-t{time point}-p{slice number index}.tif
+  |   │   ├── CDFiles
+  |   |   │   ├── {embryo name}.csv
+  |   │   ├── CellFate.xls
+  |   │   ├── name_dictionary_cmap.csv
+  |   │   ├── name_dictionary.csv
+  |   │   ├── number_dictionary.csv
+  |   │   ├── tissue_wise_name_dictionary.csv
+  |   │   ├── experiment
+  |   │   │   ├── *.py
+  |   │   ├── models
+  |   │   │   ├── *.py
+  |   │   ├── utils
+  |   │   │   ├── *.py
+  ```
 
 # Acknowledgement
 
