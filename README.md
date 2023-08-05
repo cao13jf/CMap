@@ -4,10 +4,16 @@
 CMap is a new segmentation computational pipeline for *C. elegans* time-lapse embryos. By explicitly incorporating the nucleus information from StarryNite to the result of cell membrane segmentation, CMap can segment
 the *C. elegans* embryo at late 550-cell stage vs 350-cell stage by CShpaer.
 
-## 1.1 Novel 3D visualized GUI data and software
+## 1.1 Novel 3D Visualized GUI data and ITK-CVE-SNAP Software
 
 * Windows version ITK-CVE-SNAP software link: https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/EYqGjfoFp8NDjoRLdhEUBKMBPVytBpQNKNBqRN-MH_2F9g .
 * Linux version ITK-CVE-SNAP software link: https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/EUe1bduMu8RPi1MPNYRCxvoBxHz5l9KV-TRJFM7eAOV_1A?e=eOYnCZ .
+
+## 1.2 CMapCode Link (Complete Version for Local Running)
+
+The folder is prepared for the researchers who are familiar with python and jupyter notebook. **If you are not familiar with python, please read the Section *2.1 Run the Program Online via Google Colab* and run the segmentation online**.
+
+The 5 jupyter notebooks, the related python modules and the running example data are zipped in the CMapCode.zip : https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben ! **If you know python, please download it, read the Section *2.2 Run the Program on Your PC (Linux) with Python Environment* and run the jupyter notebook from 1->5**.
 
 
 # 2. Tutorial
@@ -57,7 +63,7 @@ You don't need to know how to use python or jupyter notebook. If you are running
 
 ## 2.2 Run the Program on Your PC (Linux) with Python Environment
 
-If you are running this, you should know how to use python and jupyter notebook. But it is very easy and kind for beginners! You may spend less than one week to learn python and jupyter notebook, then you can start preprocessing, training, running, shape analyzing, and GUI visualization data generation!
+If you are running this, you should know how to use python and jupyter notebook. But it is very easy and kind for beginners! You may spend less than one week to learn python and jupyter notebook, then you can start preprocessing, training, running, shape analyzing, and GUI visualization data generation! The 5 jupyter notebooks, the related python modules and the running example data are zipped in the CMapCode.zip : https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben !
 
 * Youtube PC (linux) tutorial video for a quick start! https://youtu.be/h2-89Fr2CAQ ! 
 
@@ -85,7 +91,7 @@ If you are running this, you should know how to use python and jupyter notebook.
   ...
   
   ```
-* **If you are running the program on your own data, no training is needed**, all you need to do is to prepare your tifR images and the corresponding CD{embryo_name}.csv files.
+* **If you are running the program on your own data, no training is needed**, all you need to do is to prepare your tifR images and the corresponding CD{embryo_name}.csv files. You should replace the example data with your own data following the data format and folder structure.
 
 
 
@@ -159,7 +165,7 @@ The steps are explained in the jupyter notebook. You run it one by one and chang
   |   |   |   │   ├── {embryo name}_volume.csv
   │   ├── 1_DataProcess.ipynb
   │   ├── 2_Train.ipynb
-  │   ├── 3_Run_cell_shape_analysis.ipynb
+  │   ├── 3_Run_segmentation.ipynb
   │   ├── 4_Run_cell_shape_analysis.ipynb
   │   ├── 5_GUIData_visualization.ipynb
   │   ├── train.py
@@ -168,6 +174,7 @@ The steps are explained in the jupyter notebook. You run it one by one and chang
   ```
 
 # Acknowledgement
+* The main project structure is founded by Dr. Jianfeng CAO. Zelin LI makes cell segmentation and shape analysis more accurate. 
 * The validation process partly uses the code of *CShaper*.
 * Some parts of this repository are referred to BraTS-DMFNet, e.g., the implementation of the model.
 
