@@ -1,0 +1,90 @@
+# =================================
+# Parameters for training
+# =================================
+train_data_dir: ./dataset/train
+train_embryos: [170614plc1p1, 170704plc1p1]  # embryos used for training.
+train_max_times: [100,140]
+net: EDTDMFNet #  Parameters used for training.
+net_params:
+  in_channels: 1
+  n_first: 32
+  conv_channels: 64
+  groups: 16
+  norm: in #sync_bn
+  out_class: 1
+criterion: mse_loss
+criterion_kwargs:
+  weight_type: square
+dataset: Memb3DDataset
+seed: 1024
+batch_size: 1
+num_epochs: 50
+save_freq: 10     # save every 50 epochs
+valid_freq: 10   # validate every 10 epochs
+start_iter: 0
+opt: Adam
+opt_params:
+  lr: 5e-3
+  weight_decay: 1e-5
+  amsgrad: true
+workers: 8
+
+train_transforms: # for training
+  Compose([
+    ContourEDT(9),
+    RandomIntensityChange([0.1, 0.1]),
+    RandCrop((128,128,128)),
+    RandomFlip(0),
+    NumpyType((np.float32, np.float32, np.float32, np.float32))
+    ])
+
+
+
+# =================================
+# Parameters for prediction (Paras for training will be preserved)
+# =================================
+get_memb_bin: True
+get_cell: True
+combine_dividing_cell: True
+
+show_snap: False
+#trained_model: ./ckpts/model_last.pth
+
+# raw z x y
+# CMap [92, 712, 512]
+# New confocal images [94, 712, 512]
+raw_size: [92, 712, 512]
+# [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
+
+# [191108plc1p1, 200109plc1p1, 200113plc1p2, 200113plc1p3, 200322plc1p2, 200323plc1p1, 200326plc1p3, 200326plc1p4, 200122plc1lag1ip1, 200122plc1lag1ip2, 200117plc1pop1ip2, 200117plc1pop1ip3]
+# CMap: dataset/test
+# new confocal images:/home/jeff/ProjectCode/CellAtlas/DataSource/nuc_labelled
+running_data_dir: ./dataset/run
+running_embryos: [200109plc1p1,200113plc1p2]
+# new confocal images: [240]
+run_max_times: [180,187]
+
+
+# Resize((256, 356, 214)), for CMap [92, 712, 512]
+# todo: why (256,352,224) before????
+test_transforms: # for testing, for unet based network, the data should be divided by 16
+  Compose([
+    Resize((256,352,224)),
+    NumpyType((np.float32, np.float32)),
+    ])
+# =================================
+# Parameters for morphological analysis
+# =================================
+#  Postprocess
+shape_analysis: False
+get_volume_var: False
+gui_data: False
+# =================================
+# Parameters for GUI data
+# =================================
+# only accept same resolution
+xy_resolution: 0.18
+z_resolution: 0.42
+z_resolutions: [0.09] # 0.09* [92*0.42/0.09:429] /214= 0.18056074766
+# 0.09 * [94 * 0.43/0.09] /448 = 0.09022321428
+gui_folder: ./gui

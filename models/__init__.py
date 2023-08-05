@@ -1,1 +1,2 @@
-from .DMFNet16 import MFNet, DMFNet
+from .DMFNet16 import DMFNet, EDTDMFNet
+from .VNet import VNet

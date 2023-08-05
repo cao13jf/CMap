@@ -3,7 +3,7 @@
 
 # import dependency library
 import random
-import collections
+import collections.abc as collections
 import torch
 import numpy as np
 from scipy import ndimage
@@ -27,17 +27,17 @@ class Base(object):
         return img
 
     #  define how to call tf
-    def __call__(self, img, dim=3, reuse_pros=False):  # TODO: reuse with raw and seg
+    def __call__(self, imgs, dim=3, reuse_pros=False):  #
         # resampling parameters and set self properties
         if not reuse_pros:
-            im = img if isinstance(img, np.ndarray) else img[0]
+            im = imgs if isinstance(imgs, np.ndarray) else imgs[0]
             shape = im.shape
             assert len(shape) == 3, "only support 3-dim data"
             self.sample(*shape)
 
-        if isinstance(img, collections.Sequence):
-            return [self.tf(x, k) for k, x in enumerate(img)]
-        return self.tf(img)
+        if isinstance(imgs, collections.Sequence):
+            return [self.tf(x, k) for k, x in enumerate(imgs)]
+        return self.tf(imgs)
 
     #  define print string
     def __str__(self):
@@ -79,7 +79,7 @@ class RandomRotation(Base):
         self.angle_buffer = np.random.randint(-self.angle_spectrum, self.angle_spectrum)
         return list(shape)
 
-    def tf(self, img, k=0):  # TODO: consider 'cval'
+    def tf(self, img, k=0):  #
         img = ndimage.rotate(img, self.angle_buffer, axes=self.axes_buffer, reshape=False, order=0, mode="constant", cval=0)
         return img
 
@@ -194,7 +194,7 @@ class RandomIntensityChange(Base):
             return img
 
     def __str__(self):
-        return "random intensity shift on the input image"
+        return "random intensity shift on the input MembAndNuc"
 
 
 #   add noise
@@ -232,12 +232,12 @@ class GaussianBlur(Base):
 
 #   binary mask to distance
 class ContourEDT(Base):
-    #  only applicable to binary image
+    #  only applicable to binary MembAndNuc
     def __init__(self, d_threshold=15):
         self.d_threshold = d_threshold
 
     def tf(self, img, k=0):
-        if k==1:
+        if k==1 and len(np.unique(img)) == 2:
             background_edt = distance_transform_edt(img == 0)
             background_edt[background_edt > self.d_threshold] = self.d_threshold
             reversed_edt = (self.d_threshold - background_edt) / self.d_threshold
@@ -266,7 +266,7 @@ class Normalize(Base):
 
 class Resize(Base):
     def __init__(self, target_size=(205, 288, 144)):
-        assert len(target_size) == 3, "Only support in-slice resize"  # TODO: support for 3D resize
+        assert len(target_size) == 3, "Only support in-slice resize"  #
         self.target_size = target_size
 
     def tf(self, img, k=0):
@@ -381,7 +381,7 @@ class NumpyType(Base):
         self.types = types
 
     def tf(self, img, k=0):
-        return img.astype(self.types[k])  # TODO: how to recognize string cmd
+        return img.astype(self.types[k])  # k?
 
     def __str__(self):
         s_types = ",".join([str(s) for s in self.types])

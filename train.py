@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 
 #  import dependency library
 import os
@@ -23,7 +23,9 @@ from utils.train_utils import adjust_learning_rate
 from data import datasets
 from data.data_utils import init_fn
 from data.sampler import CycleSampler
-#  loss
+
+#  loss85/+
+';l'
 from utils.criterions import mse_loss, generalized_dice_loss
 
 cudnn.benchmark = True  # let auto-tuner find the most efficient network (used in fixed network.)
@@ -31,14 +33,13 @@ cudnn.benchmark = True  # let auto-tuner find the most efficient network (used i
 # set parameters
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-cfg', '--cfg', default='DMFNet_MEMB3D_TRAIN', required=True, type=str, help='Your detailed configuration of the network')
+parser.add_argument('-cfg', '--cfg', default='DMFNet_MEMB3D_TRAIN', required=True, type=str,
+                    help='Your detailed configuration of the network')
 parser.add_argument('-gpu', '--gpu', default='0', type=str, required=True, help='Supprot one GPU & multiple GPUs.')
 parser.add_argument('-batch_size', '--batch_size', default=1, type=int, help='Batch size')
 parser.add_argument('-restore', '--restore', default='', type=str)
-parser.add_argument('--show_image_freq', default=20, type=int, help="frequency of showing image")
+parser.add_argument('--show_image_freq', default=20, type=int, help="frequency of showing MembAndNuc")
 parser.add_argument('--show_loss_freq', default=5, type=int, help="frequency of showing loss")
-
-path = os.path.dirname(__file__)
 
 ## parse arguments
 args = parser.parse_args()
@@ -50,31 +51,32 @@ args.resume = os.path.join(cpkts, args.restore)
 if args.show_image_freq > 0 or args.show_loss_freq > 0:
     visualizer = Visualizer(1)
 
+
 def main():
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
 
-    #=====================================================
+    # =====================================================
     #   set seed for randomization
-    #=====================================================
+    # =====================================================
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed(args.seed)
 
-    #=====================================================
+    # =====================================================
     #  construct network
-    #=====================================================
+    # =====================================================
     Network = getattr(models, args.net)
     model = Network(**args.net_params)
     model = torch.nn.DataParallel(model).cuda()
     optimizer = getattr(torch.optim, args.opt)(model.parameters(), **args.opt_params)
     criterion = getattr(criterions, args.criterion)
 
-    #=====================================================
+    # =====================================================
     #  resume network
-    #=====================================================
+    # =====================================================
     msg = ""  # msg to log
-    if args.resume:
+    if args.resume is not None:
         if os.path.isfile(args.resume):
             print("==>Loading checking point '{}'".format(args.resume))
             checkpoint = torch.load(args.resume)
@@ -85,32 +87,33 @@ def main():
         else:
             msg = "==>!!! Cannot find checkpoint at {}".format(args.resume)
     else:
-        msg = "-"*20 + "New training" + "-"*20
+        msg = "-" * 20 + "New training" + "-" * 20
     msg += "\n" + str(args)
     logging.info(msg)
 
-    #=====================================================
+    # =====================================================
     #  set dataset loader
-    #=====================================================
+    # =====================================================
     Dataset = getattr(datasets, args.dataset)
-    train_set = Dataset(root=args.train_data_dir, membrane_names=args.train_embryos, for_train=True, transforms=args.train_transforms, return_target=True)
+    print(Dataset)
+    train_set = Dataset(root=args.train_data_dir, membrane_names=args.train_embryos, for_train=True,
+                        transforms=args.train_transforms, return_target=True, max_times=args.train_max_times)
     num_iters = args.num_iters or (len(train_set) * args.num_epochs) // args.batch_size
     num_iters -= args.start_iter
-    train_sampler = CycleSampler(len(train_set), num_iters*args.batch_size)
+    train_sampler = CycleSampler(len(train_set), num_iters * args.batch_size)
     train_loader = DataLoader(
         dataset=train_set,
         batch_size=args.batch_size,
-        collate_fn=train_set.collate,
+        # collate_fn=train_set.collate,
         sampler=train_sampler,
         num_workers=args.workers,
         pin_memory=True,
         worker_init_fn=init_fn
     )
 
-    #====================================================
+    # ====================================================
     #  start training
-    #====================================================
-    start = time.time()
+    # ====================================================
     torch.set_grad_enabled(True)
     enum_batches = len(train_set) / float(args.batch_size)  # number of epoches in each iteration
     for i, data in enumerate(train_loader, args.start_iter):
@@ -124,16 +127,15 @@ def main():
 
         #  go through the network
         data = [t.cuda(non_blocking=True) for t in data]  # Set non_blocking for multiple GPUs
-        raw, target_distance, target_bin= data[:3]
-        output_dis, output_bin = model(raw)
+        raw, seg_nuc, target_bin = data[:3]
+        output_bin = model(raw)
 
         #  get loss
         if not args.weight_type:
             args.weight_type = "square"
         if args.criterion_kwargs is not None:
-            loss_dis = 100 * mse_loss(output_dis, target_distance, weight_type="square")
-            loss_bin = generalized_dice_loss(output_bin, target_bin, )
-            loss = loss_bin + loss_dis
+            loss_bin = mse_loss(output_bin, target_bin, )
+            loss = loss_bin
         else:
             pass
             # loss = criterion(output, target_distance)
@@ -143,14 +145,15 @@ def main():
         loss.backward()
         optimizer.step()
 
-        #=============================================================
+        # =============================================================
         #   Show mmiddle results
         if args.show_image_freq > 0 and (i % args.show_image_freq) == 0:
-            image_dict = dict(Raw=raw[0, 0, :, :, 60].float(), target_dis=target_distance[0, 0, :, :, 60].float(), target_bin=target_bin[0, 0, :, :, 60].float(),
-                              Predis=output_dis[0, 0, :, :, 60].float(), output_bin=output_bin[0, 1, :, :, 60].float())
+            image_dict = dict(Raw=raw[0, 0, :, :, 31].float(), target_bin=target_bin[0, 0, :, :, 31].float(),
+                              output_bin=output_bin[0, 0, :, :, 31].float())
             visualizer.show_current_images(image_dict)
         if args.show_loss_freq > 0 and (i % args.show_loss_freq) == 0:
-            visualizer.plot_current_losses(progress_ratio=(i+1)/enum_batches, losses=dict(loss_dis=loss_dis.item(), loss_bin=loss_bin.item(), loss=loss.item()))
+            visualizer.plot_current_losses(progress_ratio=(i + 1) / enum_batches,
+                                           losses=dict(loss_bin=loss_bin.item(), loss=loss.item()))
         # =============================================================
 
         #  save trained model
@@ -162,7 +165,7 @@ def main():
                 optim_dict=optimizer.state_dict()
             ), file_name)
 
-        logging.info("Iter {0:}, Epoch {1:.4f}, Loss {2:.7f}".format(i+1, (i+1)/enum_batches, loss.item()))
+        logging.info("Iter {0:}, Epoch {1:.4f}, Loss {2:.7f}".format(i + 1, (i + 1) / enum_batches, loss.item()))
 
     #  save the last model
     i = num_iters + args.start_iter
@@ -176,5 +179,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

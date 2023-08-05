@@ -3,7 +3,9 @@
 import os
 import pickle
 import imageio
+import shutil
 import numpy as np
+import pandas as pd
 import nibabel as nib
 
 
@@ -13,9 +15,16 @@ import nibabel as nib
 #  load *.nii.gz volume
 def nib_load(file_name):
     if not os.path.exists(file_name):
-        raise IOError("Cannot file {}".format(file_name))
-    return nib.load(file_name).get_data()
+        raise IOError("Cannot find file {}".format(file_name))
+    return nib.load(file_name).get_fdata()
 
+def read_new_cd(cd_file):
+    df_nuc = pd.read_csv(cd_file, lineterminator="\n")
+    df_nuc[["cell", "time"]] = df_nuc["Cell & Time"].str.split(":", expand=True)
+    df_nuc = df_nuc.rename(columns={"X (Pixel)":"x", "Y (Pixel)":"y", "Z (Pixel)\r":"z"})
+    df_nuc = df_nuc.astype({"x":float, "y":float, "z":float, "time":int})
+
+    return df_nuc
 
 #==============================================
 #  write files
@@ -28,9 +37,9 @@ def pkl_save(data, path):
 #  write *.nii.gz files
 def nib_save(data, file_name):
     check_folder(file_name)
-    return nib.save(nib.Nifti1Image(data, None), file_name)
+    return nib.save(nib.Nifti1Image(data, np.eye(4)), file_name)
 
-#  write image
+#  write MembAndNuc
 def img_save(image, file_name):
     check_folder(file_name)
     imageio.imwrite(file_name, image)
@@ -49,10 +58,18 @@ def normalize3d(image, mask=None):
     image[mask] = (image[mask] - mean) / std
     return image
 
+def move_file(src_file, dst_file):
+    assert os.path.isfile(src_file), "src_file not exist"
+    dir_name = os.path.dirname(dst_file)
+    check_folder(dir_name)
+
+    shutil.copyfile(src_file, dst_file)
 
 #===============================================
-#  other utils
 def check_folder(file_name):
-    dir_name = os.path.dirname(file_name)
+    if "." in os.path.basename(file_name):
+        dir_name = os.path.dirname(file_name)
+    else:
+        dir_name = file_name
     if not os.path.isdir(dir_name):
         os.makedirs(dir_name)

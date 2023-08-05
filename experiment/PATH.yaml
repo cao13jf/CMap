@@ -1,4 +1,0 @@
-train_data_dir: dataset/train
-valid_data_dir: dataset/validation
-test_data_dir: dataset/test
-ckpt_dir: ./ckpts

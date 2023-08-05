@@ -5,14 +5,15 @@ criterion: mse_loss
 criterion_kwargs:
   weight_type: square
 dataset: Memb3DDataset
-get_cell: false
-get_memb_bin: ture
+get_cell: true
+get_memb_bin: true
 gpu: '0'
+max_times: (140,)
 mode: 2
 name: DMFNET_MEMB3D_TRAIN
-net: DMFNet
+net: MDFNetBin
 net_params:
-  conv_channels: 128
+  conv_channels: 64
   groups: 16
   in_channels: 1
   n_first: 32
@@ -24,21 +25,24 @@ opt_params:
   amsgrad: true
   lr: 0.005
   weight_decay: 1.0e-05
+raw_size: (92, 712, 512)
 save_format: nii.gz
 save_freq: 10
 seed: 1024
-show_snap: ture
+shape_analysis: true
+show_snap: false
 start_iter: 0
-suffix: '*5.pkl'
+suffix: '*.pkl'
 test_data_dir: dataset/test
-test_embryos: ('181210plc1p2',)
-test_transforms: Compose([ Pad([205, 285, 144]), Resize((208, 288, 144)), NumpyType((np.float32,
-  np.float32)), ])
+test_embryos: ('200117plc1pop1ip2',)
+test_transforms: Compose([ Resize((256, 352, 224)), NumpyType((np.float32, np.float32)),
+  ])
+tp_combine: true
 train_data_dir: dataset/train
 train_embryos: ('170614plc1p1', '170704plc1p1')
-train_transforms: Compose([ ContourEDT(15), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
+train_transforms: Compose([ ContourEDT(9), RandomIntensityChange([0.1, 0.1]), RandCrop((128,128,128)),
   RandomFlip(0), NumpyType((np.float32, np.float32, np.float32, np.float32)) ])
-trained_model: model_epoch_20.pth
+trained_model: model_last.pth
 valid_data_dir: dataset/validation
 valid_freq: 10
 workers: 8

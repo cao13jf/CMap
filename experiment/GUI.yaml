@@ -1,0 +1,9 @@
+embryo_names: ["200122plc1lag1ip1", "200122plc1lag1ip2"]
+z_resolutions: [0.18, 0.18]
+
+raw_folder: ./dataset/test
+seg_folder: ./output
+statistic_folder: ./statistics
+gui_folder: ./guidata
+name_file: ./dataset/number_dictionary.csv
+
