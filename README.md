@@ -204,7 +204,7 @@ The steps are explained in the jupyter notebook. You run it one by one and chang
 
 * ITK-CVE-SNAP software link: https://drive.google.com/drive/folders/1a9LSzUdf98dP0D2Tggxmx55mCymXtusr?usp=sharing ！
 
-## 1.2 Original ITK-SNAP Illustration (NOT ITK-CVE-SNAP, Optional)
+## 3.2 Original ITK-SNAP Illustration (NOT ITK-CVE-SNAP, Optional)
 
 * Download link: http://www.itksnap.org/pmwiki/pmwiki.php?n=Downloads.SNAP4  ; you can also search the google to download and install it.
 * Short tutorial video:  https://youtu.be/VjA354giVhM !
