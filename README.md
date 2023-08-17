@@ -1,33 +1,39 @@
-# Introduction and Tutorial for CMap
+# CMap Segmentation Manual
 
 # 1. Introduction 
-CMap is a new segmentation computational pipeline for *C. elegans* time-lapse embryos. By explicitly incorporating the nucleus information from StarryNite to the result of cell membrane segmentation, CMap can segment
-the *C. elegans* embryo at late 550-cell stage vs 350-cell stage by CShpaer.
+CMap is a new computational pipeline for segmenting *C. elegans* time-lapse embryos. It uses the nucleus information from StarryNite to improve the cell membrane segmentation results. CMap can segment the *C. elegans* embryo at the late 550-cell stage, while CShaper can only do it at the 350-cell stage. **This tutorial shows how to run CMap online using the Colab cloud computing service by Google, which makes it accessible to users worldwide**.
 
-## 1.1 Novel 3D Visualized GUI data and ITK-CVE-SNAP Software
-
-* Windows version ITK-CVE-SNAP software link: https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/EYqGjfoFp8NDjoRLdhEUBKMBPVytBpQNKNBqRN-MH_2F9g .
-* Linux version ITK-CVE-SNAP software link: https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/EUe1bduMu8RPi1MPNYRCxvoBxHz5l9KV-TRJFM7eAOV_1A?e=eOYnCZ .
-
-## 1.2 CMapCode Link (Complete Version for Local Running)
-
-The folder is prepared for the researchers who are familiar with python and jupyter notebook. **If you are not familiar with python, please read the Section *2.1 Run the Program Online via Google Colab* and run the segmentation online**.
-
-The 5 jupyter notebooks, the related python modules and the running example data are zipped in the CMapCode.zip : https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben ! **If you know python, please download it, read the Section *2.2 Run the Program on Your PC (Linux) with Python Environment* and run the jupyter notebook from 1->5**.
+<p align="center"> <img src="./tem_files/images/Fig1a_TP188.png" alt="Rendering example"></p>
 
 
-# 2. Tutorial
-We provide two ways to run CMap to segment and generate visualized 3D GUI data for your own time-lapse fluorescent images.
+## 1.1 CMapCode Link (Complete Version for Local Running, NOT for Online Running)
 
-## 2.1 Run the Program Online via Google Colab
-Google Colab is a computational online jupyter notebook which is provided by Google and designed for scientific studies. Please visit the website and have a brief understanding on https://colab.research.google.com/ . 
+This folder is for researchers who know how to use python and jupyter notebook. **If you don’t know python, please go to Section *2.1 Run the Program Online via Google Colab (Recommended Way)* **.
 
-You don't need to know how to use python or jupyter notebook. If you are running the program on your own data, all you need to do is to prepare your tifR images and the corresponding CD{embryo_name}.csv files. Actually, the free google colab provides few computational resources. I strongly recommend you enlarge the number of processes dealing with the shape analysis to get the results with reasonable operation time. 
+The CMapCode.zip file contains 5 jupyter notebooks, the related python modules and the example data for running the program: https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben ! **If you know python, please download the file, go to Section \*2.2 Run the Program on Your PC (Linux) with Python Environment\* and run the jupyter notebooks in order from 1 to 5**.
+
+
+
+
+# 2. Segmentation Program Tutorials
+We provide two ways (online or local) to run CMap to segment and generate visualized 3D GUI data for your own time-lapse fluorescent images.
+
+<p align="center"> <img src="./tem_files/images/fluoresecent.png" alt="Rendering example"></p>
+
+
+## 2.1 Run the Program Online via Google Colab (Recommended Way)
+Google Colab is an online jupyter notebook service provided by Google for scientific research.  CMap colab program: https://colab.research.google.com/drive/13F2R7HzMra8_CWsaD3FYNnt-GdzD1Tpy?usp=sharing ! (Optional)You can learn more about it at https://colab.research.google.com/ .
+
+You don’t need to know python or jupyter notebook to use this program. If you want to run it on your own data, you just need to prepare your tifR images and the CD{embryo_name}.csv files for each embryo. However, the free google colab has limited computational resources. **If your maximum time point of your embryo is more than 20, I strongly suggest you to upgrade to Google Colab Pro for longer running time and faster shape analysis**.
 
 * Youtube Google Colab tutorial video for a quick start! https://youtu.be/lQyx5Z2wY90 ! 
 
 ### >>>>====Colab Running Steps====<<<<
 * Download and upload or copy the Folder CMapCode to your google drive root directory. https://drive.google.com/drive/folders/1NWAxXAQuFf9sNafWkvGYNslUAQjAszbW?usp=sharing .
+* 
+<p align="center"> <img src="./tem_files/images/google drive data path.png" alt="Rendering example"></p>
+
+  
   * The folder tree is
     ```
     ├── Your google drive root
@@ -55,15 +61,22 @@ You don't need to know how to use python or jupyter notebook. If you are running
     |   │   ├── utils
     |   │   │   ├── *.py
     ```
-  * The example membrane image data is saved in the folder *your google drive root/CMapCode/dataset/run/{embryo name}/tifR/{embryo name}_L1-t{time point}-p{slice number index}.tif* and the CD file with nucleus location labeling is saved at *CMapCode/dataset/run/CDFiles/{embryo name}.csv*
-  * Please upload your own data on your *your google drive root/CMapCode/dataset/run* following the folder structure
-* Open the CMap colab jupyter, and save a copy to your own colab to run. https://colab.research.google.com/drive/13F2R7HzMra8_CWsaD3FYNnt-GdzD1Tpy?usp=sharing .
-  * Follow the instruction, click and run the block one by one.
-  * Download the Cell-wise and Fate-wise GUI data folders *your google drive root/CMapCode/GUIDataCellWise* and *your google drive root/CMapCode/GUIDataFateWise* . Open the folder with our ITK-CVE-SNAP!
+  * The example membrane image data is saved in the folder *your google drive root/CMapCode/dataset/run/{embryo name}/tifR/{embryo name}_L1-t{time point}-p{slice number index}.tif* and the CD file with nucleus location labeling is saved at *CMapCode/dataset/run/CDFiles/{embryo name}.csv*. 
+  * **Please upload your own data on your *your google drive root/CMapCode/dataset/run* following the folder structure**.
+  
+* Open the CMap colab jupyter, and save a program copy (https://colab.research.google.com/drive/13F2R7HzMra8_CWsaD3FYNnt-GdzD1Tpy?usp=sharing) to your own colab to run. 
+
+  <p align="center"> <img src="./tem_files/images/google colab.png" alt="Rendering example"></p>
+
+  
+  * Follow the instruction (strongly recommend you to watch the tutorial video [Link](https://youtu.be/lQyx5Z2wY90)), and click and run the block one by one.
+    <p align="center"> <img src="./tem_files/images/google colab running show.png" alt="Rendering example"></p>
+  
+  * Download the Cell-wise and Fate-wise GUI data folders at *your google drive root/CMapCode/GUIDataCellWise* and *your google drive root/CMapCode/GUIDataFateWise* . Open the folder with our [ITK-CVE-SNAP (NOT ITK-SNAP)][https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/EYqGjfoFp8NDjoRLdhEUBKMBPVytBpQNKNBqRN-MH_2F9g]!
 
 ## 2.2 Run the Program on Your PC (Linux) with Python Environment
 
-If you are running this, you should know how to use python and jupyter notebook. But it is very easy and kind for beginners! You may spend less than one week to learn python and jupyter notebook, then you can start preprocessing, training, running, shape analyzing, and GUI visualization data generation! The 5 jupyter notebooks, the related python modules and the running example data are zipped in the CMapCode.zip : https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben !
+If you are running this, you should know how to use python and jupyter notebook. It is also very easy and kind for beginners! You may spend less than one week to learn python and jupyter notebook, then you can start preprocessing, training, running, shape analyzing, and GUI visualization data generation on your own linux computer! The 5 jupyter notebooks, the related python modules and the running example data are zipped in the CMapCode.zip : https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben !
 
 * Youtube PC (linux) tutorial video for a quick start! https://youtu.be/h2-89Fr2CAQ ! 
 
@@ -97,7 +110,7 @@ If you are running this, you should know how to use python and jupyter notebook.
 
 ### >>>>====Jupyter Notebook Running Steps====<<<<
 
-The steps are explained in the jupyter notebook. You run it one by one and change some parameters then you could the results. I use 30 processes in the local tutorial which could be faster but using large memory, which helps in shape analysis step. Shape analyzing costs a lot of time, please be patient if you use a small number of processes.
+The steps are explained in the jupyter notebook. You run it one by one and change some parameters, then you could see the results. I use 30 processes in the local tutorial, which could be faster but use large memory, which helps in the shape analysis step. Shape analyzing costs a lot of time, so please be patient if you use a small number of processes.
 
 * The root folder structure is as follows (complete version).
   ```
@@ -173,8 +186,41 @@ The steps are explained in the jupyter notebook. You run it one by one and chang
   │   ├── environment.yml
   ```
 
+* You might encounter some issues with setting up the conda environment. You need to fix them by removing conflicting packages and searching on Google.
+
+* Run the five jupyter notebooks in sequence. The instructions and the steps are shown in the notebooks.
+  <p align="center"> <img src="./tem_files/images/pc linux show.png" alt="Rendering example"></p>
+
+# 3. Visualization Software
+
+## 3.1 Novel 3D Visualized GUI data and ITK-CVE-SNAP Software (NOT ITK-SNAP)
+
+* Short tutorial video: https://youtu.be/XhhtBp1kBAo !
+* The example GUI Data, GUIDataCellWise (you get from the *2.1 Run the Program Online via Google Colab (Recommended Way)*), is here: https://drive.google.com/file/d/1eWIOBa5Cr_NTFi7htLCAoGJ3-lDsAoVf/view?usp=sharing !
+* The example GUIDataTissueWise (you get from the *2.1 Run the Program Online via Google Colab (Recommended Way)*), is here: https://drive.google.com/file/d/1nampvmoSpqhRHptAHZtIUDtbOANMT301/view?usp=sharing !
+
+  <p align="center"> <img src="./tem_files/images/Fig1a_TP10.png" alt="Rendering example"></p>
+
+
+* ITK-CVE-SNAP software link: https://drive.google.com/drive/folders/1a9LSzUdf98dP0D2Tggxmx55mCymXtusr?usp=sharing ！
+
+## 1.2 Original ITK-SNAP Illustration (NOT ITK-CVE-SNAP, Optional)
+
+* Download link: http://www.itksnap.org/pmwiki/pmwiki.php?n=Downloads.SNAP4  ; you can also search the google to download and install it.
+* Short tutorial video:  https://youtu.be/VjA354giVhM !
+* This is just a optional part for your better understanding in using visualization software on your raw 3D images and the 3D segmented volumes.
+
+  <p align="center"> <img src="./tem_files/images/original itk.png" alt="Rendering example"></p>
+
+
+
+
 # Acknowledgement
-* The main project structure is founded by Dr. Jianfeng CAO. Zelin LI makes cell segmentation and shape analysis more accurate. 
-* The validation process partly uses the code of *CShaper*.
-* Some parts of this repository are referred to BraTS-DMFNet, e.g., the implementation of the model.
+
+* The main code project structure is founded by Dr. Jianfeng CAO. Zelin LI makes cell segmentation and shape analysis more accurate with acceptable biases. 
+* This code project is supported by  Professor Chao TANG, Professor Zhongying ZHAO and Professor Hong YAN. 
+* The validation process partly uses the code of [*CShaper*][https://github.com/cao13jf/CShaper].
+* Some parts of this repository are referred to [BraTS-DMFNet][https://github.com/China-LiuXiaopeng/BraTS-DMFNet], e.g., the implementation of the model.
+
+
 
