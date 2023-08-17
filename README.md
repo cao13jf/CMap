@@ -10,7 +10,7 @@ CMap is a new computational pipeline for segmenting *C. elegans* time-lapse embr
 
 This folder is for researchers who know how to use python and jupyter notebook. **If you don’t know python, please go to Section *2.1 Run the Program Online via Google Colab (Recommended Way)* **.
 
-The CMapCode.zip file contains 5 jupyter notebooks, the related python modules and the example data for running the program: https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben ! **If you know python, please download the file, go to Section \*2.2 Run the Program on Your PC (Linux) with Python Environment\* and run the jupyter notebooks in order from 1 to 5**.
+The CMapCode.zip file contains 5 jupyter notebooks, the related python modules and the example data for running the program: https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben ! **If you know python, please download the file, go to Section *2.2 Run the Program on Your PC (Linux) with Python Environment* and run the jupyter notebooks in order from 1 to 5**.
 
 
 
@@ -30,7 +30,7 @@ You don’t need to know python or jupyter notebook to use this program. If you 
 
 ### >>>>====Colab Running Steps====<<<<
 * Download and upload or copy the Folder CMapCode to your google drive root directory. https://drive.google.com/drive/folders/1NWAxXAQuFf9sNafWkvGYNslUAQjAszbW?usp=sharing .
-* 
+
 <p align="center"> <img src="./tem_files/images/google drive data path.png" alt="Rendering example"></p>
 
   
@@ -72,7 +72,7 @@ You don’t need to know python or jupyter notebook to use this program. If you 
   * Follow the instruction (strongly recommend you to watch the tutorial video [Link](https://youtu.be/lQyx5Z2wY90)), and click and run the block one by one.
     <p align="center"> <img src="./tem_files/images/google colab running show.png" alt="Rendering example"></p>
   
-  * Download the Cell-wise and Fate-wise GUI data folders at *your google drive root/CMapCode/GUIDataCellWise* and *your google drive root/CMapCode/GUIDataFateWise* . Open the folder with our [ITK-CVE-SNAP (NOT ITK-SNAP)][https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/EYqGjfoFp8NDjoRLdhEUBKMBPVytBpQNKNBqRN-MH_2F9g]!
+  * Download the Cell-wise and Fate-wise GUI data folders at *your google drive root/CMapCode/GUIDataCellWise* and *your google drive root/CMapCode/GUIDataFateWise* . Open the folder with our [ITK-CVE-SNAP (NOT ITK-SNAP)](https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/EYqGjfoFp8NDjoRLdhEUBKMBPVytBpQNKNBqRN-MH_2F9g)!
 
 ## 2.2 Run the Program on Your PC (Linux) with Python Environment
 
@@ -219,8 +219,8 @@ The steps are explained in the jupyter notebook. You run it one by one and chang
 
 * The main code project structure is founded by Dr. Jianfeng CAO. Zelin LI makes cell segmentation and shape analysis more accurate with acceptable biases. 
 * This code project is supported by  Professor Chao TANG, Professor Zhongying ZHAO and Professor Hong YAN. 
-* The validation process partly uses the code of [*CShaper*][https://github.com/cao13jf/CShaper].
-* Some parts of this repository are referred to [BraTS-DMFNet][https://github.com/China-LiuXiaopeng/BraTS-DMFNet], e.g., the implementation of the model.
+* The validation process partly uses the code of [*CShaper*](https://github.com/cao13jf/CShaper).
+* Some parts of this repository are referred to [BraTS-DMFNet](https://github.com/China-LiuXiaopeng/BraTS-DMFNet), e.g., the implementation of the model.
 
 
 
