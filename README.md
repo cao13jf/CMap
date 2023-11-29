@@ -1,5 +1,13 @@
 # *CMap* Segmentation Manual
 
+Quantitative cell morphology in *C. elegans* embryos reveals regulations of cell volume asymmetry
+
+November 2023
+
+DOI: 10.1101/2023.11.20.567849
+
+LicenseCC BY-NC-ND 4.0
+
 # 1. Introduction 
 CMap is a new computational pipeline for segmenting *C. elegans* time-lapse embryos. It uses the nucleus information from StarryNite to improve the cell membrane segmentation results. *CMap* can segment the *C. elegans* embryo at the late 550-cell stage, while *CShaper* can only do it at the 350-cell stage. **This tutorial shows how to run *CMap* online using the Colab cloud computing service by Google, which makes it accessible to users worldwide**. 
 
