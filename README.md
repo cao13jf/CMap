@@ -84,7 +84,7 @@ You don’t need to know Python or Jupyter notebook to use this program. If you 
 
 ## 2.2 Run the Program on Your PC (Linux) with Python Environment
 
-If you are running this, you should know how to use Python and Jupyter notebook. It is also very easy and kind for beginners! You may spend less than one week learning Python and Jupyter notebook, then you can start preprocessing, training, running, shape analyzing, and GUI visualization data generation on your own Linux computer! The 5 Jupyter notebooks, the related Python modules and the running example data are zipped in the CMapCode.zip : https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben !
+If you are running this, you should know how to use Python and Jupyter notebook. It is also very easy and kind for beginners! You may spend less than one week learning Python and Jupyter notebook, then you can start preprocessing, training, running, shape analyzing, and GUI visualization data generation on your own Linux computer! The 5 Jupyter notebooks, the related Python modules and the running example data are zipped in the CMapCode.zip : https://portland-my.sharepoint.com/:u:/g/personal/zelinli6-c_my_cityu_edu_hk/Ec3zXvxQnLBJrNLFWcSfaCMBME_JNPYhJWIUCgQfIYmPPA?e=Ma8ben or directory link : https://portland-my.sharepoint.com/:f:/g/personal/zelinli6-c_my_cityu_edu_hk/Etxj6874HSNBso9DlLvgJpEB8PnIY61QDHZHM9PsOb8Hqw?e=sVKp1F !
 
 * Youtube PC (Linux) tutorial video for a quick start! https://youtu.be/h2-89Fr2CAQ ! 
 
